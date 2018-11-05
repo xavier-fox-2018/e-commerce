@@ -1,0 +1,33 @@
+body {
+  background-color: rgb(255, 252, 242);
+}
+
+.pnav {
+  cursor: pointer;
+  color: lightgray;
+}
+.pnav:hover{
+  text-decoration: underline;
+}
+
+img {
+  border-radius: 5px;
+}
+
+
+.thumbcap {
+  position: relative;
+  cursor: pointer;
+}
+
+.capimg {
+  position: absolute;
+  top: 10%;
+  left: 2%;
+  width: 35%;
+  font-size: 12px;
+}
+
+footer {
+  font-size: 11pt;
+}
