@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Item Details</title>
+    <!--Bootstrap-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <!--Own CSS-->
+    <link rel="stylesheet" href="style.css">
+    <!--Font Awesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!--Jquery-->
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+        crossorigin="anonymous">
+        </script>
+</head>
+
+<body>
+    <!--Header: Put into Partial when can-->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="col-4">
+                <!--Side Bar-->
+                <div id="mySidenav" class="sidenav">
+                    <a href="javascript:void(0)" class="closebtn" onclick="closeNav('mySidenav')">&times;</a>
+                    <a href="#">About</a>
+                    <a href="#" onclick="show()">Categories <i class="fa fa-chevron-circle-down"></i></a>
+                    <ul id="subItem">
+                        <li><a class="sub_category" href="./item.html">Books</a></li>
+                        <li><a class="sub_category" href="./item.html">Furnitures</a></li>
+                        <li><a class="sub_category" href="./item.html">Video Games</a></li>
+                        <li><a class="sub_category" href="#" onclick="openNav('categorySideNav')">View All <i class="fa fa-chevron-circle-right"></i></a></li>
+                    </ul>
+                    <!--All cetegory sidebar-->
+                    <div id="categorySideNav" class="sidenav">
+                        <a href="javascript:void(0)" class="closebtn" onclick="closeNav('categorySideNav')"><i class="fa fa-chevron-circle-left"></i></a>
+                        <a style="color:white">Categories</a>
+                        <!--Probably looping in Jquery for each item in db-->
+                        <ul id="subItem">
+                            <li><a class="sub_category" href="./item.html">Books</a></li>
+                            <li><a class="sub_category" href="./item.html">Furnitures</a></li>
+                            <li><a class="sub_category" href="./item.html">Video Games</a></li>
+                            <li><a class="sub_category" href="./item.html">Books</a></li>
+                            <li><a class="sub_category" href="./item.html">Clothes</a></li>
+                            <li><a class="sub_category" href="./item.html">Gardening</a></li>
+                            <li><a class="sub_category" href="./item.html">Books</a></li>
+                            <li><a class="sub_category" href="./item.html">Appliances</a></li>
+                            <li><a class="sub_category" href="./item.html">Electronics</a></li>
+                        </ul>
+                    </div>
+                    <a href="#">Other Text</a>
+                    <a href="#">Other Text 2</a>
+                </div>
+                <span style="font-size:25px;cursor:pointer;color: white" onclick="openNav('mySidenav')">&#9776;</span>
+                <a class="navbar-brand" href="./index.html">The Nile</a>
+            </div>
+            <div class="col-4 ">
+                <form class="form-inline" style="justify-content:space-evenly">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </div>
+            <div class="col-4">
+                <form class="form-inline" style="justify-content:space-around">
+                    <button class="btn btn-outline-primary mr-sm-2">SignUp</button>
+                    <button class="btn btn-outline-info btn-inverse">SignIn</button>
+                    <span id="cart" class="fa-stack fa-2x has-badge" data-count="0" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <!--dropdown for cart-->
+                        <div class="dropleft">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <div class="dropdown-menu">
+                                <!--item 1-->
+                                <div class="item">
+                                    <div class="item_left">
+                                        Item <br>
+                                        $20
+                                    </div>
+                                    <div class="item_right">
+                                        Qty: 2
+                                        <i class="fa fa-window-close" aria-hidden="true" style="color:red; font-size:20px"></i>
+                                    </div>
+                                </div>
+                                <!--item 2-->
+                                <div class="item">
+                                    <div class="item_left">
+                                        Item <br>
+                                        $20
+                                    </div>
+                                    <div class="item_right">
+                                        Qty: 2
+                                        <i class="fa fa-window-close" aria-hidden="true" style="color:red; font-size:20px"></i>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <button style="width:80%" onclick="window.location.href='./cart.html'">View Cart</button>
+                                </div>
+                            </div>
+                        </div>
+                        <i class="fa fa-shopping-cart fa-stack-1x fa-inverse"></i>
+                    </span>
+                </form>
+            </div>
+        </nav>
+    </header>
+
+    <div id="pageContents" style="min-height:500px">
+        <!--Show Item Image, Details, add to cart slide-->
+        <div class="container-fluid product_detail" style="min-height:300px">
+            <div class="col-5" style="min-height:100px">
+                <img class="img-fluid" src="//via.placeholder.com/600x400?text=Product" alt="Product Image">
+            </div>
+            <div class="col-5" style="min-height:100px">
+                <p class="item"><b>Product Name</b></p>
+                <p class="item">Price: $***</p>
+                <p class="item">Details:</p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt eaque, dicta nihil ipsa exercitationem
+                consectetur ratione laboriosam quos sit harum, magni praesentium cupiditate alias officiis cumque
+                consequatur! Provident, animi est.
+            </div>
+            <div class="col-2 add_to_cart" style="min-height:100px">
+                <p class="item">Stock: #</p>
+                <div class="col-xs-2">
+                    <label for="qty">QTY</label>
+                    <input class="form-control" id="qty" type="number" min="1">
+                    <br><br>
+                    <input type="submit" class="btn btn-warning" value="Add to Cart">
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </div>
+    <!--Bootstrap-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+
+    <script>
+        //!--Side bar function--
+        function openNav(id) {
+            document.getElementById(id).style.width = "250px";
+        }
+
+        function closeNav(id) {
+            document.getElementById(id).style.width = "0";
+        }
+        function show() {
+            $("#subItem").toggle()
+        }
+        //Go back top function
+        function topFunction() {
+            $('html,body').animate({ scrollTop: 0 }, 'slow');
+        }
+    </script>
+</body>
+
+<footer>
+    <!--Back to top-->
+    <div id="toTop" onclick="topFunction()">
+        Back to Top
+    </div>
+    <div id="footer" class="container-fluid">
+        <!--General Info: 4 col-->
+        <div class="footer_container">
+            <div class="col-3">
+                <p><u> Shop More?</u></p>
+                <p class="footer_text">Books</p>
+                <p class="footer_text">Electronics</p>
+                <p class="footer_text">Fashion</p>
+                <p class="footer_text">Gardening</p>
+            </div>
+            <div class="col-3">
+                <p><u>Find Us</u></p>
+                <p class="footer_text">We are happy that you are enjoying our service! If you ever need to look for us,
+                    you can Other Text 2 us at the folowing:</p>
+                <i class="fa fa-location-arrow" aria-hidden="true"> 677 Wonderland Road</i>
+                <i class="fa fa-phone" aria-hidden="true"> 0812 9999 9999</i>
+                <i class="fa fa-envelope" aria-hidden="true"> nile_river@mail.com</i>
+            </div>
+            <div class="col-3">
+                <p><u>Customer Service</u></p>
+                <p class="footer_text">About Us</p>
+                <p class="footer_text">Settings</p>
+                <p class="footer_text">Shipping & Returns</p>
+                <p class="footer_text">Shipping Guide</p>
+                <p class="footer_text">FAQ</p>
+            </div>
+            <div class="col-3">
+                <div>
+                    <p><u>Stay Connected</u></p>
+                </div>
+                <div class="footer_sosmed">
+                    <i class="fa fa-facebook-official fa-2x" aria-hidden="true" onclick="window.open('https://www.facebook.com/')"></i>
+                    <i class="fa fa-twitter-square fa-2x" aria-hidden="true" onclick="window.open('https://twitter.com/?lang=en')"></i>
+                    <i class="fa fa-google-plus-official fa-2x" aria-hidden="true" onclick="window.open('https://plus.google.com/discover')"></i>
+                    <i class="fa fa-linkedin-square fa-2x" aria-hidden="true" onclick="window.open('https://www.linkedin.com/')"></i>
+                    <i class="fa fa-instagram fa-2x" aria-hidden="true" onclick="window.open('https://www.instagram.com/?hl=en')"></i>
+                </div>
+            </div>
+        </div>
+        <!--Copyright-->
+        <div id="copyright">
+            Copyright @2018 | All rights reserved | Nile.Co
+        </div>
+    </div>
+</footer>
+
+</html>
