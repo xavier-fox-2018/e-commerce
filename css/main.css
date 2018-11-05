@@ -1,0 +1,42 @@
+@keyframes transition {
+  from { left: 0; }
+  to {left: 10px; }
+}
+.info {
+  color: white;
+  display: block;
+  position: relative;
+}
+.info:hover {
+  color: red;
+  text-decoration: none;
+  animation-name: transition;
+  animation-duration: 0.5s;
+  animation-fill-mode: both;
+}
+.info:hover::before {
+  content: '\2022\00A0';
+}
+
+#beforeFooter {
+  background-image: url('/images/black-860221-5629409.jpg');
+  background-size: cover;
+}
+
+.dropdown-item:hover {
+  background-color: whitesmoke;
+}
+
+.card {
+  font-size: 90%;
+}
+
+.card h5 {
+  color: blue;
+  font-size: 1.1em;
+}
+
+.price {
+  color: red;
+  font-size: 1.5em;
+}
