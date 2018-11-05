@@ -1,0 +1,10 @@
+.navbar-custom, .bg-custom {
+    background-color: #3787C6;
+    color: #fff;
+}
+.bg-custom:hover {
+    color: #007bff;
+    background-color: transparent;
+    background-image: none;
+    border-color: #007bff;
+}
