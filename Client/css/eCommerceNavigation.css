@@ -1,0 +1,119 @@
+
+  div.shop-tab-container{
+    z-index: 10;
+    background-color: #ffffff;
+    padding: 0 !important;
+    border-radius: 0px;
+    -moz-border-radius: 0px;
+    border:1px solid #ddd;
+    margin-top: 0px;
+    margin-left: 0px;
+    -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    -moz-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    background-clip: padding-box;
+    opacity: 0.97;
+    filter: alpha(opacity=97);
+  }
+  div.shop-tab-menu{
+    padding-right: 0;
+    padding-left: 0;
+    padding-bottom: 0;
+  }
+  div.shop-tab-menu div.list-group{
+    margin-bottom: 0;
+  }
+  div.shop-tab-menu div.list-group>a{
+    margin-bottom: 0;
+  }
+  div.shop-tab-menu div.list-group>a .glyphicon,
+  div.shop-tab-menu div.list-group>a .fa {
+    color: #bee5eb;
+  }
+  div.shop-tab-menu div.list-group>a:first-child{
+    border-top-right-radius: 0;
+    -moz-border-top-right-radius: 0;
+  }
+  div.shop-tab-menu div.list-group>a:last-child{
+    border-bottom-right-radius: 0;
+    -moz-border-bottom-right-radius: 0;
+  }
+  div.shop-tab-menu div.list-group>a.active,
+  div.shop-tab-menu div.list-group>a.active .glyphicon,
+  div.shop-tab-menu div.list-group>a.active .fa{
+    background-color: #ffffff;
+    background-image: #5A55A3;
+    color: #5A55A3;
+  }
+
+  div.shop-tab-content{
+    background-color: #ffffff;
+    /* border: 1px solid #eeeeee; */
+    padding-left: 5px;
+    padding-top: 15px;
+    padding-bottom: 10px;
+    vertical-align: text-middle;
+  }
+  .list-group-item {
+  position: relative;
+  display: block;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: -1px;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.120);
+  }
+  .btn-group {
+  padding-top: 20px;
+  }
+  .btn-group > .btn {
+  padding: 0.5rem 1rem;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  border-radius: 0rem;
+  }
+  .cat {
+  text-align: left;
+  }
+  
+  .img-responsive,
+  .thumbnail > img,
+  .thumbnail a > img,
+  .carousel-inner > .item > img,
+  .carousel-inner > .item > a > img {
+    display: relative;
+    width: 100%;
+    height: 360px;
+  }
+
+  .carousel-inner {
+    border-radius: 0px;
+  }
+
+  .carousel-caption {
+    background-color: rgba(0,0,0,.5);
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    padding: 0 0 10px 25px;
+    color: #fff;
+    text-align: left;
+  }
+
+  .carousel-indicators {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    z-index: 15;
+    margin: 0;
+    padding: 0 25px 25px 0;
+    text-align: right;
+  }
+
+  .carousel-control.left,
+  .carousel-control.right {
+    background-image: none;
+  }

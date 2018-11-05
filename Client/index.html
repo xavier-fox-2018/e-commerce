@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Ecommerce Mantul</title>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" >
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+</head>
+<body>
+
+
+    <!-- ========================== -->
+    <!-- navbar -->
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Brand</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Link</a></li>
+                    <li><a href="#">Link</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Action</a></li>
+                            <li><a href="#">Another action</a></li>
+                            <li><a href="#">Something else here</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#">Separated link</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#">One more separated link</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#">Link</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Action</a></li>
+                            <li><a href="#">Another action</a></li>
+                            <li><a href="#">Something else here</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#">Separated link</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control pull-right" style="width: 300px; margin-right: 35px, border: 1px solid black; background-color: #e5e5e5;" placeholder="Search">
+                        <span class="input-group-btn">
+                            <button type="reset" class="btn btn-default">
+                                <span class="glyphicon glyphicon-remove">
+                                    <span class="sr-only">Close</span>
+                                </span>
+                            </button>
+                            <button type="submit" class="btn btn-default">
+                                <span class="glyphicon glyphicon-search">
+                                    <span class="sr-only">Search</span>
+                                </span>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+    
+    <div class="container">
+        <div class="row">
+            <div class="alert alert-info">
+                <strong>Alerts Dont Work on Bootsnipp!</strong> So when you hit enter or submit this form your result will show up in the green box below!
+            </div>
+            <div class="alert alert-success">
+                <strong>Your Result!</strong> <span id="showSearchTerm"></span>
+            </div>
+    </div>
+    </div>
+
+    <!-- ========================== -->
+    <!-- category  -->
+
+    <div class="container">
+        <div class="row">
+
+        <div class="btn-group btn-group-justified">
+            <a href="#" class="btn btn-info cat"><h4><i class="fa fa-bars" aria-hidden="true"></i> CATEGORIES</h4></a>
+            <a href="#" class="btn btn-default"><h4>ABOUT</h4></a>
+            <a href="#" class="btn btn-default"><h4>RETURNS</h4></a>
+            <a href="#" class="btn btn-default"><h4>DELIVERY</h4></a>
+        </div>
+        
+        <div class="col-md-12 shop-tab-container">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 shop-tab-menu">
+                <div class="list-group">
+                    <a href="#" class="list-group-item">
+                    <h4><i class="fa fa-chevron-right" aria-hidden="true"></i> Laptop & PC's</h4>
+                    </a>
+                    <a href="#" class="list-group-item">
+                    <h4><i class="fa fa-chevron-right" aria-hidden="true"></i> Cameras</h4>
+                    </a>
+                    <a href="#" class="list-group-item">
+                    <h4><i class="fa fa-chevron-right" aria-hidden="true"></i> Mens Clothing</h4>
+                    </a>
+                    <a href="#" class="list-group-item">
+                    <h4><i class="fa fa-chevron-right" aria-hidden="true"></i> Womens Clothing</h4>
+                    </a>
+                    <a href="#" class="list-group-item">
+                    <h4><i class="fa fa-chevron-right" aria-hidden="true"></i> Watches</h4>
+                    </a>
+                    <a href="#" class="list-group-item">
+                    <h4><i class="fa fa-chevron-right" aria-hidden="true"></i> Tablets</h4>
+                    </a>
+                    <a href="#" class="list-group-item">
+                    <h4><i class="fa fa-chevron-right" aria-hidden="true"></i> All Categories</h4>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 shop-tab">
+            
+            <div class="shop-tab-content active">
+                
+                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+            
+                <ol class="carousel-indicators">
+                    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                    <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+                </ol>
+    
+                <div class="carousel-inner">
+                    <div class="item active">
+                    <img src="http://placehold.it/800x400" alt="...">
+                    <div class="carousel-caption">
+                        <h2>Heading</h2>
+                    </div>
+                    </div>
+                    <div class="item">
+                    <img src="http://placehold.it/800x400" alt="...">
+                    <div class="carousel-caption">
+                        <h2>Heading</h2>
+                    </div>
+                    </div>
+                    <div class="item">
+                    <img src="http://placehold.it/800x400" alt="...">
+                    <div class="carousel-caption">
+                        <h2>Heading</h2>
+                    </div>
+                    </div>
+                </div>
+    
+                <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
+                    <span class="glyphicon glyphicon-chevron-left"></span>
+                </a>
+                <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                </a>
+                </div>
+    
+            </div>
+                
+        </div>
+    </div>
+
+
+    <!-- ========================== -->
+    <!-- product  -->
+    <div class="space-medium">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                    <div class="showcase-block">
+                        <div class="display-logo ">
+                            <a href="#"> <img src="https://easetemplate.com/free-website-templates/mobistore/images/nexus.png" alt=""></a>
+                        </div>
+                        <div class="showcase-img">
+                            <a href="#"> <img src="https://easetemplate.com/free-website-templates/mobistore/images/display_img_1.png" alt=""></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <div class="showcase-block active">
+                        <div class="display-logo alignleft">
+                            <a href="#">  <img src="https://easetemplate.com/free-website-templates/mobistore/images/iphone.png" alt="">
+                            </a>
+                        </div>
+                        <div class="showcase-img">
+                            <a href="#"> <img src="https://easetemplate.com/free-website-templates/mobistore/images/display_img_2.png" alt="" style="padding-left: 80px;"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                    <div class="showcase-block ">
+                        <div class="display-logo ">
+                            <a href="#"> <img src="https://easetemplate.com/free-website-templates/mobistore/images/samsung.png" alt="">
+                            </a>
+                        </div>
+                        <div class="showcase-img">
+                            <a href="#"><img src="https://easetemplate.com/free-website-templates/mobistore/images/display_img_3.png" alt="">                    </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                    <div class="showcase-block">
+                        <div class="display-logo ">
+                            <a href="#"><img src="https://easetemplate.com/free-website-templates/mobistore/images/htc.png" alt=""></a>
+                        </div>
+                        <div class="showcase-img">
+                            <a href="#"><img src="https://easetemplate.com/free-website-templates/mobistore/images/display_img_4.png" alt=""></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                    <div class="showcase-block">
+                        <div class="display-logo">
+                            <a href="#">  <img src="https://easetemplate.com/free-website-templates/mobistore/images/alcatel.png" alt=""></a>
+                        </div>
+                        <div class="showcase-img">
+                            <a href="#"> <img src="https://easetemplate.com/free-website-templates/mobistore/images/display_img_5.png" alt="">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                    <div class="showcase-block">
+                        <div class="display-logo ">
+                            <a href="#"><img src="https://easetemplate.com/free-website-templates/mobistore/images/pixel.png" alt=""></a>
+                        </div>
+                        <div class="showcase-img">
+                            <a href="#">    <img src="https://easetemplate.com/free-website-templates/mobistore/images/display_img_6.png" alt=""></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                    <div class="showcase-block">
+                        <div class="display-logo ">
+                            <a href="#">  <img src="https://easetemplate.com/free-website-templates/mobistore/images/vivo.png" alt=""></a>
+                        </div>
+                        <div class="showcase-img">
+                            <a href="#"><img src="https://easetemplate.com/free-website-templates/mobistore/images/display_img_7.png" alt=""></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================== -->
+    <!-- Footer -->
+    <div class="footer">
+            <div class="container">
+               <div class="row">
+                   <div class="col-md-2">
+                        <ul class="clear">
+                           <li><a target="_self" href="" data-i18n="media" module-id="common">Media</a></li>
+                           <li><a target="_self" href="" data-i18n="careers" module-id="common">Careers</a></li>
+                           <li><a target="_self" href="" data-i18n="about_airtel" module-id="common">About Airtel</a></li>
+                           <li><a target="_self" href="" data-i18n="brand" module-id="common">Brand</a></li>
+                           <li><a target="_self" href="">Press Release</a></li>
+                           <li><a target="_self" href="">Investor Support</a></li>
+                           <li><a target="_blank" href="">All Plans</a></li>
+                       </ul>
+                   </div>
+                   <div class="col-md-2">
+                       <ul class="clear">
+                           <li><a target="_self" href="" data-i18n="media" module-id="common">Media</a></li>
+                           <li><a target="_self" href="" data-i18n="careers" module-id="common">Careers</a></li>
+                           <li><a target="_self" href="" data-i18n="about_airtel" module-id="common">About Airtel</a></li>
+                           <li><a target="_self" href="" data-i18n="brand" module-id="common">Brand</a></li>
+                           <li><a target="_self" href="">Press Release</a></li>
+                           <li><a target="_self" href="">Investor Support</a></li>
+                           <li><a target="_blank" href="">All Plans</a></li>
+                       </ul>
+                   </div>
+                   <div class="col-md-2">
+                       <ul class="clear">
+                           <li><a target="_self" href="" data-i18n="media" module-id="common">Media</a></li>
+                           <li><a target="_self" href="" data-i18n="careers" module-id="common">Careers</a></li>
+                           <li><a target="_self" href="" data-i18n="about_airtel" module-id="common">About Airtel</a></li>
+                           <li><a target="_self" href="" data-i18n="brand" module-id="common">Brand</a></li>
+                           <li><a target="_self" href="">Press Release</a></li>
+                           <li><a target="_self" href="">Investor Support</a></li>
+                           <li><a target="_blank" href="">All Plans</a></li>
+                       </ul>
+                   </div>
+                   <div class="col-md-2">
+                       <ul class="clear">
+                           <li><a target="_self" href="" data-i18n="media" module-id="common">Media</a></li>
+                           <li><a target="_self" href="" data-i18n="careers" module-id="common">Careers</a></li>
+                           <li><a target="_self" href="" data-i18n="about_airtel" module-id="common">About Airtel</a></li>
+                           <li><a target="_self" href="" data-i18n="brand" module-id="common">Brand</a></li>
+                           <li><a target="_self" href="">Press Release</a></li>
+                           <li><a target="_self" href="">Investor Support</a></li>
+                           <li><a target="_blank" href="">All Plans</a></li>
+                       </ul>
+                   </div>
+                   <div class="col-md-4">
+                       <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
+                        industry's standard dummy text ever since the 1500s,</p>
+                        <p> when an unknown printer took a galley of type and scrambled
+                         it to make a type specimen book.</p>
+                         
+                   </div>
+               </div>
+           </div>
+        </div>
+    
+
+    <script>
+    </script>
+</body>
+</html>
