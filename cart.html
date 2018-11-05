@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+  <title>Starter Template - Materialize</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/css?family=Krub:400,600" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
+  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
+</head>
+
+<body>
+  <!--  Scripts-->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="js/materialize.js"></script>
+  <script src="js/init.js"></script>
+
+  <!-- HEADER -->
+  <header>
+    <nav class="green lighten-2" role="navigation">
+      <div class="nav-wrapper container"><a id="logo-container" href="./index.html" class="brand-logo">COFFEA</a>
+        <ul class="right hide-on-med-and-down">
+          <li><a href="#" class="tooltipped" data-position="bottom" data-tooltip="Search"><i class="material-icons">search</i></a></li>
+          <li><a href="./learn.html" class="tooltipped" data-position="bottom" data-tooltip="Learn"><i class="material-icons">map</i></a></li>
+          <li><a href="./cart.html" class="tooltipped" data-position="bottom" data-tooltip="Cart"><i class="material-icons">shopping_cart</i></a></li>
+        </ul>
+        <ul id="nav-mobile" class="sidenav">
+          <li><a href="#"><i class="material-icons">map</i>Become A Coffee Artisan</a></li>
+          <li><a href="#"><i class="material-icons">shopping_cart</i>Shopping Cart</a></li>
+        </ul>
+        <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      </div>
+    </nav>
+  </header>
+
+  <br>
+  <br>
+  <br>
+
+  <main>
+    <div class="container">
+      <div class="row">
+
+        <div class="col s12 m8">
+          <div class="col s6 m4">
+            <div class="card">
+              <div class="card-image">
+                <img src="https://s-ecom.ottenstatic.com/thumbnail/56b172d375d5a.jpg">
+                <a class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">shopping_cart</i></a>
+              </div>
+              <div class="card-content">
+                <h6>Costa Rica 200g Kopi Arabica</h6>
+                <h5 class="red-text">Rp. 175.000</h5>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col s6 m4">
+            <div class="card">
+              <div class="card-image">
+                <img src="https://s-ecom.ottenstatic.com/thumbnail/579b1000095aa.jpg">
+                <a class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">shopping_cart</i></a>
+              </div>
+              <div class="card-content">
+                <h6>AeroPress Collection</h6>
+                <h5 class="red-text">Rp. 1.379.000</h5>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col s6 m4">
+            <div class="card">
+              <div class="card-image">
+                <img src="https://s-ecom.ottenstatic.com/thumbnail/5b21da762d2b9211505770.jpg">
+                <a class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">shopping_cart</i></a>
+              </div>
+              <div class="card-content">
+                <h6>ACME 190ml Cup</h6>
+                <h5 class="red-text">Rp. 190.000</h5>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col s6 m4">
+            <div class="card">
+              <div class="card-image">
+                <img src="https://s-ecom.ottenstatic.com/thumbnail/5b4c1335d1a2f818906758.jpg">
+                <a class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">shopping_cart</i></a>
+              </div>
+              <div class="card-content">
+                <h6>Acacia Cinco</h6>
+                <h5 class="red-text">Rp. 3.999.000</h5>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col s6 m4">
+            <div class="card">
+              <div class="card-image">
+                <img src="https://s-ecom.ottenstatic.com/thumbnail/5af8f6500f5dc855362308.jpg">
+                <a class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">shopping_cart</i></a>
+              </div>
+              <div class="card-content">
+                <h6>Brewista Gooseneck</h6>
+                <h5 class="red-text">Rp. 2.459.000</h5>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col s12 m4">
+          <div class="card">
+            <div class="card-content">
+              <h6>Total Purchase</h6>
+              <h5 class="red-text">Rp. 8.202.000</h5>
+              <br>
+              <hr>
+              <br>
+              <a class="waves-effect waves-light btn red modal-trigger" href="#checkout">Checkout</a>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL -->
+    <div id="checkout" class="modal">
+      <div class="modal-content">
+        <h4 class="brown-text">Checkout</h4>
+
+        <div class="row">
+          <form class="col s12">
+            <div class="row">
+              <!-- personal info -->
+              <div class="input-field col s6">
+                <input id="firstName" type="text" class="validate">
+                <label for="firstName">First Name</label>
+              </div>
+              <div class="input-field col s6">
+                <input id="lastName" type="text" class="validate">
+                <label for="lastName">Last Name</label>
+              </div>
+              <div class="input-field col s6">
+                <input id="phone" type="number" class="validate">
+                <label for="phone">Phone Number</label>
+              </div>
+              <div class="input-field col s6">
+                <input id="email" type="number" class="validate">
+                <label for="email">Email Address</label>
+              </div>
+              
+              <!-- address -->
+              <div class="input-field col s6">
+                <input id="address" type="text" class="validate">
+                <label for="address">Full Address</label>
+              </div>
+              <div class="input-field col s6">
+                <input id="zipCode" type="number" class="validate">
+                <label for="zipCode">Zip Code</label>
+              </div>
+
+              <!-- credit card info -->
+              <div class="input-field col s6">
+                <input id="ccNumber" type="number" class="validate">
+                <label for="ccNumber">Credit Card Number</label>
+              </div>
+              <div class="input-field col s4">
+                <input id="expDate" type="number" class="validate">
+                <label for="expDate">Expiry Date</label>
+              </div>
+              <div class="input-field col s2">
+                <input id="cvc" type="number" class="validate">
+                <label for="cvc">CVC</label>
+              </div>
+            </div>
+          </form>
+        </div>
+        
+      </div>
+      <div class="modal-footer">
+        <a href="#!" class="waves-effect waves-red btn red">Place Order</a>
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="page-footer green lighten-2">
+    <div class="container">
+      <div class="row">
+        <div class="col l6 s12">
+          <h5 class="white-text">Information</h5>
+          <ul>
+            <li><a class="white-text" href="#!">Product Guarantee</a></li>
+            <li><a class="white-text" href="#!">Dropship</a></li>
+            <li><a class="white-text" href="#!">Terms and Conditions</a></li>
+            <li><a class="white-text" href="#!">Privacy Policy</a></li>
+          </ul>
+        </div>
+        <div class="col l6 s12">
+          <h5 class="white-text">Customer Care</h5>
+          <ul>
+            <li><a class="white-text" href="#!">Contact Us</a></li>
+            <li><a class="white-text" href="#!">FAQ</a></li>
+            <li><a class="white-text" href="#!">About Us</a></li>
+            <li><a class="white-text" href="#!">Why Us</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-copyright">
+      <div class="container">
+        Made by <a class="orange-text text-lighten-3" href="http://materializecss.com">Materialize</a>
+      </div>
+    </div>
+  </footer>
+
+
+
+
+</body>
+
+</html>
