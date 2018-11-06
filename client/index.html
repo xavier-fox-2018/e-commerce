@@ -247,10 +247,10 @@
           <!-- Links -->
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-              <a class="nav-link" href="#">All</a>
+              <a class="nav-link" v-on:click="getAllItems">All</a>
             </li>
             <li class="nav-item" v-for="category in categories">
-              <a class="nav-link" href="#">{{category.name}}</a>
+              <a class="nav-link" v-on:click="getItemsByCategory(category._id)">{{category.name}}</a>
             </li>
           </ul>
           <!-- Links -->
@@ -274,7 +274,7 @@
           <!--Grid column-->
           <div class="col-lg-3 col-md-6 mb-4" v-for="item in items">
             <!--Card-->
-            <div class="card">
+            <div class="card" v-on:click="getItem(item._id)">
               <!--Card image-->
               <div class="view overlay">
                 <img v-bind:src="item.image_url" class="card-img-top" alt="">
@@ -420,6 +420,21 @@
           .catch(err=>{
             console.log('error',response)
           })
+        },
+        getItemsByCategory : function(id){
+          axios({
+            method : 'GET',
+            url : `${this.config.port}/items/category/${id}`
+          })
+          .then(response=>{
+            this.items = response.data
+          })
+          .catch(err=>{
+            console.log('error',err)
+          })
+        },
+        getItem : function(id){
+          console.log('item id :',id)
         }
       },
       created : function(){

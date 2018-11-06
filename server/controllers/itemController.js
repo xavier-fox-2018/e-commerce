@@ -52,6 +52,22 @@ class Controller {
         })
     }
 
+    static readByCategory(req,res){
+        Item.find({
+            category : req.params.id
+        })
+        .populate('category')
+        .then((itemList)=>{
+            res.status(200).json(itemList)
+        })
+        .catch((err)=>{
+            res.status(500).json({
+                error : err,
+                message : 'Read By Category Error'
+            })
+        })
+    }
+
     static update(req,res){
         Item.findOneAndUpdate({
             _id : req.params.id
