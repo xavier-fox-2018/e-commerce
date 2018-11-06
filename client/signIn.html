@@ -1,0 +1,90 @@
+<!DOCTYPE html >
+<html lang="en">
+<head>
+  <title>Log In</title>
+  <link href="./css/style.css" rel="stylesheet" type="text/css">
+  <!-- load jquery script from google cdn -->
+
+</head>
+<body>
+  <h1>Sign In</h1>
+  <form id ="signIn">
+    <input type = "text" id = "email" placeholder = "enter email" required>
+    <input type = "password" id = "password" placeholder = "enter password" required>
+    <input type = "submit" value="Sign in">
+  </form>
+  <button id="signinButton">Sign in with Google</button>
+  <p id="msg"></p>
+  <a href="registration.html">Register as new user</a>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script><!-- load google auth2 lib -->
+  <script>
+      function start() {
+        gapi.load('auth2', function() {
+          auth2 = gapi.auth2.init({
+            client_id: '377634833308-14i3ru1bdqogk7mnuaue7c9l6i31s3b5.apps.googleusercontent.com',
+            //scope: 'additional_scope'
+          });
+        });
+      }
+      $('#signinButton').click(function() {
+        auth2.grantOfflineAccess().then(signInCallback);
+      });
+ 
+      function signInCallback(authResult) {
+        if (authResult['code']) {
+          // Hide the sign-in button now that the user is authorized, for example:
+          $('#signinButton').attr('style', 'display: none');
+          // Send the code to the server
+          $.ajax({
+            type: 'POST',
+            url: 'http://localhost:3000/index',
+            // Always include an `X-Requested-With` header in every AJAX request,
+            // to protect against CSRF attacks.
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest'
+            },
+            contentType: 'application/json',
+            success: function(result) {
+              //store result in localstorage & redirect to index as USER
+              window.location.replace('http://localhost:8080/index.html')
+            },
+            processData: false,
+            data: JSON.stringify(authResult)
+          });
+        } else {
+          // There was an error.
+        }
+      }
+  </script>
+  <script>
+    $("document").ready( () => {
+      $("#signIn").submit( function() {
+        const signInData = {
+          email : $("#email").val(),
+          password : $("#password").val()
+        }
+        $.post('http://localhost:3000/signIn' , signInData)
+        .then( res => {
+            localStorage.setItem ("token", res.token)
+            localStorage.setItem ("auth", res.auth)
+            $("#msg").html('success! Redirecting you to index page...');
+            setTimeout( function () {
+              window.location("http://localhost:8080/index.html")},
+              1000)
+        })
+        .catch( err => $("#msg").html(err.responseJSON)
+        );
+
+       
+
+        return false;
+      })
+    })
+    
+  </script>
+  
+</body>
+
+</html>

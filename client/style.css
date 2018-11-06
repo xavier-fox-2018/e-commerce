@@ -95,6 +95,8 @@ input[type=text]:focus {
   text-transform: uppercase;
   text-shadow: 1px 1px 10px #000;
 }
+
+
 /*
 Extra small (xs) devices (portrait phones, less than 576px)
 No media query since this is the default in Bootstrap
