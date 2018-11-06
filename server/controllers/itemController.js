@@ -41,6 +41,7 @@ class Controller {
         Item.findOne({
             _id : req.params.id
         })
+        .populate('category')
         .then((item)=>{
             res.status(200).json(item)
         })

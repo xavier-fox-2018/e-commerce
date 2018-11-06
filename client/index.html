@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Material Design Bootstrap</title>
+  <title>DEAL DADDY</title>
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <!-- Bootstrap core CSS -->
@@ -270,7 +270,7 @@
       <section class="text-center mb-4">
 
         <!--Grid row-->
-        <div class="row wow fadeIn">
+        <div class="row wow fadeIn" v-if="!selected_id">
           <!--Grid column-->
           <div class="col-lg-3 col-md-6 mb-4" v-for="item in items">
             <!--Card-->
@@ -297,7 +297,7 @@
                   </strong>
                 </h5>
                 <h4 class="font-weight-bold blue-text">
-                  <strong>{{item.price}}$</strong>
+                  <strong>${{item.price}}</strong>
                 </h4>
               </div>
               <!--Card content-->
@@ -309,6 +309,53 @@
         <!--Grid row-->
 
       </section>
+
+      <!--Grid row-->
+      <div class="row wow fadeIn" v-if="selected_id">
+        <!--Grid column-->
+        <div class="col-md-6 mb-4">
+          <img v-bind:src="selected_image_url" class="img-fluid" alt="">
+        </div>
+        <!--Grid column-->
+        <!--Grid column-->
+        <div class="col-md-6 mb-4">
+          <!--Content-->
+          <div class="p-4">
+            <div class="mb-3">
+              <a href="">
+                <span class="badge purple mr-1">{{selected_category}}</span>
+              </a>
+              <!-- <a href="">
+                <span class="badge blue mr-1">New</span>
+              </a>
+              <a href="">
+                <span class="badge red mr-1">Bestseller</span>
+              </a> -->
+            </div>
+            <p class="lead">
+              <span class="mr-1">
+                <del>${{selected_base_price}}</del>
+              </span>
+              <span>${{selected_price}}</span>
+            </p>
+            <p class="lead font-weight-bold">{{selected_name}}</p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Et dolor suscipit libero eos atque quia ipsa sint
+              voluptatibus!
+              Beatae sit assumenda asperiores iure at maxime atque repellendus maiores quia sapiente.</p>
+            <form class="d-flex justify-content-left">
+              <!-- Default input -->
+              <input type="number" value="1" aria-label="Search" class="form-control" style="width: 100px">
+              <button class="btn btn-primary btn-md my-0 p" type="submit">Add to cart
+                <i class="fa fa-shopping-cart ml-1"></i>
+              </button>
+            </form>
+          </div>
+          <!--Content-->
+        </div>
+        <!--Grid column-->
+      </div>
+      <!--Grid row-->
+
       <!--Section: Products v.3-->
 
       <!--Pagination-->
@@ -389,15 +436,27 @@
     var app = new Vue({
       el: '#app',
       data: {
-      message: 'Hello Vue!',
-      config : {
-        port : 'http://localhost:3000'
-      },
-      items : [],
-      categories : []
+        message: 'Hello Vue!',
+        config : {
+          port : 'http://localhost:3000'
+        },
+        items : [],
+        categories : [],
+        cart : [],
+        selected : '',
+
+        selected_id : '',
+        selected_name : '',
+        selected_category : '',
+        selected_image_url : '',
+        selected_description : '',
+        selected_price : ''
       },
       methods : {
         getAllItems : function(){
+          // this selected id dikosongkan supaya menu utama muncul kembali
+          this.selected_id = ''
+          
           axios({
             method : 'GET',
             url : `${this.config.port}/items`
@@ -422,6 +481,7 @@
           })
         },
         getItemsByCategory : function(id){
+          this.selected_id = ''
           axios({
             method : 'GET',
             url : `${this.config.port}/items/category/${id}`
@@ -434,12 +494,33 @@
           })
         },
         getItem : function(id){
-          console.log('item id :',id)
+          this.selected_id = id
+
+          axios({
+            method : 'GET',
+            url : `${this.config.port}/items/${id}`
+          })
+          .then(response=>{
+            let item = response.data
+            this.selected_name = item.name
+            this.selected_image_url = item.image_url
+            this.selected_category = item.category.name
+            this.selected_description = item.description
+            this.selected_price = item.price
+          })
+          .catch(err=>{
+            console.log(err)
+          })
         }
       },
       created : function(){
         this.getAllItems()
         this.getAllCategories()
+      },
+      computed : {
+        selected_base_price : function(){
+          return this.selected_price + 25
+        }
       }
     })
   </script>
