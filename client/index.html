@@ -77,9 +77,9 @@
 
         <!-- Right -->
         <ul class="navbar-nav nav-flex-icons">
-          <li class="nav-item">
+          <li class="nav-item" data-toggle="modal" data-target="#cartModal">
             <a class="nav-link waves-effect">
-              <span class="badge red z-depth-1 mr-1"> 1 </span>
+              <span class="badge red z-depth-1 mr-1"> {{carts.length}} </span>
               <i class="fa fa-shopping-cart"></i>
               <span class="clearfix d-none d-sm-inline-block"> Cart </span>
             </a>
@@ -342,13 +342,13 @@
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Et dolor suscipit libero eos atque quia ipsa sint
               voluptatibus!
               Beatae sit assumenda asperiores iure at maxime atque repellendus maiores quia sapiente.</p>
-            <form class="d-flex justify-content-left">
+            <div class="d-flex justify-content-left">
               <!-- Default input -->
               <input type="number" value="1" aria-label="Search" class="form-control" style="width: 100px">
-              <button class="btn btn-primary btn-md my-0 p" type="submit">Add to cart
+              <button class="btn btn-primary btn-md my-0 p" v-on:click="addToCart()">Add to cart
                 <i class="fa fa-shopping-cart ml-1"></i>
               </button>
-            </form>
+            </div>
           </div>
           <!--Content-->
         </div>
@@ -402,6 +402,61 @@
   </main>
   <!--Main layout-->
 
+  <!-- Full Height Modal Right -->
+  <div class="modal fade right" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+
+    <!-- Add class .modal-full-height and then add class .modal-right (or other classes from list above) to set a position to the modal -->
+    <div class="modal-dialog modal-full-height modal-right" role="document">
+
+
+      <div class="modal-content">
+        <div class="modal-header">
+          <!-- <h4 class="modal-title w-100" id="myModalLabel">Your Cart</h4> -->
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body cloudy-knoxville-gradient">
+          <div class="row">
+            <!--Grid column-->
+            <div class="col">
+
+              <!-- Heading -->
+              <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">Your cart</span>
+                <span class="badge badge-secondary badge-pill">{{carts.length}}</span>
+              </h4>
+
+              <!-- Cart -->
+              <ul class="list-group mb-3 z-depth-1">
+                <li class="list-group-item d-flex justify-content-between lh-condensed" v-for="cart in carts">
+                  <div>
+                    <h6 class="my-0">{{cart.name}}</h6>
+                    <!-- <small class="text-muted">Brief description</small> -->
+                  </div>
+                  <span class="text-muted">${{cart.price}}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span>Total (USD)</span>
+                  <strong>${{total_price}}</strong>
+                </li>
+              </ul>
+              <!-- Cart -->
+
+            </div>
+            <!--Grid column-->
+          </div>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Checkout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Full Height Modal Right -->
+
   <!--Footer-->
   <footer class="page-footer text-center font-small mt-4 wow fadeIn">
 
@@ -442,7 +497,7 @@
         },
         items : [],
         categories : [],
-        cart : [],
+        carts : [],
         selected : '',
 
         selected_id : '',
@@ -502,6 +557,7 @@
           })
           .then(response=>{
             let item = response.data
+            this.selected = item 
             this.selected_name = item.name
             this.selected_image_url = item.image_url
             this.selected_category = item.category.name
@@ -511,6 +567,10 @@
           .catch(err=>{
             console.log(err)
           })
+        },
+        addToCart : function(){
+          // let obj = this.selected
+          this.carts.push(this.selected)
         }
       },
       created : function(){
@@ -520,6 +580,14 @@
       computed : {
         selected_base_price : function(){
           return this.selected_price + 25
+        },
+        total_price : function(){
+          let totalPrice = 0
+          for(let i = 0 ; i < this.carts.length ; i ++){
+            let itemPrice = this.carts[i].price
+            totalPrice = totalPrice + itemPrice
+          }
+          return totalPrice
         }
       }
     })
