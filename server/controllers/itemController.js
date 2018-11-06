@@ -4,7 +4,7 @@ class Controller {
     static create(req,res){
         Item.create({
             name :req.body.name,
-            image_url : req.body.image,
+            image_url : req.body.image_url,
             category : req.body.category,
             description : req.body.description,
             price : req.body.price
@@ -25,12 +25,28 @@ class Controller {
 
     static read(req,res){
         Item.find({})
+        .populate('category')
         .then((itemList)=>{
             res.status(200).json(itemList)
         })
         .catch((err)=>{
             res.status(500).json({
                 message : "Get Item List Error",
+                error : err
+            })
+        })
+    }
+
+    static readOne(req,res){
+        Item.findOne({
+            _id : req.params.id
+        })
+        .then((item)=>{
+            res.status(200).json(item)
+        })
+        .catch((err)=>{
+            res.status(500).json({
+                message : "Read Item Error",
                 error : err
             })
         })
