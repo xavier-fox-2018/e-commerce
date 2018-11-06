@@ -246,21 +246,12 @@
 
           <!-- Links -->
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="#">All
-                <span class="sr-only">(current)</span>
-              </a>
-            </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Shirts</a>
+              <a class="nav-link" href="#">All</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Sport wears</a>
+            <li class="nav-item" v-for="category in categories">
+              <a class="nav-link" href="#">{{category.name}}</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Outwears</a>
-            </li>
-
           </ul>
           <!-- Links -->
 
@@ -288,7 +279,7 @@
               <div class="view overlay">
                 <img v-bind:src="item.image_url" class="card-img-top" alt="">
                 <a>
-                  <div class="mask rgba-white-slight"></div>
+                  <div class="mask rgba-white-light"></div>
                 </a>
               </div>
               <!--Card image-->
@@ -402,7 +393,8 @@
       config : {
         port : 'http://localhost:3000'
       },
-      items : []
+      items : [],
+      categories : []
       },
       methods : {
         getAllItems : function(){
@@ -416,10 +408,23 @@
           .catch(err=>{
             console.log(err)
           })
+        },
+        getAllCategories : function(){
+          axios({
+            method : 'GET',
+            url : `${this.config.port}/categories`
+          })
+          .then(response=>{
+            this.categories = response.data
+          })
+          .catch(err=>{
+            console.log('error',response)
+          })
         }
       },
       created : function(){
         this.getAllItems()
+        this.getAllCategories()
       }
     })
   </script>
