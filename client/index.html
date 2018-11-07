@@ -4,9 +4,10 @@
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Le Pepe Shop</title>
+  <title>Le Pepe Store</title>
   <link rel="icon" href="https://discordemoji.com/assets/emoji/FeelsBadMan.png">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="google-signin-client_id" content="721016681972-upph5i6up3fke1jqpknl011of6nde2lo.apps.googleusercontent.com">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
     crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" media="screen" href="css/main.css" />
@@ -17,7 +18,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <a class="navbar-brand" href="/">
         <img src="https://discordemoji.com/assets/emoji/FeelsBadMan.png" width="30" height="30" class="d-inline-block align-top"
-          alt=""> PepeShop
+          alt=""> PepeStore
       </a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
         aria-expanded="false" aria-label="Toggle navigation">
@@ -55,7 +56,8 @@
           </div>
           <div class="col-3">
             <button class="btn btn-outline-secondary" type="button" id="button-signin" data-toggle="modal" data-target="#signinModal">Sign
-              In</button>
+              In
+            </button>
           </div>
           <div class="col-2">
             <div class="cartdiv" data-toggle="modal" data-target="#cart">
@@ -247,64 +249,6 @@
         </div>
       </div>
 
-      <!-- ADMIN DIV -->
-
-      <div class="row ">
-        <div class="col my-3">
-          <h1 class="text-center">V PLACEHOLDER ADMIN AREA V</h1>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col mx-2 my-2" v-for="element in products">
-          <div class="card" style="width: 18rem;">
-            <img class="card-img-top" v-bind:src="element.img" alt="Card image cap">
-            <div class="card-body">
-              <h5 class="card-title">{{element.name}}</h5>
-              <p class="card-text">{{toCurrency(element.price)}}</p>
-              <p class="card-text">{{element.description}}</p>
-              <button class="btn btn-primary" v-on:click="">Add Stock</button>
-              <button class="btn btn-danger" v-on:click="">Delete Product</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col my-3">
-          <h2 class="text-center">Add a Product</h2>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col my-3">
-          <div class="form-group">
-            <label for="">Product name</label>
-            <input type="text" class="form-control" id="prodName" aria-describedby="emailHelp" placeholder="Product Name">
-          </div>
-          <div class="form-group">
-            <label for="">Product Description</label>
-            <input type="text" class="form-control" id="prodDescription" placeholder="Product Description">
-          </div>
-          <div class="form-group">
-            <label for="">Product Price</label>
-            <input type="number" class="form-control" id="prodPrice" aria-describedby="emailHelp" placeholder="Product Price">
-          </div>
-          <div class="form-group">
-            <label for="prodDescription">Product Stock</label>
-            <input type="number" class="form-control" id="prodStock" placeholder="Product Stock">
-          </div>
-          <div class="input-group mb-3">
-            <div class="custom-file">
-              <input type="file" class="custom-file-input" id="inputGroupFile02">
-              <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02">Choose file</label>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col my-3">
-          <h1 class="text-center">^ END OF ADMIN AREA ^</h1>
-        </div>
-      </div>
 
       <!-- END OF CONTAINER -->
     </div>
@@ -334,52 +278,23 @@
       </div>
     </footer>
   </div>
-
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
     crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
     crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="scripts/main.js"></script>
   <script>
+
 
     new Vue({
       el: '#app',
       data: {
         filter: true,
-        products: [{
-          name: 'Gucci Sneakers',
-          img: 'https://n.nordstrommedia.com/id/51c215f3-36eb-44a5-a9b7-74c0a771623a.jpeg?crop=pad&pad_color=FFF&format=jpeg&trim=color&trimcolor=FFF&w=780&h=838&quality=70',
-          price: 7500000,
-          description: 'Gucci New Ace Webbed Low Top Sneaker (Men)'
-        }, {
-          name: 'Gucci Shoulderbag',
-          img: 'https://n.nordstrommedia.com/id/90157a74-6d99-4f25-9b8d-a951bc3cf792.jpeg?crop=pad&pad_color=FFF&format=jpeg&trim=color&trimcolor=FFF&w=780&h=838&quality=70',
-          price: 34000000,
-          description: 'Gucci Medium Syvie Top Handle Leather Bag',
-        }, {
-          name: 'Fendi Handbag',
-          img: 'https://n.nordstrommedia.com/id/7d8ea508-57cb-4d68-9870-7fdea3e357d1.jpeg?crop=pad&pad_color=FFF&format=jpeg&trim=color&trimcolor=FFF&w=780&h=838&quality=70',
-          price: 43000000,
-          description: 'Fendi Petite 2Jours Monster Eye Leather Shopper'
-        }, {
-          name: 'Pepe Trenchcoat',
-          img: 'https://n.nordstrommedia.com/id/6ce4c985-7837-4517-acd4-6085f39a0db8.jpeg?w=308&amp;h=308',
-          price: 2000000,
-          description: 'Pepe the Frog Trenchcoat'
-        }],
-        filteredData: [{
-          name: 'Gucci Sneakers',
-          img: 'https://n.nordstrommedia.com/id/51c215f3-36eb-44a5-a9b7-74c0a771623a.jpeg?crop=pad&pad_color=FFF&format=jpeg&trim=color&trimcolor=FFF&w=780&h=838&quality=70',
-          price: 7500000,
-          description: 'Gucci New Ace Webbed Low Top Sneaker (Men)'
-        }, {
-          name: 'Gucci Shoulderbag',
-          img: 'https://n.nordstrommedia.com/id/90157a74-6d99-4f25-9b8d-a951bc3cf792.jpeg?crop=pad&pad_color=FFF&format=jpeg&trim=color&trimcolor=FFF&w=780&h=838&quality=70',
-          price: 34000000,
-          description: 'Gucci Medium Syvie Top Handle Leather Bag',
-        }],
+        products: [],
         cart: []
       },
       computed: {
@@ -420,6 +335,16 @@
           })
           return output
         }
+      },
+      mounted: function () {
+        axios.get('http://localhost:3000/products')
+          .then(response => {
+            console.log(response)
+            this.products = response.data.result
+          })
+          .catch(error => {
+            console.log(error)
+          })
       }
     })  
   </script>

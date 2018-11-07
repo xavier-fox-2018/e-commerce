@@ -1,11 +1,10 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const {UserController} = require('../controllers')
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.status(200).json({
-    message: 'respond with a resource'
-  });
-});
+router.post('/', UserController.createUserLocal);
+router.post('/login', UserController.loginUserLocal);
+router.post('/oauth', UserController.loginUserGoogle);
 
 module.exports = router;
