@@ -17,6 +17,10 @@ const itemSchema = new Schema ({
     },
     price : {
         type : Number
+    },
+    stock : {
+        type : Number,
+        default : 10
     }
 },{
     timestamps : true
