@@ -6,6 +6,21 @@
   background-color: rgba(14, 14, 14, 0.70)
 }
 
+a {
+  color: black;
+}
+
+p.category {
+  color:black;
+  margin-bottom: 0;
+}
+
+p.category:hover {
+  cursor:pointer
+}
+.currentCategory {
+  background-color: cornflowerblue;
+}
 .carousel-caption { 
   top:200px
 }

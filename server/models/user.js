@@ -1,21 +1,23 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const validator = require('validator');
+const uniqueValidator = require('mongoose-unique-validator');
 
-const customerSchema = new Schema({
+const userSchema = new Schema({
   name:  String,
   address: String,
   email:   {
     type : String,
     validate : {
       validator : validator.isEmail
-    }
+    },
+    unique : true
   },
-  phone: String,
-  password : String
+  password : String,
+  isAdmin : Boolean
 });
 
-const Customer = mongoose.model('Customer', customerSchema);
+const User = mongoose.model('User', userSchema);
 
-module.exports = Customer;
+module.exports = User;
 

@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="./src/style.css">
+  <title>WeCommerce</title>
+</head>
+<body>
+  <div id="app">
+  <div class="sticky-top container-fluid bg-dark header-top d-none d-md-block" v-if ="isLogin" >
+    <div class="container">
+      <div class="row text-light pt-2 pb-2">
+        <div class="col-md-5">
+          <i class="fa fa-envelop-o" aria-hidden="true"></i>
+            placeholder@gmail.com
+        </div>
+        <div class="col-md-2">
+          <i class="fa fa-user-o" aria-hidden="true"></i>
+          Account
+        </div>
+        <div class="col-md-2">
+          <i class="fa fa-cart-plus" aria-hidden="true"></i>
+          <button class="btn btn-outline-success" data-target="#cartModal" data-toggle="modal">
+              My Cart
+          </button>
+        </div>
+        <div class="btn btn-outline-success col-md-1">
+          <p class="mb-0 pb-0 pl-0 pr-0 ml-0 mr-0" v-on:click="logout">log out</p>     
+        </div>
+      </div>  
+    </div>
+  </div>
+
+  <div class="container-fluid bg-black">
+    <nav class="navbar container navbar-expand-lg navbar-dark bg-black">
+      <a class="navbar-brand" href="#"></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Category
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="#">coat</a>
+              <a class="dropdown-item" href="#">Accessory</a>
+            </div>
+          </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          <button class="btn btn-outline-success my-2 my-sm-0 ml-2" type="button"  v-if="!isLogin" data-toggle="modal" data-target="#registerModal">Register</button>
+          <button class="btn btn-outline-success my-2 my-sm-0 ml-2" type="button" v-if="!isLogin" data-toggle="modal" data-target="#loginModal">Login</button>
+        </form>
+      </div>
+    </nav>
+  </div>
+
+  <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" v-if="page == 'home'">
+      <ol class="carousel-indicators">
+        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+      </ol>
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img class="d-block w-100" src="https://wallpapercave.com/wp/PIVRuJ5.jpg" alt="First slide">
+          <div class="carousel-caption d-none d-md-block">
+            <h1 class="caption-black rounded">Fashion Collection</h1>
+            <p class="caption-black rounded">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor veritatis dolorem quibusdam ipsam aut, itaque atque delectus molestiae facere similique quam. Mollitia, ea doloribus excepturi itaque perferendis officia commodi deserunt?</p>
+            <button class="btn btn-info btn-lg">Shop now !</button>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <img class="d-block w-100" src="http://s1.picswalls.com/wallpapers/2014/07/24/latest-fashion-wallpaper_112920956_85.jpg" alt="Second slide">
+          <div class="carousel-caption d-none d-md-block">
+            <h1 class="caption-black rounded">Winter collection fashion</h1>
+            <p class="caption-black rounded">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor veritatis dolorem quibusdam ipsam aut, itaque atque delectus molestiae facere similique quam. Mollitia, ea doloribus excepturi itaque perferendis officia commodi deserunt?</p>
+            <button class="btn btn-info btn-lg">Shop now !</button>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <img class="d-block w-100" src="https://wallpaper.wiki/wp-content/uploads/2017/05/Desktop-Download-Fashion-Wallpaper-HD.jpg" alt="Third slide">
+          <div class="carousel-caption d-none d-md-block">
+            <h1 class="caption-black rounded">Winter collection fashion</h1>
+            <p class="caption-black rounded">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor veritatis dolorem quibusdam ipsam aut, itaque atque delectus molestiae facere similique quam. Mollitia, ea doloribus excepturi itaque perferendis officia commodi deserunt?</p>
+            <button class="btn btn-info btn-lg">Shop now !</button>
+          </div>
+        </div>
+      </div>
+      <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+  </div>
+
+  <div class="container-fluid offer py-3 bg-orange d-none d-md-block"  v-if="page == 'home'">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 m-right">
+          <h4>FREE SHIPPING</h4>
+          <p>On order over 10$</p>
+        </div>
+        <div class="col-md-4 m-right">
+          <h4>CONTACT US</h4>
+          <p>placeholder@gmail.com</p>
+        </div>
+        <div class="col-md-4">
+          <h4>OUR LOCATION</h4>
+          <p>placeholder place</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid bg-light-gray pt-5">
+    <div class="container">
+        <div class="row col-md-4 justify-content-center">
+            <h3>Category</h3>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+              <div class="row border py-3" v-bind:class="{ currentCategory : checkCategory('coat')}">
+                <div class="container text-center">
+                  <p class="category" v-on:click="changeCategory('coat')">
+                    Coat
+                  </p>
+                </div>
+              </div>
+              <div class="row border py-3" v-bind:class="{ currentCategory : checkCategory('accessory')}">
+                <div class="container text-center" >
+                  <p class="category" id="accessory" v-on:click="changeCategory('accessory')">
+                    Accessory
+                  </p>
+                </div>
+              </div>
+              <div class="row border py-3" v-bind:class="{ currentCategory : checkCategory('shoes')}">
+                <div class="container text-center" >
+                  <p class="category" id="shoes" v-on:click="changeCategory('shoes')">
+                    Shoes
+                  </p> 
+                </div>
+              </div>
+              <div class="row border py-3" v-bind:class="{ currentCategory : checkCategory('hats')}">
+                <div class="container text-center" >
+                  <p class="category" id="hats" v-on:click="changeCategory('hats')">
+                    Hats
+                  </p>  
+                </div>
+              </div>
+            </div>
+            <div class="col-md-8">
+                <div class="container pb-5">
+                    <div class="row mb-2">
+                        <div class="col-md-4 mb-3" v-if="product.category == currentCategory && product.stok > 0" v-for="product in products">
+                            <div class="card" >
+                              <img v-bind:src="product.img" class="card-img-top" alt="winter coat">
+                              <div class="card-body">
+                                <h5>{{ product.name }}</h5>
+                                <h5>$ {{ product.price }}</h5>
+                                <button class="btn btn-danger" v-on:click="setDetail(product)" data-toggle="modal" data-target="#itemModal">
+                                  <i class="fa fa-cart-plus" aria-hidden="true" ></i>
+                                  BUY 
+                                </button>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="container-fluid bg-light-gray mb-5 pb-5">
+    <div class="container pt-5">
+      <div class="row">
+        <h3>Winter Coat</h3>
+      </div>
+      <div class="underline">
+      </div>
+    </div>
+    <div class="container mt-5">
+      <div class="row mb-2">
+          <div class="col-md-3" v-for="coat in products" v-if="coat.category == 'coat'  && coat.stok > 0" >
+              <div class="card" >
+                <img class="card-img-top" alt="winter coat" v-bind:src="coat.img">
+                <div class="card-body">
+                  <h5>{{ coat.name }}</h5>
+                  <h5>$ {{ coat.price }}</h5>
+                  <button class="btn btn-danger" v-on:click="setDetail(coat)" data-toggle="modal" data-target="#itemModal">
+                    <i class="fa fa-cart-plus" aria-hidden="true"></i>
+                    BUY 
+                  </button>
+                </div>
+              </div>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container mt-5">
+    <div class="row">
+      <h3>Winter Accessory</h3>
+    </div>
+    <div class="row">
+      <div class="underline"></div>
+    </div>
+  </div>
+
+  <div class="container mt-5 pb-5">
+      <div class="row mb-2">
+          <div class="col-md-3" v-for="accessory in products"  >
+              <div class="card" v-if="accessory.category == 'accessory'  && accessory.stok > 0 ">
+                <img v-bind:src="accessory.img" class="card-img-top" alt="winter coat">
+                <div class="card-body">
+                  <h5>{{ accessory.name }}</h5>
+                  <h5>$ {{ accessory.price }}</h5>
+                  <button class="btn btn-danger" v-on:click="setDetail(accessory)" data-toggle="modal" data-target="#itemModal">
+                    <i class="fa fa-cart-plus" aria-hidden="true"></i>
+                    BUY 
+                  </button>
+                </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="itemModal" tabindex="-1" role="dialog" aria-labelledby="itemModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">{{ detailItem.name }}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                  <div class="col-md-6">
+                    <img alt="" v-bind:src="detailItem.img" style="max-width: 120px;">
+                  </div>
+                  <div class="col-md-4">
+                    <p>Price : $ {{ detailItem.price }}</p>
+                    <p>Stok : {{ detailItem.stok }}</p>
+                    <div class="row">
+                      <div class="pl-3">total : </div> 
+                      <input type="text" class="form-class ml-3" style="max-width: 60px;" v-model="totalBought" id="totalBuy">
+                    </div>
+                  </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" v-on:click="addToCart(detailItem)" v-bind:disabled="checkStock(totalBought, detailItem)" >Add To Cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="cartModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Your Cart List</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="row mb-3" v-for="item in cart">
+                  <div class="col-md-6">
+                    <img alt="" v-bind:src="item.img" style="max-width: 120px;">
+                  </div>
+                  <div class="col-md-6">
+                    {{item.name}}
+                  </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" v-on:click="addToCart(detailItem)">Checkout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container-fluid pt-5 pb-5 bg-dark text-light">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="row">
+              <h5>Need Help? Contact US</h5>
+            </div>
+            <div class="row mb-4">
+              <div class="underline bg-light" style="width: 50px;"></div>
+            </div>
+            <p>08:00 - 21:00 (Work days)</p>
+            <p>09:00 - 18:00 (Weekend)</p>
+            <p><i class="fa fa-phone"></i> 021-888-999-111</p>
+            <p><i class="fa fa-whatsapp"></i> 021-889-1212</p>
+          </div>
+          
+          <div class="col-md-3 pl-4">
+            <div class="row">
+              <h5>About</h5>
+            </div>
+            <div class="row mb-4">
+            <div class="underline bg-light" style="width: 50px;"></div>
+            </div>
+            <div class="row">
+              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel inventore quis harum mollitia ex esse obcaecati deserunt alias fuga quia.<br>Vel inventore quis harum mollitia.</p>
+            </div>
+          </div>
+
+          <div class="col-md-6 pl-4">
+            <div class="row">
+              <h5>Something here</h5>
+            </div>
+            <div class="row mb-4">
+            <div class="underline bg-light" style="width: 50px;"></div>
+            </div>
+            <div class="row">
+              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel inventore quis harum mollitia ex esse obcaecati deserunt alias fuga quia.<br>Vel inventore quis harum mollitia.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!-- Modal -->
+  <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Login Page</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              <form>
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Email address</label>
+                    <input v-model="user.email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Password</label>
+                    <input v-model="user.password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                  </div>
+                  <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="login">Submit</button>
+              </form>
+          </div>
+        </div>
+      </div>
+  </div>
+  <!-- Modal REGISTER -->
+  <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Register</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              <form>
+                  <div class="form-group">
+                    <label >Name</label>
+                    <input type="text" class="form-control" v-model="user.name" required>
+                  </div>
+                  <div class="form-group">
+                    <label> Address</label>
+                    <input type="text" class="form-control" v-model="user.address" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Email</label>
+                    <input type="email" class="form-control" v-model="user.email" required>
+                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Password</label>
+                    <input type="password" class="form-control" v-model="user.password" required>
+                  </div>
+                  <button type="button" class="btn btn-primary" v-on:click="register">Submit</button>
+              </form>
+          </div>
+        </div>
+      </div>
+  </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script>
+    var app = new Vue({
+      el : '#app',
+      data : {
+        isLogin : false,
+        totalBought : 1,
+        page : 'home',
+        header: 'WeCommerce',
+        user : {},
+        detailItem : {},
+        currentCategory : 'coat',
+        cart : [],
+        products : [
+          { 
+            id : 1,
+            stok : 0,
+            name : 'Black Long Coat',
+            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
+            price : '340',
+            category : 'coat'  
+          }, 
+          { 
+            id : 2,
+            stok : 3,
+            name: 'Blue White Coat',
+            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
+            price : '370',
+            category : 'coat'  
+          }, 
+          { 
+            id : 3,
+            stok : 3,
+            name: 'Navy Cool Coat',
+            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
+            price : '440',
+            category : 'coat'  
+          }, 
+          { 
+            id : 4,
+            stok : 3,
+            name: 'Yellow Coat',
+            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
+            price : '340',
+            category : 'coat'  
+          },
+          { 
+            id : 5,
+            stok : 3,
+            name : 'White Long Scarf',
+            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
+            price : '340',
+            category : 'accessory'   
+          }, 
+          { 
+            id : 6,
+            stok : 3,
+            name: 'Warm Black Glove',
+            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
+            price : '370',
+            category : 'accessory'  
+          }, 
+          { 
+            id : 7,
+            stok : 3,
+            name: 'Mufler',
+            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
+            price : '440',
+            category : 'accessory'  
+          }, 
+          { 
+            id : 8,
+            stok : 3,
+            name: 'Black Scarf',
+            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
+            price : '340',
+            category : 'accessory'
+          }, 
+          { 
+            id : 9,
+            stok : 3,
+            name: 'Black Shoes',
+            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
+            price : '34',
+            category : 'shoes'
+          }, 
+          { 
+            id : 10,
+            stok : 3,
+            name: 'Fox fur hats',
+            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
+            price : '340',
+            category : 'hats'
+          }
+        ]
+      },
+      mounted : function () {
+        if (localStorage.getItem('token')) {
+          this.isLogin = true;
+        }
+      },
+      computed : {
+
+      },
+      
+      methods : {
+        changeCategory: function (param) {
+          console.log(param);
+          this.currentCategory = param;
+        },
+        checkCategory: function (param) {
+          if (this.currentCategory == param) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+        setDetail: function (item) {
+          this.detailItem = item
+          console.log(this.detailItem);
+        },
+        addToCart: function (item) {
+          const product = this.products.filter(data => data.id == item.id);
+          if (product[0].stok > 0 ) {
+            product[0].stok -= 1;
+            this.cart.push(item.id);
+          }
+        },
+        checkStock: function (total, item) {
+          if (item.stok >= total && total > 0) {
+            return false;
+          } else return true;
+        },
+        login : function () {
+          console.log(this.user);
+        },
+        register () {
+          axios({
+            method: 'post',
+            url: 'http://localhost:3000/users/',
+            data: {
+              name : this.user.name,
+              email : this.user.email,
+              address : this.user.address,
+              password : this.user.password
+            }
+          })
+          .then(data => {
+            console.log(data)
+            location.reload();
+          })
+          .catch(err => console.log(err))
+        },
+
+        login () {
+          axios({
+            method: 'post',
+            url: 'http://localhost:3000/users/login',
+            data: {
+              email : this.user.email,
+              password : this.user.password
+            }
+          })
+          .then(response => {
+            localStorage.setItem('token', response.data.token);
+            this.isLogin = true;
+            console.log(response.data);
+            if (response.data.admin == true) {
+              window.location.href = "admin.html"
+            }
+            
+          })
+          .catch(err => console.log(err))
+        },
+
+        logout () {
+          this.isLogin = false;
+          localStorage.clear();
+          location.reload();
+        }
+
+          
+        
+      }
+    })
+  </script>
+</body>
+</html>
