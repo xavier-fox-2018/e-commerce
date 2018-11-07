@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/Bonanza2point0',{ useNewUrlParser: true });
+mongoose.connect('mongodb://hafriz007:Rahasiaa1<dbpassword>@ds253203.mlab.com:53203/bonavide');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
