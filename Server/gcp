@@ -1,0 +1,79 @@
+masuk ke console
+create new project, tunggu sampai keluar angka 1
+
+masuk ke komputasi, compute engine, vm instance
+
+create new vm instance:
+name, region(spore), machine type(micro), boot disk(ubuntu 16.04; standard),
+firewall thick dua2nya(http && https)
+tunggu buttonnya berwarna ijo, connect (click ssh) -> lanjut ke terminal cloud
+
+
+tutorial how to install -> digital ocean
+nodejs -v
+(sudo) npm i (yg di perlukan)
+mkdir (nama file)
+cd (nama file)
+express . (by default port berjalan di 3000)
+
+
+left bar masuk ke vpc network di gcp, vpc networks
+left bar lg masuk ek firewall rulse, create firewall rule
+name: open-port-3000
+source ip ranges: 0.0.0.0/0
+protocol and ports: specified -> tcp: 3000
+target tags: open-port-3000
+
+masuk lg ke instance vm, klik edit, network tags: open-port-3000 -> save
+
+
+pindah ke terminal
+npm start/nodemon (install dulu nodemon nya)
+copy external ip dari gcp +':3000'
+sudo su
+export port=80
+echo $port <- untuk memastikan apakah port sudah di set 80 atau bukan
+npm start
+
+
+di web tinggal dihapus lg 3000 nya
+
+
+di terminal
+npm install pm2
+pm2 start
+
+
+di domain
+edit actions
+name: A Record
+xavier-server (ini untuk server)
+http di copy tanpa :3000
+
+
+
+
+CLIENT
+side bar -> storage, browser, create bucket
+name: subdomain.domain.com
+region: multi-regional
+location: asia
+visit bucket name verification
+add property: url lengkap (http://subdomain.domain.com)
+add txt record to dns config
+
+
+domain list di namecheap
+txt record, xavier-client, copas dns verif
+balik ke gcpbucket list, browser
+upload file
+
+make a public bucket gcp
+go to gcp storage
+add member
+members(all user), roles(storeage object viewer)
+config: isi file pertama mana yg mau di akses (biasanya index.html)
+
+browse gcp host bucket list website
+create cname record
+masukin di domain list di namecheap

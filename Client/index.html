@@ -5,98 +5,183 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Ecommerce Mantul</title>
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" >
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
 
 
+    <div id="app">
     <!-- ========================== -->
     <!-- navbar -->
-    <nav class="navbar navbar-default" role="navigation">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#">Brand</a>
-            </div>
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="container">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">GG Commerce</a>
+                </div>
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Link</a></li>
-                    <li><a href="#">Link</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li class="divider"></li>
-                            <li><a href="#">Separated link</a></li>
-                            <li class="divider"></li>
-                            <li><a href="#">One more separated link</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#">Link</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li class="divider"></li>
-                            <li><a href="#">Separated link</a></li>
-                        </ul>
-                    </li>
-                </ul>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a v-on:click="getAllItems()">Product</a></li>
+                        <li><a href="#">Link</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">Separated link</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">One more separated link</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">Separated link</a></li>
+                                <li><a href="#" v-on:click="getSignOut()">Logout</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#" role="button" data-toggle="modal" data-target="#login-modal" v-if="isLogin === false">Login/Register</a></li>
+                        <li><a href="#" data-toggle="modal" data-target="#modalCart"></a></li>
+                    </ul>
 
-                <form class="navbar-form" role="search">
-                    <div class="input-group">
-                        <input type="text" class="form-control pull-right" style="width: 300px; margin-right: 35px, border: 1px solid black; background-color: #e5e5e5;" placeholder="Search">
-                        <span class="input-group-btn">
-                            <button type="reset" class="btn btn-default">
-                                <span class="glyphicon glyphicon-remove">
-                                    <span class="sr-only">Close</span>
-                                </span>
-                            </button>
-                            <button type="submit" class="btn btn-default">
-                                <span class="glyphicon glyphicon-search">
-                                    <span class="sr-only">Search</span>
-                                </span>
-                            </button>
-                        </span>
+                    <form class="navbar-form" role="search">
+                        <div class="input-group">
+                            <input type="text" v-model="search" class="form-control pull-right" style="width: 300px; margin-right: 35px, border 1px solid black; background-color: #e5e5e5" placeholder="Search">
+                            <span class="input-group-btn">
+                                <button type="reset" class="btn btn-default">
+                                    <span class="glyphicon glyphicon-remove">
+                                        <span class="sr-only">Close</span>
+                                    </span>
+                                </button>
+                                <button type="submit" class="btn btn-default">
+                                    <div class="glyphicon glyphicon-search">
+                                        <!-- <span class="sr-only" v-model="search">Search</span> -->
+                                    </div>
+                                </button>
+                            </span>
+                        </div>
+                    </form>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+
+
+
+        <!-- Modal: Login -->
+        <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" align="center">
+                        <img class="img-circle" id="img_logo" src="https://gameguardian.net/forum/uploads/monthly_2016_12/logo.png.d062a4b9c2722d00633da84c1c60d492.png">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </button>
                     </div>
-                </form>
-            </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
-    </nav>
+                    
+                    <!-- Begin # DIV Form -->
+                    <div id="div-forms">
+                    
+                        <!-- Begin # Login Form -->
+                        <form id="login-form">
+                            <div class="modal-body">
+                                <div id="div-login-msg">
+                                    <div id="icon-login-msg" class="glyphicon glyphicon-chevron-right"></div>
+                                    <span id="text-login-msg">Type your username and password.</span>
+                                </div>
+                                <input v-model="email" id="login_username" class="form-control" type="text" placeholder="Username (type ERROR for error effect)" required>
+                                <input v-model="password" id="login_password" class="form-control" type="password" placeholder="Password" required>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox"> Remember me
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div>
+                                    <button v-on:click="getUser()" type="submit" class="btn btn-primary btn-lg btn-block">Login</button>
+                                </div>
+                                <div>
+                                    <button id="login_lost_btn" type="button" class="btn btn-link">Lost Password?</button>
+                                    <button id="login_register_btn" type="button" class="btn btn-link">Register</button>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- End # Login Form -->
+                        
+                        <!-- Begin | Lost Password Form -->
+                        <form id="lost-form" style="display:none;">
+                            <div class="modal-body">
+                                <div id="div-lost-msg">
+                                    <div id="icon-lost-msg" class="glyphicon glyphicon-chevron-right"></div>
+                                    <span id="text-lost-msg">Type your e-mail.</span>
+                                </div>
+                                <input id="lost_email" class="form-control" type="text" placeholder="E-Mail (type ERROR for error effect)" required>
+                            </div>
+                            <div class="modal-footer">
+                                <div>
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block">Send</button>
+                                </div>
+                                <div>
+                                    <button id="lost_login_btn" type="button" class="btn btn-link">Log In</button>
+                                    <button id="lost_register_btn" type="button" class="btn btn-link">Register</button>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- End | Lost Password Form -->
+                        
+                        <!-- Begin | Register Form -->
+                        <form id="register-form" style="display:none;">
+                            <div class="modal-body">
+                                <div id="div-register-msg">
+                                    <div id="icon-register-msg" class="glyphicon glyphicon-chevron-right"></div>
+                                    <span id="text-register-msg">Register an account.</span>
+                                </div>
+                                <input id="register_username" class="form-control" type="text" placeholder="Username (type ERROR for error effect)" required>
+                                <input id="register_email" class="form-control" type="text" placeholder="E-Mail" required>
+                                <input id="register_password" class="form-control" type="password" placeholder="Password" required>
+                            </div>
+                            <div class="modal-footer">
+                                <div>
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block">Register</button>
+                                </div>
+                                <div>
+                                    <button id="register_login_btn" type="button" class="btn btn-link">Log In</button>
+                                    <button id="register_lost_btn" type="button" class="btn btn-link">Lost Password?</button>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- End | Register Form -->
+                        
+                    </div>
+                    <!-- End # DIV Form -->
+                    
+                </div>
+            </div>
+        </div>
     
-    <div class="container">
-        <div class="row">
-            <div class="alert alert-info">
-                <strong>Alerts Dont Work on Bootsnipp!</strong> So when you hit enter or submit this form your result will show up in the green box below!
-            </div>
-            <div class="alert alert-success">
-                <strong>Your Result!</strong> <span id="showSearchTerm"></span>
-            </div>
-    </div>
-    </div>
 
-    <!-- ========================== -->
     <!-- category  -->
 
     <div class="container">
@@ -109,30 +194,18 @@
             <a href="#" class="btn btn-default"><h4>DELIVERY</h4></a>
         </div>
         
+        <!-- CATEGORY -->
         <div class="col-md-12 shop-tab-container">
             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 shop-tab-menu">
                 <div class="list-group">
-                    <a href="#" class="list-group-item">
-                    <h4><i class="fa fa-chevron-right" aria-hidden="true"></i> Laptop & PC's</h4>
-                    </a>
-                    <a href="#" class="list-group-item">
-                    <h4><i class="fa fa-chevron-right" aria-hidden="true"></i> Cameras</h4>
-                    </a>
-                    <a href="#" class="list-group-item">
-                    <h4><i class="fa fa-chevron-right" aria-hidden="true"></i> Mens Clothing</h4>
-                    </a>
-                    <a href="#" class="list-group-item">
-                    <h4><i class="fa fa-chevron-right" aria-hidden="true"></i> Womens Clothing</h4>
-                    </a>
-                    <a href="#" class="list-group-item">
-                    <h4><i class="fa fa-chevron-right" aria-hidden="true"></i> Watches</h4>
-                    </a>
-                    <a href="#" class="list-group-item">
-                    <h4><i class="fa fa-chevron-right" aria-hidden="true"></i> Tablets</h4>
-                    </a>
-                    <a href="#" class="list-group-item">
-                    <h4><i class="fa fa-chevron-right" aria-hidden="true"></i> All Categories</h4>
-                    </a>
+                    <div v-for="category in categories" >
+                        <a href="#" class="list-group-item">
+                        <h4><i class="fa fa-chevron-right" aria-hidden="true"></i>{{ category.name }}</h4>
+                        </a>
+                    </div>
+                        <a href="#" class="list-group-item">
+                        <h4><i class="fa fa-chevron-right" aria-hidden="true"></i> All Categories</h4>
+                        </a>
                 </div>
             </div>
             <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 shop-tab">
@@ -185,87 +258,89 @@
     <!-- ========================== -->
     <!-- product  -->
     <div class="space-medium">
-        <div class="container">
+        <div class="container" >
             <div class="row">
-                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                    <div class="showcase-block">
-                        <div class="display-logo ">
-                            <a href="#"> <img src="https://easetemplate.com/free-website-templates/mobistore/images/nexus.png" alt=""></a>
-                        </div>
-                        <div class="showcase-img">
-                            <a href="#"> <img src="https://easetemplate.com/free-website-templates/mobistore/images/display_img_1.png" alt=""></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                    <div class="showcase-block active">
-                        <div class="display-logo alignleft">
-                            <a href="#">  <img src="https://easetemplate.com/free-website-templates/mobistore/images/iphone.png" alt="">
-                            </a>
-                        </div>
-                        <div class="showcase-img">
-                            <a href="#"> <img src="https://easetemplate.com/free-website-templates/mobistore/images/display_img_2.png" alt="" style="padding-left: 80px;"></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                    <div class="showcase-block ">
-                        <div class="display-logo ">
-                            <a href="#"> <img src="https://easetemplate.com/free-website-templates/mobistore/images/samsung.png" alt="">
-                            </a>
-                        </div>
-                        <div class="showcase-img">
-                            <a href="#"><img src="https://easetemplate.com/free-website-templates/mobistore/images/display_img_3.png" alt="">                    </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                    <div class="showcase-block">
-                        <div class="display-logo ">
-                            <a href="#"><img src="https://easetemplate.com/free-website-templates/mobistore/images/htc.png" alt=""></a>
-                        </div>
-                        <div class="showcase-img">
-                            <a href="#"><img src="https://easetemplate.com/free-website-templates/mobistore/images/display_img_4.png" alt=""></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                    <div class="showcase-block">
-                        <div class="display-logo">
-                            <a href="#">  <img src="https://easetemplate.com/free-website-templates/mobistore/images/alcatel.png" alt=""></a>
-                        </div>
-                        <div class="showcase-img">
-                            <a href="#"> <img src="https://easetemplate.com/free-website-templates/mobistore/images/display_img_5.png" alt="">
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                    <div class="showcase-block">
-                        <div class="display-logo ">
-                            <a href="#"><img src="https://easetemplate.com/free-website-templates/mobistore/images/pixel.png" alt=""></a>
-                        </div>
-                        <div class="showcase-img">
-                            <a href="#">    <img src="https://easetemplate.com/free-website-templates/mobistore/images/display_img_6.png" alt=""></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                    <div class="showcase-block">
-                        <div class="display-logo ">
-                            <a href="#">  <img src="https://easetemplate.com/free-website-templates/mobistore/images/vivo.png" alt=""></a>
-                        </div>
-                        <div class="showcase-img">
-                            <a href="#"><img src="https://easetemplate.com/free-website-templates/mobistore/images/display_img_7.png" alt=""></a>
+                <div v-for="product in items">
+                    <div v-on:click="getItem(product._id)">
+                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12" >
+                            <div class="showcase-block">
+                                <div>{{ product.name }}</div>
+                                <div class="display-logo ">
+                                    <a href="#"> <img src="https://easetemplate.com/free-website-templates/mobistore/images/nexus.png" alt=""></a>
+                                </div>
+                                <div class="showcase-img">
+                                    <a href="#"> <img src="https://easetemplate.com/free-website-templates/mobistore/images/display_img_1.png" alt=""></a>
+                                </div>
+                                <div>Rp {{ product.price }}</div>
+                                <p>{{ product.description }}</p>
+                                    <div class="space-ten"></div>
+                                    <div class="btn-ground text-center">
+                                        <button type="button" class="btn btn-primary" href="#" role="button" data-toggle="modal" data-target="#modalCart"><i class="fa fa-shopping-cart"></i> Add To Cart</button>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#product_view"><i class="fa fa-search"></i> Quick View</button>
+                                    </div>
+                                <div class="space-ten"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </div> 
 
+    <!-- ========================== -->
+        <!-- Modal: modalCart -->
+        <div class="modal fade" id="modalCart" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Your cart</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <!--Body-->
+            <div class="modal-body">
+
+                <table class="table table-hover">
+                <thead>
+                    <tr>
+                    <th>#</th>
+                    <th>Product name</th>
+                    <th>Price</th>
+                    <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    <th scope="row">1</th>
+                    <td>Product 1</td>
+                    <td>100$</td>
+                    <td><a><i class="fa fa-remove"></i></a></td>
+                    </tr>
+                    <tr>
+                    <th scope="row">2</th>
+                    <td>Product 2</td>
+                    <td>100$</td>
+                    <td><a><i class="fa fa-remove"></i></a></td>
+                    </tr>
+                </tbody>
+                </table>
+
+            </div>
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                <button class="btn btn-primary">Checkout</button>
+            </div>
+            </div>
+        </div>
+        </div>
+
+
+
+    
     <!-- ========================== -->
     <!-- Footer -->
     <div class="footer">
@@ -325,9 +400,187 @@
                </div>
            </div>
         </div>
+    </div>
+
+        
     
 
     <script>
+        var app = new Vue ({
+            el: '#app',
+            data: {
+                name: '',
+                items: [],
+                selected_product: '',
+                categories: [],
+                dummyCategories: [],
+                selected_product: '',
+                search: '',
+
+                email: '',
+                password: '',
+
+                isLogin: false,
+                isProductPage: false,
+                isAdmin: false,
+                isUser: false
+            },
+            methods: {
+                getAllItems: function() {
+                    axios({
+                            method: 'GET',
+                            url: 'http://localhost:3000/product'
+                        })
+                        .then(products => {
+                            let result = products.data.product
+                            this.dummyCategories = result
+                            let count = 0
+                            
+                            result.forEach( indexResult => {
+                                if ( count < 12 ) {
+                                    this.items.push(indexResult)
+                                }
+                                count++
+                            })   
+                        })
+                        .catch(err => {
+                            console.log(err)
+                            console.log('ini error get all items');
+                            
+                    })
+                },
+                getItem: function(id) {
+                    axios({
+                            method: 'GET',
+                            url: `http://localhost:3000/product/${id}`
+                        })
+                        .then(products => {
+                            let result = products.data.product
+                            console.log(result._id);
+                            this.selected_product = result._id
+                        })
+                        .catch(err => {
+                            console.log(err)
+                            console.log('ini error get item');
+                            
+                    })
+                },
+                getCategory: function() {
+                    axios({
+                            method: 'GET',
+                            url: `http://localhost:3000/category`
+                        })
+                        .then(products => {
+                            let result = products.data.categories
+                            let count = 0
+                            
+                            result.forEach( indexResult => {
+                                if ( count < 5 ) {
+                                    this.categories.push(indexResult)
+                                }
+                                count++
+                            })
+                        })
+                        .catch(err => {
+                            console.log(err)
+                            console.log('ini error get category');
+                            
+                    })
+                },
+                getUser: function() {
+                    axios({
+                        method: 'POST',
+                        url: `http://localhost:3000/user/signIn`,
+                        data: {
+                            email: this.email,
+                            password: this.password
+                        }
+                    })
+                    .then(response => {
+                        console.log(response);
+                        localStorage.setItem('email', response.data.email)
+                        localStorage.setItem('token', response.data.token)
+                        this.isLogin = true
+                    })
+                    .catch(err => {
+                        console.log(err)
+                        console.log('ini error get user');
+                            
+                    })
+                },
+                getSignUp: function() {
+                    axios({
+                        method: 'POST',
+                        url: `http://localhost:3000/user`,
+                        data: {
+                            email: this.email,
+                            password: this.password
+                        }
+                    })
+                    .then(response => {
+                        console.log(response);
+                        localStorage.setItem('email', response.data.email)
+                        localStorage.setItem('token', response.data.token)
+                    })
+                    .catch(err => {
+                        console.log(err)
+                        console.log('ini error get signUp');
+                    })
+                },
+                getSignOut: function() {
+                    axios({
+                        method: 'POST',
+                        url: `http://localhost:3000/user`,
+                        data: {
+                            email: this.email,
+                            password: this.password
+                        }
+                    })
+                    .then(response => {
+                        console.log(response);
+                        localStorage.removeItem('email', response.data.email)
+                        localStorage.removeItem('token', response.data.token)
+                        this.isLogin = false
+                    })
+                    .catch(err => {
+                        console.log(err)
+                        console.log('ini error get signout');
+                    })
+                }
+            },
+            computed: {
+
+            },
+            created: function() {
+                this.getAllItems()
+                // this.getItem()
+                this.getCategory()
+                // this.getUser()
+            },
+            watch: {
+                search: function(searchValue) {
+                    if ( searchValue === '') {
+                        this.items = this.dummyCategories
+                    } else {
+                        this.items = this.dummyCategories.filter(product => product.name.includes(searchValue))
+                    }
+                }
+                // searchbyname: function (value) {
+                // axios({
+                //     method: 'GET',
+                //     url: `http://localhost:3000/product/findByName?product=${value}`,
+                // })
+                // .then((response) => {
+                //     this.boxProduct = true
+                //     this.myMarket = false
+                //     this.products = response.data.products
+                // }).catch((err) => {
+                //     console.log(err.response)
+                // })
+                // }
+            }
+        })
+        
     </script>
 </body>
 </html>
