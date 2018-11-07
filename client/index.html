@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>E-Commerce</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- <meta name="google-signin-client_id" content="462337925258-vo17l20fe54ulrjrf6r5u96e5mc6nrd5.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script> -->
+</head>
+
+
+<body>
+    <div id="app">
+        <header>
+            <!-- Checkout Modal -->
+            <div class="modal fade" id="checkout" tabindex="-1" role="dialog" aria-labelledby="signIn" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="signIn">Checkouts</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">No</th>
+                                        <th scope="col">Item</th>
+                                        <th scope="col">Qty</th>
+                                        <th scope="col"><b>Subtotal</b></th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(datum,indeks) in getCheckout()">
+                                        <th scope="row">{{indeks+1}}</th>
+                                        <td>{{datum.name}}</td>
+                                        <td>{{datum.qty}}</td>
+                                        <td>${{datum.qty * datum.price}}</td>
+                                        <td><i class="fas fa-plus-circle">-</i><i class="fas fa-plus-circle">+</i></td>
+                                    </tr>
+                                    <tfoot>
+                                        <!-- v-for="datum in getCheckout()" -->
+                                        <tr>
+                                            <td colspan="3"><b>Total</b></td>
+                                            <td><b>${{getTotal}}</b></td>
+                                        </tr>
+                                    </tfoot>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="container">
+                                <div>
+                                    <button type="button" class="btn btn-outline-dark btn-block" data-dismiss="modal">Checkout</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Checkout End-->
+
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Register</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container">
+                                <label for="name">Full name</label>
+                                <input type="text" id="name" name="name" value="" class="form-control" placeholder="Kosasih">
+                            </div>
+                            <div class="container">
+                                <label for="register">Email address</label>
+                                <input type="email" id="register" name="register" value="" class="form-control" placeholder="kosasih@mail.com">
+                            </div>
+                            <div class="footer">
+                                <div class="container"><label for="password">Password</label>
+                                    <input type="password" id="password" name="password" value="" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="container">
+                                <div>
+                                    <button type="button" class="btn btn-outline-dark btn-block">Register</button>
+                                </div>
+                                <div style="text-align:center">
+                                    <p>or register via google</p>
+                                </div>
+                                <div>
+                                    <div class="row">
+                                        <div class="col-sm">
+                                            <div class="g-signin2" data-onsuccess="onSignIn" data-width="432"></div>
+                                        </div>
+                                        <div class="col-sm">
+                                        </div>
+                                        <div class="col-sm">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal End-->
+            <!-- Sign inModal -->
+            <div class="modal fade" id="signInModal" tabindex="-1" role="dialog" aria-labelledby="signIn" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="signIn">Sign In</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container">
+                                <label for="register">Email address</label>
+                                <input type="email" id="email-signin" name="register" value="" class="form-control" placeholder="kosasih@mail.com">
+                            </div>
+                            <div class="footer">
+                                <div class="container"><label for="password">Password</label>
+                                    <input type="password" id="password-signin" name="password" value="" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="container">
+                                <div>
+                                    <button type="button" class="btn btn-outline-dark btn-block">Register</button>
+                                </div>
+                                <div style="text-align:center">
+                                    <p>or sign in via google</p>
+                                </div>
+                                <div>
+                                    <div class="row">
+                                        <div class="col-sm">
+                                            <div class="g-signin2" data-onsuccess="onSignIn" data-width="432"></div>
+                                        </div>
+                                        <div class="col-sm">
+                                        </div>
+                                        <div class="col-sm">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Sign inModal End-->
+            <!-- Modal Detail -->
+            <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailTitle" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="detailTitle">Detail</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container my-3" style="text-align:center">
+                                <img v-bind:src="selectedItem.img" alt="" style="width:300px;height:300px;">
+                                <h3>{{selectedItem.name}}</h3>
+                                <h4>Price : $ {{selectedItem.price}}</h4>
+                                <p>{{selectedItem.desc}}</p>
+                                <p>Stock left : {{selectedItem.stock}}</p>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="container">
+                                <div>
+                                    <button type="button" class="btn btn-outline-dark btn-block" v-on:click="addToCart(selectedItem)" data-dismiss="modal" data-toggle="modal" data-target="#checkout">Add to cart</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Modal detail -->
+            <nav class="navbar navbar-dark navbar-expand-sm bg-dark">
+                <div class="row navbar-nav mr-auto" style="display:flex;flex-direction:row;text-align:center">
+                    <div class="col-sm">
+                        <img class="navbar-brand" src="images/bargains-white.svg" alt="qwwqqw" width="40" height="40">
+                    </div>
+                    <div class="col-sm">
+                        <a class="nav-link" href="#" data-toggle="modal" data-target="#exampleModal">Register</a>
+                    </div>
+                    <div class="col-sm">
+                        <a class="nav-link" href="#" data-toggle="modal" data-target="#signInModal">Signin</a>
+                    </div>
+                    <div class="col-sm">
+                        <a class="nav-link" href="#"><img src="./images/shopping-cart.png" alt="" width="20" height="20"><span id="count-cart" class="badge" style="color:white">{{carts.length}}</span></a>
+                    </div>
+                </div>
+                <form class="form-inline">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </nav>
+        </header>
+        <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active" style="max-height:400px">
+                    <img class="rounded mx-auto d-block img-fluid" src="./images/ads_4.png" alt="First slide">
+                </div>
+            </div>
+        </div>
+        <div class="container my-5">
+            <h3 style="text-align:center">Privileges</h3>
+            <div class="row">
+                <div class="col-sm" style="display:flex;flex-direction:column;text-align:center">
+                    <img class="my-1" src="./images/discount.png" alt="" width="75" height="75" style="margin:auto"> We give so many discount
+                </div>
+                <div class="col-sm" style="display:flex;flex-direction:column;text-align:center">
+                    <img class="my-1" src="./images/fast.png" alt="" width="75" height="75" style="margin:auto"> Fast delivery
+                </div>
+                <div class="col-sm" style="display:flex;flex-direction:column;text-align:center">
+                    <img class="my-1" src="./images/handshake.png" alt="" width="75" height="75" style="margin:auto"> Trusted by Over 100.000 customers
+                </div>
+            </div>
+        </div>
+        <!-- HOT LIST-->
+        <div class="container my-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <h2 class="tex-center">Category</h2>
+                        <div class="list-group my-3">
+                            <a class="list-group-item list-group-item-action" v-for="i in categories" v-on:click="displayActive(i.name)" v-bind:class='{active : checkActive(i.name)}'>
+                                {{i.name}}
+                            </a>
+                        </div>
+                    </div>
+                    <!-- 406 527 -->
+                    <div class="col-sm-8">
+                        <div class="row" style="display:flex;flex-direction:row;text-align:center;">
+                            <div class="col-md-4" v-for="datum in hotlist" v-if="(datum.category === isActive) || (isActive === 'All') ">
+                                <div class="card my-3">
+                                    <img class="card-img-top" v-bind:src="datum.img" alt="Card image cap" style="width:auto;height:220px">
+                                    <div class="card-body">
+                                        <hr>
+                                        <h5 class="card-title">{{maxText(datum.name)}}</h5>
+                                        <p class="card-text">Price $<b style="color:red;" v-html="datum.price"></b></p>
+                                        <div v-if="datum.stock !== 0">
+                                            <p>{{datum.stock}} stock left</p>
+                                            <a href="#" class="btn btn-outline-dark btn-block my-2" data-toggle="modal" data-target="#detailModal" v-on:click="passData({
+                                                id: datum.id,
+                                                name: datum.name,
+                                                desc: datum.desc,
+                                                price: datum.price,
+                                                stock: datum.stock,
+                                                img: datum.img
+                                            })">Buy</a>
+                                        </div>
+                                        <div v-else>
+                                            <p style="color:red">Not Available</p>
+                                            <a href="#" class="btn btn-outline-dark btn-block my-2 disabled">Buy</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <footer style="border-top:1px solid black;background-color:black">
+        <div class="container" style="display:flex;flex-direction:column;">
+            <img class="my-1" src="./images/bargains-white.svg" alt="" width="100" height="100" style="margin:auto">
+            <div style="margin:auto 0;color:white" class="my-2">Privacy settings | Privacy/Cookies | About our Ads | Legal Notices & Trademarks | Report Noncompliance | Site map | © 2018, Hot Deal </div>
+        </div>
+    </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                selectedItem: {},
+                isActive: 'All',
+                carts: [],
+                categories: [{
+                    name: 'All'
+                }, {
+                    name: 'Sport'
+                }, {
+                    name: 'Entertaiment'
+                }, {
+                    name: 'Technology'
+                }, {
+                    name: 'Accessories'
+                }],
+                hotlist: [{
+                    id: 1,
+                    img: "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/11/5/36578269/36578269_21243afd-2d85-4d1e-b0fd-be85bcd5d0be_700_700.jpg",
+                    name: 'Minisoccer Shoes',
+                    desc: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not onlyfive centuries, but also the leap into electronictypesetting, remaining essentially unchanged. It waspopularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recentlywith desktop publishing software like Aldus PageMakerincluding versions of Lorem Ipsum.`,
+                    price: 69,
+                    stock: 15,
+                    category: "Sport"
+                }, {
+                    id: 2,
+                    img: "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/10/29/42425951/42425951_64298fb8-14c6-47d5-b0aa-1df47b45517c_1080_1080.jpg",
+                    name: 'Fits Shoe',
+                    desc: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not onlyfive centuries, but also the leap into electronictypesetting, remaining essentially unchanged. It waspopularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recentlywith desktop publishing software like Aldus PageMakerincluding versions of Lorem Ipsum.`,
+                    price: 79,
+                    stock: 3,
+                    category: "Sport"
+                }, {
+                    id: 3,
+                    img: "https://static.shop.adidas.co.id/media/catalog/product/cache/2/small_image/250x/9df78eab33525d08d6e5fb8d27136e95/B/Y/BY1795_SL_eCom.jpg",
+                    name: 'Adiddas Ultraboost',
+                    desc: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not onlyfive centuries, but also the leap into electronictypesetting, remaining essentially unchanged. It waspopularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recentlywith desktop publishing software like Aldus PageMakerincluding versions of Lorem Ipsum.`,
+                    price: 299,
+                    stock: 0,
+                    category: "Sport"
+                }, {
+                    id: 4,
+                    img: "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/10/4/38994312/38994312_40081587-f3d5-45a8-8d08-f5c3d1110766_2048_2649.jpg",
+                    name: 'Blu-ray Dragon Ball season 1 - 9 original Bluray',
+                    desc: `Bluray original dragon ball season 1 sampai 9 barang langka mantap`,
+                    price: 299,
+                    stock: 250,
+                    category: "Entertaiment"
+                }, {
+                    id: 5,
+                    img: "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/9/21/38994312/38994312_d5a8cf2c-29d0-49b8-a508-96b79b64b657_1455_1833.jpg",
+                    name: 'Bluray Rampage 4K Blu-ray original',
+                    desc: `Video
+Codec: HEVC / H.265 (59.52 Mbps)
+Resolution: Upscaled 4K (2160p)
+HDR: Dolby Vision + HDR10
+Aspect ratio: 2.40:1
+Original aspect ratio: 2.39:1`,
+                    price: 299,
+                    stock: 250,
+                    category: "Entertaiment"
+                }]
+            },
+            methods: {
+                maxText: function(value) {
+                    if (value.length > 11) {
+                        let str = value.substr(0, 21)
+                        return `${str}...`
+                    } else {
+                        return value
+                    }
+                },
+                displayActive: function(value) {
+                    this.isActive = value
+                },
+                checkActive: function(value) {
+                    if (value === this.isActive) {
+                        return true
+                    } else {
+                        return false
+                    }
+                },
+                passData: function(obj) {
+                    console.log(obj)
+                    this.selectedItem = obj
+                },
+                addToCart: function(obj) {
+                    this.carts.push(obj)
+                    console.log(this.carts)
+                },
+                getCheckout: function() {
+                    let arr = this.carts
+                    let output = []
+                    let tmp = 0
+                    for (var i = 0; i < arr.length; i++) {
+                        if (output.length === 0) {
+                            tmp = -1;
+                        } else {
+                            for (var j = 0; j < output.length; j++) {
+                                if (output[j].id === arr[i].id) {
+                                    tmp = j;
+                                    break;
+                                }
+                                tmp = -1
+                            }
+                        }
+                        if (tmp === -1) {
+                            let obj = {
+                                id: arr[i].id,
+                                name: arr[i].name,
+                                qty: 1,
+                                price: arr[i].price
+                            }
+                            output.push(obj)
+                        } else {
+                            output[tmp].qty = Number(output[tmp].qty) + 1
+                        }
+                    }
+                    console.log(output)
+                    return output
+                }
+
+            },
+            computed: {
+                getTotal: function() {
+                    let result = 0
+                    this.carts.forEach(function(element) {
+                        result += element.price
+                    });
+                    return result
+                }
+            }
+        })
+    </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+</body>
+
+</html>
