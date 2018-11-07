@@ -111,7 +111,26 @@ class Controller {
     }
 
     static removeFromCart(req,res){
-
+        console.log('masuk controller')
+        Cart.findOneAndUpdate({
+            user : req.userId
+        },{
+            $pull : {
+                item_list : {
+                    _id : req.params.id
+                }
+            }
+        })
+        .then((cart)=>{
+            res.status(200).json({
+                message : "Item Removed From Carts"
+            })
+        })
+        .catch((err)=>{
+            res.status(500).json({
+                message : "Error In Getting User Carts Data"
+            })
+        })
     }
 }
 
