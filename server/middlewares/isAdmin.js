@@ -8,16 +8,16 @@ const authenticate = (req, res, next) => {
       let tokens = req.headers['authorization'].split(' ')      
       if (tokens[0] == 'Bearer') {          
         jwt.verify(tokens[1], process.env.JWT_SECRET, (err, decoded) => {
-          console.log('decoded===>', decoded, err)
+          // console.log('decoded===>', decoded, err)
           if (!err && decoded) {
-            req.user = decoded                                                   
-            if(req.user.admin) {
-              User.findById(req.user.id)
+            if(decoded.admin) {
+              User.findById(decoded.id)
               .then(user=>{
                 if(user == null){
                   res.status(400).json({ "error": "You are not authorized to access this API" })  
                 }
                 else{
+                  req.user = decoded                                                   
                   next()
                 }              
               })

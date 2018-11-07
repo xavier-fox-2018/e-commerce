@@ -3,13 +3,30 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const transactionSchema = new Schema({
-  products: [{
+  user: {
     type: Schema.Types.ObjectId,
-    ref: 'Product'
+    ref: 'User'
+  },
+  itemList: [{
+    item: {
+      type: Schema.Types.ObjectId,
+      ref: 'Product'
+    },
+    qty: {
+      type: Number,
+      default: 0
+    },
+    subTotal: {
+      type: Number,
+      default: 0
+    }
   }],
-  TransactionId: {
-    type: Schema.Types.ObjectId,
-    ref: 'Transaction' 
+  grandTotal: {
+    type: Number
+  },
+  address: {
+    type: String,
+    required: [true, 'address is required to ship the products']
   }
 }, {
   timestamps: true

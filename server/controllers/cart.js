@@ -1,5 +1,5 @@
 require('dotenv').config()
-const Product = require('../models/product')
+const Cart = require('../models/cart')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
@@ -7,9 +7,8 @@ const axios = require('axios')
 
 module.exports = {
   findAll: function(req, res) {
-    Product.find({})
-    .populate('userId')
-    .populate('reviews')
+    Cart.find({user: req.user.id})
+    .populate('products')
     .then((result) => {
       res.status(200).json(result)
     }).catch((err) => {
@@ -17,9 +16,8 @@ module.exports = {
     });
   },
   findById: function(req, res) {
-    Product.findById(req.params.id)
-    .populate('userId')
-    .populate('reviews')
+    Cart.findById(req.params.id)
+    .populate('products')
     .then((result) => {
       res.status(200).json(result)
     }).catch((err) => {
@@ -27,13 +25,38 @@ module.exports = {
     });
   },
   create: function(req, res) {
-    console.log('create body---', req.body)
-    Product.create(req.body)
+    // console.log('create body---', req.body)//{}
+    Cart.findOne({user:req.body.user})
     .then((result) => {
-      res.status(201).json({
-        message:'Success created new product',
-        status: 'success'
-      })
+      if(result === null) {
+        Cart.create(req.body)
+        .then((result) => {
+          res.status(201).json({
+            message:'Success created new Cart',
+            status: 'success'
+          })
+        }).catch((err) => {
+          res.status(500).json({
+            message: err.message,
+            status: 'fail'
+          })
+        });
+      } else {
+        Cart.findByIdAndUpdate(result._id, {
+          $push: {products: req.body.products}
+        })
+        .then((result) => {
+          res.status(201).json({
+            message:'Success added and updated Cart',
+            status: 'success'
+          })
+        }).catch((err) => {
+          res.status(500).json({
+            message: err.message,
+            status: 'fail'
+          })
+        });
+      }
     }).catch((err) => {
       res.status(500).json({
         message: err.message,
@@ -43,7 +66,7 @@ module.exports = {
   },
   update: function(req, res) {
     // console.log('update body---', req.body)
-    Product.findByIdAndUpdate(req.params.id, req.body)
+    Cart.findByIdAndUpdate(req.params.id, req.body)
     .then((result) => {
       res.status(200).json(result)
     }).catch((err) => {
@@ -51,7 +74,7 @@ module.exports = {
     });
   },
   delete: function(req, res) {
-    Product.findByIdAndDelete(req.params.id)
+    Cart.findByIdAndDelete(req.params.id)
     .then((result) => {
       res.status(200).json(result)
     }).catch((err) => {
@@ -59,16 +82,7 @@ module.exports = {
     });
   },
   patch: function(req, res) {
-    Product.findByIdAndUpdate(req.params.id, req.body)
-    .then((result) => {
-      res.status(200).json(result)
-    }).catch((err) => {
-      res.status(500).json(err)
-    });
-  },
-  updateQuantity: function(req, res) {
-    console.log('in update qty:', req.body)
-    Product.findByIdAndUpdate(req.params.id, req.body)
+    Cart.findByIdAndUpdate(req.params.id, req.body)
     .then((result) => {
       res.status(200).json(result)
     }).catch((err) => {

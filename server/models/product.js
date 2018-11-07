@@ -26,6 +26,14 @@ const productSchema = new Schema({
   quantity: {
     type: Number,
     default:0
+  },
+  reviews: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Review'
+  }],
+  isDelete: {
+    type: Boolean,
+    default: false
   }
 }, {
   timestamps: true

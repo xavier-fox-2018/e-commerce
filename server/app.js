@@ -15,6 +15,8 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const productsRouter = require('./routes/products');
 const groupsRouter = require('./routes/groups')
+const reviewRouter = require('./routes/reviews')
+const cartRouter = require('./routes/carts')
 
 var app = express();
 
@@ -34,7 +36,9 @@ app.use(cookieParser());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/products', productsRouter);
-app.use('/groups', groupsRouter)
+app.use('/groups', groupsRouter);
+app.use('/reviews', reviewRouter)
+app.use('/carts', cartRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
