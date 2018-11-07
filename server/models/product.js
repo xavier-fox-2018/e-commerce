@@ -3,13 +3,17 @@ const schema = mongoose.Schema
 
 var productSchema = new schema({
     name: String,
-    description: String,
-    stock: number,
-    price: number,
-    tag:[],
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    picture:[]
+    description: {
+        type: String,
+        minlength: 5,
+        maxlength: 100
+    },
+    stock: Number,
+    price: Number,
+    tag: [],
+    createdAt: String,
+    updatedAt: String,
+    picture: []
 })
 
 var product = mongoose.model('Product', productSchema)

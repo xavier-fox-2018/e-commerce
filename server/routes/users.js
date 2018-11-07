@@ -9,4 +9,7 @@ router.get('/', function(req, res, next) {
 
 router.post('/signup', Controller.signUp)
 
+//for admin
+router.post('/add-item', Controller.addItem)
+
 module.exports = router;
