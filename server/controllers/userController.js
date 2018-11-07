@@ -1,7 +1,7 @@
 const userModel = require('../models/user')
 const itemModel = require('../models/product')
 const jwt = require('jsonwebtoken')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 require('dotenv').config()
 
 
