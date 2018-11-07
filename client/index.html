@@ -273,7 +273,7 @@
 
           <form class="form-inline">
             <div class="md-form my-0">
-              <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+              <input v-model="search" class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
             </div>
           </form>
         </div>
@@ -631,7 +631,9 @@
 
         islogin : false,
         login_email : '',
-        login_password : ''
+        login_password : '',
+
+        search : ''
       },
       methods : {
         login : function(){
@@ -794,6 +796,22 @@
             totalPrice = totalPrice + itemPrice
           }
           return totalPrice
+        }
+      },
+      watch : {
+        search : function(){
+          let items = this.items.slice(0)
+          let tosearch = this.search.toString()
+
+          if(this.search){
+            let filtered = this.items.filter(function(item){
+              return item.name.toLowerCase().indexOf(tosearch) > -1
+            })
+            this.items = filtered
+          }else{
+            this.getAllItems()
+          }
+
         }
       }
     })
