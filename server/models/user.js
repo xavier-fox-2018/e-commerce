@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-mongoose.connect('http://localhost:27017/e-commerce')
+mongoose.connect('mongodb://localhost:27017/e_commerce', { useNewUrlParser: true })
 
 const UserSchema = new Schema({
   name: {
@@ -15,6 +15,10 @@ const UserSchema = new Schema({
   email: {
     type: String,
     required: [true, 'Please input your email!']
+  },
+  role: {
+    type: String,
+    default: 'customer'
   }
 })
 

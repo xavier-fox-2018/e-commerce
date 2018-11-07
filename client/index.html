@@ -17,14 +17,15 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
     crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 
 <body>
-
+  <div id="app">
   <!-- Header only! -->
   <header class="w-auto bg-danger sticky-top">
     <div class="container">
-      <ul class="nav bg-danger p-1">
+      <ul class="nav bg-danger p-1 row">
         <li class="nav-item">
           <a href="#" class="my-auto text-dark nav-link h4" id="brand">PEMMZ PALZU</a>
         </li>
@@ -40,7 +41,7 @@
         </li>
         <li class="nav-item m-auto">
           <div class="form-inline">
-            <input type="text" id="search" class="rounded p-1" placeholder="Search..." v-model>
+            <input type="text" id="search" class="rounded p-1" placeholder="Search...">
             <button type="submit" id="buttonSearch" class="btn btn-outline-dark btn-md"><i class="fas fa-search"></i></button>
           </div>
         </li>
@@ -59,7 +60,7 @@
         </li>
       </ul>
       <hr class="mb-0 mt-1">
-      <ul class="nav bg-danger p-1">
+      <ul class="nav bg-danger p-1 row">
         <li class="nav-item">
           <a href="#" class="nav-link text-light">SERVICE</a>
         </li>
@@ -69,11 +70,44 @@
         <li class="nav-item">
           <a href="#" class="nav-link text-light">REVIEW</a>
         </li>
+        <li class="nav-item ml-auto">
+          <a href="#" class="nav-link text-light">REGISTER</a>
+        </li>
+        <li class="nav-item">
+          <a href="/login.html" class="nav-link text-light">LOGIN</a>
+        </li>
       </ul>
     </div>
   </header>
 
-  <main class="container mt-3 rounded" id="app">
+  <!-- Admin Section! -->
+  <main v-if="role === 'admin'">
+    <section id="input" class="container mt-5">
+      <div class="row">
+        <div class="form-group col-4 mx-auto text-center">
+          <h3>Input Item Here</h3>
+          <label for="name">Name</label>
+          <input type="text" class="form-control" v-model="name">
+          <label for="name">Price</label>
+          <input type="text" class="form-control" v-model="price">
+          <label for="name">Stock</label>
+          <input type="text" class="form-control" v-model="stock">
+          <label for="name">Description</label>
+          <input type="text" class="form-control" v-model="description">
+          <label for="name">Image</label>
+          <input type="text" class="form-control" v-model="image">
+          <label for="name">Category</label>
+          <select name="category" class="form-control" multiple v-model="category">
+            <option v-for="category in categories" v-bind:value="category.id">{{ category.name }}</option>
+          </select>
+          <button type="submit" class="form-control btn btn-primary mt-3" v-on:click="addNewItem">Add</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Costumer Section! -->
+  <main class="container mt-3 rounded" v-else>
 
     <!-- Modal only! -->
     <!-- Modal Cart -->
@@ -174,50 +208,28 @@
       </a>
     </section>
 
-<!--    INPUT SECTION <--
-    <section id="input" class="container mt-5">
-      <div class="row">
-        <div class="form-group col-4 mx-auto text-center">
-          <h3>Input Item Here</h3>
-          <label for="name">Name</label>
-          <input type="text" class="form-control" v-model="name">
-          <label for="name">Price</label>
-          <input type="text" class="form-control" v-model="price">
-          <label for="name">Stock</label>
-          <input type="text" class="form-control" v-model="stock">
-          <label for="name">Description</label>
-          <input type="text" class="form-control" v-model="description">
-          <label for="name">Image</label>
-          <input type="text" class="form-control" v-model="image">
-          <button type="submit" class="form-control btn btn-primary mt-3" v-on:click="addNewItem">Add</button>
-        </div>
-      </div>
-    </section> -->
-
     <!-- Items section -->
     <section class="container mt-5">
       <div class="row">
         <div class="col-2">
           <h3>Category</h3>
           <ul class="list-group">
-            <li class="list-group-item" v-for="category in categories" v-bind:class="{ active: category.active }" v-on:click="searchByCategory(category)"> {{ category.name }} </li>
+            <li class="list-group-item" v-for="category in categories" v-bind:class="{ active: category.active }" v-on:click="searchByCategory(category)" v-bind:value="category.id"> {{ category.name }} </li>
           </ul>
         </div>
         <div class="col-10">
           <h3>Items</h3>
           <div id="itemDisplay" class="row" v-if="categoryName != ''">
             <div class="card col-4 text-center" v-for="item in filteredItems">
-              <div v-if="item.category == categoryName">
-                <img v-bind:src="item.image" class="card-img-top">
-                <div class="card-body">
-                  <h5 class="card-title"> {{ item.name }} </h5>
-                  <p v-if="item.stock > 0">Stock: {{ item.stock }}</p>
-                  <p v-else>Stock: <i>Not Available</i></p>
-                  <p class="card-text price">{{ convertToRupiah(item.price) }}</p>
-                  <p class="card-text"> {{ item.description }} </p>
-                  <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#detailItemModal"
-                  v-on:click="getDetail(item)">DETAIL</button>
-                </div>
+              <img v-bind:src="item.image" class="card-img-top">
+              <div class="card-body">
+                <h5 class="card-title"> {{ item.name }} </h5>
+                <p v-if="item.stock > 0">Stock: {{ item.stock }}</p>
+                <p v-else>Stock: <i>Not Available</i></p>
+                <p class="card-text price">{{ convertToRupiah(item.price) }}</p>
+                <p class="card-text"> {{ item.description }} </p>
+                <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#detailItemModal"
+                v-on:click="getDetail(item)">DETAIL</button>
               </div>
             </div>
           </div>
@@ -296,7 +308,7 @@
   </main>
 
   <!-- Before Footer -->
-  <div id="beforeFooter" class="container-fluid text-white">
+  <div id="beforeFooter" class="container-fluid text-white" v-if="role === 'customer'">
     <div class="row p-4">
       <div class="col-md-5">
         <h4><strong>CONTACT US</strong></h4>
@@ -353,7 +365,7 @@
       </div>
     </div>
   </div>
-  <footer class="container-fluid text-white bg-dark p-5">
+  <footer class="container-fluid text-white bg-dark p-5" v-if="role === 'customer'">
     <div class="row p-3">
       <div class="col-6">
         <p>PEMMZ PALZU merupakan situs belanja online palsu di Indonesia yang menyediakan produk IT high-end. Menjual
@@ -368,6 +380,7 @@
       </div>
     </div>
   </footer>
+</div>
 
 
   <!-- Script only!! -->
@@ -401,159 +414,7 @@
       });
     });
   </script>
-  <script>
-    new Vue({
-      el: '#app',
-      data: {
-        name: '',
-        price: 0,
-        description: '',
-        image: '',
-        stock: 0,
-        categories: [
-        {
-          name: 'Notebook',
-          active: false
-        }, {
-          name: 'Desktop',
-          active: false
-        }, {
-          name: 'Accessories',
-          active: false
-        }, {
-          name: 'Parts',
-          active: false
-        } ],
-        items: [
-          {
-            name: 'MSI GL63 8RD | i7-8750H | GTX 1050 Ti 4GB | FREE STEAM VOUCHER $15',
-            image: '/images/msi gl63.png',
-            stock: 5,
-            price: 17000000,
-            description: 'Intel Core i7-8750H Coffee Lake + HM370, RAM 8GB DDR4, SSD 128GB, HDD 1TB, VGA GTX 1050Ti 4GB, Windows 10',
-            category: 'Notebook'
-          },
-          {
-            name: 'Machiato Desktop',
-            image: '/images/machiato_1.png',
-            stock: 5,
-            price: 17000000,
-            description: 'Intel Core i7-8750H Coffee Lake + HM370, RAM 8GB DDR4, SSD 128GB, HDD 1TB, VGA GTX 1050Ti 4GB, Windows 10',
-            category: 'Desktop'
-          },
-          {
-            name: 'Asus ROG G703',
-            image: '/images/asus rog g703.jpg',
-            stock: 5,
-            price: 17000000,
-            description: 'Intel Core i7-8750H Coffee Lake + HM370, RAM 8GB DDR4, SSD 128GB, HDD 1TB, VGA GTX 1050Ti 4GB, Windows 10',
-            category: 'Accessories'
-          },
-          {
-            name: 'TTESPORT CherryMX Blue',
-            image: '/images/ttesport_cherrymx_blue.jpg',
-            stock: 5,
-            price: 17000000,
-            description: 'Intel Core i7-8750H Coffee Lake + HM370, RAM 8GB DDR4, SSD 128GB, HDD 1TB, VGA GTX 1050Ti 4GB, Windows 10',
-            category: 'Parts'
-          },
-        ],
-        filteredItems: [],
-        carts: [],
-        cartsTotal: 0,
-        detail: {},
-        categoryName: ''
-      },
-      methods: {
-        addNewItem: function () {
-          let newItem = {
-            name: this.name,
-            price: this.price,
-            description: this.description,
-            image: this.image,
-            stock: this.stock,
-          }
-          this.items.push(newItem)
-        },
-        addToCart: function (item) {
-          for (let i in this.items) {
-            if (this.items[i].name == item.name) {
-              if (item.quantity > 0 && item.quantity <= this.items[i].stock) {
-                this.items[i].stock -= item.quantity
-                this.carts.push(item)
-                this.getTotal((item.quantity * item.price))
-                this.detail = {}
-              } else {
-                alert("Item must be more than 0 and cant more than item stock!")
-              }
-            }
-          }
-        },
-        removeFromCart: function (itemId) {
-          for (let i in this.carts) {
-            if (this.carts[i].id == itemId) {
-              for (let j in this.items) {
-                if (this.items[j].name == this.carts[i].name) {
-                  this.items[j].stock += Number(this.carts[i].quantity)
-                  this.cartsTotal -= Number(this.carts[i].quantity) * Number(this.carts[i].price)
-                }
-              }
-              this.carts.splice(i, 1)
-            }
-          }
-
-        },
-        convertToRupiah(data) {
-          let price = data.toString()
-          let str = ''
-          let counter = 1
-          for (let i = price.length - 1; i >= 0; i--) {
-            if (counter % 3 == 0) {
-              str += price[i] + '.'
-            } else {
-              str += price[i]
-            }
-            counter++
-          }
-          return 'Rp ' + str.split('').reverse().join('') + ',00'
-        },
-        getTotal(price) {
-          this.cartsTotal += price
-        },
-        getDetail(item) {
-          this.detail = {
-            name: item.name,
-            price: item.price,
-            description: item.description,
-            image: item.image,
-            stock: item.stock,
-            quantity: 0
-          }
-        },
-        searchByCategory(category) {
-          this.filteredItems = []
-          for (let i in this.categories) {
-            if (this.categories[i].name != category.name) {
-              this.categories[i].active = false
-            } else {
-              if (this.categories[i].active) {
-                this.categoryName = ''
-                this.categories[i].active = false
-              } else {
-              this.categories[i].active = true
-              this.categoryName = category.name
-              }
-            }
-          }
-          for (let i in this.items) {
-            if (category.name == this.items[i].category) {
-              this.filteredItems.push(this.items[i])
-            }
-          }
-        }
-      }
-    })
-  </script>
+  <script src="./js/vue.js"></script>
 </body>
 
 </html>
