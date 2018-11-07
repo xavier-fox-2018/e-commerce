@@ -31,3 +31,7 @@ img {
 footer {
   font-size: 11pt;
 }
+
+.cursorpoint {
+  cursor: pointer;
+}
