@@ -10,7 +10,6 @@ var userSchema = new schema({
     password: String,
     role: String,
     picture: String,
-    transaction: []
 })
 
 var User = mongoose.model('User', userSchema)

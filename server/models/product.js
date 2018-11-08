@@ -3,19 +3,16 @@ const schema = mongoose.Schema
 
 var productSchema = new schema({
     name: String,
-    description: {
-        type: String,
-        minlength: 5,
-        maxlength: 100
-    },
+    description: String,
     stock: Number,
     price: Number,
     tag: [],
+    category: {type: schema.Types.ObjectId, ref: 'Category'},
     createdAt: String,
     updatedAt: String,
-    picture: []
+    picture: String
 })
 
-var product = mongoose.model('Product', productSchema)
+var Product = mongoose.model('Product', productSchema)
 
-module.exports = product
+module.exports = Product
