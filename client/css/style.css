@@ -17,6 +17,10 @@
   column-break-inside: avoid;
 }
 
+.capitalize {
+    text-transform: capitalize;   
+  }
+
 .cards-container .card {
   display: inline-block;
   overflow: visible;

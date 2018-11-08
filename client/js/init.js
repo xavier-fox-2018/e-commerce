@@ -1,13 +1,19 @@
+
 (function($){
   $(function(){
-
+    
     $('.sidenav').sidenav();
-
+    
   }); // end of document ready
 })(jQuery); // end of jQuery name space
 
 $(document).ready(function () {
   $('.collapsible').collapsible();
+});
+
+$(document).ready(function () {
+  $('.modal').modal();
+  $('.dropdown-trigger').dropdown();
 });
 
 $(document).ready(function () {
@@ -30,15 +36,18 @@ function autoplay() {
   setTimeout(autoplay, 4500);
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-  var elems = document.querySelectorAll('.sidenav');
-  var instances = M.Sidenav.init(elems, options);
-});
-
 $(document).ready(function () {
   $('.tabs').tabs();
 });
 
 $(document).ready(function () {
   $('.tooltipped').tooltip();
+});
+
+$(document).ready(function () {
+  $('select').formSelect();
+});
+
+$(document).ready(function () {
+  $('.parallax').parallax();
 });
