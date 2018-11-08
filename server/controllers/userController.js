@@ -8,23 +8,22 @@ require('dotenv').config()
 
 class Controller {
 
-    static getAllItems(req,res){
+    static getAllItems(req, res) {
         itemModel.find({})
-        .then(data => {
-            
-            let filtered = data.map(val =>({
-                name: val.name,
-                stock: val.stock,
-                price: val.price,
-                picture:'http://localhost:3000/'+val.picture,
-                id: val._id
-            }))
-            console.log(filtered)
-            res.send(filtered)
-        })
-        .catch(err => {
-            res.status(500).send(err.message)
-        })
+            .then(data => {
+                let filtered = data.map(val => ({
+                    name: val.name,
+                    description: val.description,
+                    stock: val.stock,
+                    price: val.price,
+                    picture: 'http://localhost:3000/' + val.picture,
+                    id: val._id
+                }))
+                res.send(filtered)
+            })
+            .catch(err => {
+                res.status(500).send(err.message)
+            })
     }
 
     static signUp(req, res) {
@@ -68,11 +67,9 @@ class Controller {
 
     //for admin
     static addItem(req, res) {
-        console.log(req.body)
-        console.log(req.file.filename)
         itemModel.create({
             name: req.body.name,
-            dascription: req.body.description,
+            description: req.body.description,
             stock: Number(req.body.stock),
             price: Number(req.body.price),
             category: req.body.category,
@@ -123,6 +120,62 @@ class Controller {
             })
             .catch(err => {
                 res.status(500).send('err')
+            })
+    }
+
+    static editItem(req, res) {
+        console.log(req.file)
+        console.log(req.body)
+        itemModel.updateOne({
+            _id: req.body.id
+        }, {
+                name: req.body.name,
+                stock: Number(req.body.stock),
+                price: Number(req.body.price),
+                description: req.body.description,
+                category: req.body.category,
+                picture: req.file.filename
+            })
+            .then(data => {
+                return itemModel.find({})
+            })
+            .then(data => {
+                let filtered = data.map(val => ({
+                    name: val.name,
+                    description: val.description,
+                    stock: val.stock,
+                    price: val.price,
+                    picture: 'http://localhost:3000/' + val.picture,
+                    id: val._id
+                }))
+                res.send(filtered)
+            })
+            .catch(err => {
+                res.status(500).send(err)
+            })
+    }
+
+    static deleteItem(req, res) {
+        console.log(req.body)
+        itemModel.deleteOne({
+            _id: req.body.id
+        })
+            .then(data => {
+                return itemModel.find({})
+            })
+            .then(data => {
+                let filtered = data.map(val => ({
+                    name: val.name,
+                    description: val.description,
+                    stock: val.stock,
+                    price: val.price,
+                    picture: 'http://localhost:3000/' + val.picture,
+                    id: val._id
+                }))
+                res.send(filtered)
+            })
+            .catch(err => {
+                res.status(500).send(err)
             })
     }
 }

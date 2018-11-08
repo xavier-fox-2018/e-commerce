@@ -58,7 +58,7 @@
                     <div class="jumbotron p-2 text-center">
                         <!-- <p>Narrow your results 1,781,605 items found</p> -->
                         <div class="list-group">
-                            <button v-on:click="changeCurrentView('viewList')" type="button" class="list-group-item list-group-item-action active">
+                            <button v-on:click="onClickListItem" type="button" class="list-group-item list-group-item-action active">
                                 Your List Items
                             </button>
                             <button v-on:click="getCategory" type="button" class="list-group-item list-group-item-action">Add Items</button>
@@ -100,8 +100,8 @@
                                     <div class="card-body ">
                                         <p class="card-text">{{filterTextLength(value.name)}}</p>
                                         <p>${{value.price}}</p>
-                                        <button data-toggle="modal" data-target="#cartModal" class="btn btn-primary">Edit</button>
-                                        <button data-toggle="modal" data-target="#cartModal" class="btn btn-danger"> Delete</button>
+                                        <button data-toggle="modal" v-on:click="editItem(value)" data-target="#editItemModal" class="btn btn-primary">Edit</button>
+                                        <button data-toggle="modal" v-on:click="onClickDeletItem(value)" class="btn btn-danger"> Delete</button>
                                     </div>
                                 </div>
                             </div>
@@ -127,12 +127,12 @@
                                             <select v-model="value" class="form-control">
                                                 <option v-for="value in categories" v-bind:value="value">{{value.name}}</option>
                                             </select>
-                                        </div>  
+                                        </div>
                                     </div>
                                     <div class="form-group row">
                                         <label for="description" class="col-sm-2 col-form-label">Picture</label>
                                         <div class="col-sm-10">
-                                                <input  type="file" v-on:change="handleUpload" class="form-control" placeholder="Quantity">                                            
+                                            <input type="file" v-on:change="handleUpload" class="form-control" placeholder="Quantity">
                                         </div>
                                     </div>
 
@@ -149,11 +149,11 @@
                                         </div>
                                     </div>
                                     <div v-if="addItemStatus === 'betul'" class="alert alert-success">
-                                            <strong>Success!</strong> Indicates a successful or positive action.
-                                        </div>
-                                        <div v-if="addItemStatus === 'salah'" class="alert alert-danger">
-                                            <strong>Success!</strong> Indicates a successful or positive action.
-                                        </div>
+                                        <strong>Success!</strong> Indicates a successful or positive action.
+                                    </div>
+                                    <div v-if="addItemStatus === 'salah'" class="alert alert-danger">
+                                        <strong>Success!</strong> Indicates a successful or positive action.
+                                    </div>
                                     <button v-on:click="onClickAddProduct" type="submit" class="btn btn-primary">Submit</button>
                                 </form>
                             </div>
@@ -182,6 +182,73 @@
             </div>
         </div>
 
+        <!-- MODAL EDIT ITEM -->
+
+        <div class="modal fade" id="editItemModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Edit Item</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group row">
+                                <label for="productName" class="col-sm-2 col-form-label">Product Name</label>
+                                <div class="col-sm-10">
+                                    <input v-model="itemWillUpdate.name" type="text" class="form-control" v-bind:placeholder="itemWillUpdate.name">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="description" class="col-sm-2 col-form-label">Description</label>
+                                <div class="col-sm-10">
+                                    <input v-model="itemWillUpdate.description" type="text" class="form-control" v-bind:placeholder="itemWillUpdate.description">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="description" class="col-sm-2 col-form-label">Category</label>
+                                <div class="col-sm-10">
+                                    <select v-model="value" class="form-control">
+                                        <option v-for="value in categories" v-bind:value="value">{{value.name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="description" class="col-sm-2 col-form-label">Picture</label>
+                                <div class="col-sm-10">
+                                    <input type="file" v-on:change="handleUpload" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="qty" class="col-sm-2 col-form-label">Quantity</label>
+                                <div class="col-sm-10">
+                                    <input v-model="itemWillUpdate.stock" type="number" class="form-control" placeholder="Quantity">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="tag" class="col-sm-2 col-form-label">Price</label>
+                                <div class="col-sm-10">
+                                    <input v-model="itemWillUpdate.price" type="number" class="form-control" placeholder="Price">
+                                </div>
+                            </div>
+                            <div v-if="addItemStatus === 'editbetul'" class="alert alert-success">
+                                <strong>Success!</strong> Indicates a successful or positive action.
+                            </div>
+                            <div v-if="addItemStatus === 'editsalah'" class="alert alert-danger">
+                                <strong>Success!</strong> Indicates a successful or positive action.
+                            </div>
+                        </form> 
+                        <button type="submit" v-on:click="onClickEditItem" class="btn btn-primary">Register</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
     </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -204,7 +271,7 @@
             el: '#app',
             data: {
                 products: [],
-                productWillAdd:{
+                productWillAdd: {
                     name: '',
                     description: '',
                     quantity: 0,
@@ -212,18 +279,82 @@
                 },
                 categories: null,
                 currentView: 'viewList',
+                itemWillUpdate: '',
                 addCategory: '',
                 categoryStatus: '',
                 addItemStatus: '',
-                value:'',
+                value: '',
                 file: ''
             },
             methods: {
-                handleUpload: function(event){
+                onClickListItem(){
+                    this.currentView='viewList'
+                    axios.get('http://localhost:3000/users/get-all-items')
+                    .then(data => {
+                        this.products = data.data
+                    })
+                    .catch(err => {
+                        console.log(err.message)
+                    })
+                },
+
+                onClickDeletItem: function(event){
+                    axios.delete(`http://localhost:3000/users/delete-item`, {data: {id: event.id}})
+                    .then(data => {
+                        this.products = data.data
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+                },
+                
+                onClickEditItem: function(event){
+                    event.preventDefault()
+                    let data = this.itemWillUpdate
+                    data.category = this.value._id
+                    console.log(data)
+                    let formData = new FormData()
+                    formData.append('img', this.file)
+                    formData.append('name', this.itemWillUpdate.name)
+                    formData.append('id', this.itemWillUpdate.id)
+                    formData.append('stock', this.itemWillUpdate.stock)
+                    formData.append('price', this.itemWillUpdate.price)
+                    formData.append('description', this.itemWillUpdate.description)
+                    formData.append('category', this.value._id)
+
+                    axios.put('http://localhost:3000/users/edit-item', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    })
+                            .then(data => {
+                                this.products = data.data
+                                this.addItemStatus ='editbetul'
+                            })
+                            .catch(err => {
+                                console.log(err)
+                                this.addItemStatus ='editsalah'
+                            })
+                    
+                },
+                editItem: function (input) {
+                    axios.get('http://localhost:3000/users/get-category')
+                        .then(data => {
+                            this.categories = data.data
+                        })
+                        .catch(err => {
+                            console.log(err)
+                        })
+                    let filtered = this.products.filter(val => {
+                        return val.name == input.name
+                    })
+                    this.itemWillUpdate = filtered[0]
+                },
+                handleUpload: function (event) {
                     this.file = event.target.files[0]
                 },
 
-                changesCategory:function(input){
+                changesCategory: function (input) {
                     this.productWillAdd.category = input
                 },
 
@@ -244,6 +375,9 @@
                         .then(data => {
                             this.categories = data.data
                         })
+                        .catch(err => {
+                            console.log(err)
+                        })
                 },
 
                 filterTextLength: function (input) {
@@ -260,13 +394,6 @@
 
                 onClickAddProduct: function (event) {
                     event.preventDefault()
-                    let data = {
-                        name: this.productWillAdd.name,
-                        description: this.productWillAdd.description,
-                        stock: this.productWillAdd.quantity,
-                        price: this.productWillAdd.price,
-                        category: this.value
-                    }
                     let result = new FormData()
                     result.append('img', this.file)
                     result.append('name', this.productWillAdd.name)
@@ -275,17 +402,17 @@
                     result.append('category', this.value._id)
                     result.append('description', this.productWillAdd.description)
                     // result.append('text', data)
-                    axios.post('http://localhost:3000/users/add-item',result, {
+                    axios.post('http://localhost:3000/users/add-item', result, {
                         headers: {
-                            'Content-Type' : 'multipart/form-data'
+                            'Content-Type': 'multipart/form-data'
                         }
                     })
-                    .then(data => {
-                        this.addItemStatus = 'betul'
-                    })
-                    .catch(err => {
-                        this.addItemStatus = 'salah'
-                    })
+                        .then(data => {
+                            this.addItemStatus = 'betul'
+                        })
+                        .catch(err => {
+                            this.addItemStatus = 'salah'
+                        })
                 }
             },
             computed: {
@@ -297,13 +424,12 @@
             mounted: function () {
                 console.log('vue has been mounted')
                 axios.get('http://localhost:3000/users/get-all-items')
-                .then(data => {
-                    console.log(data)
-                    this.products=data.data
-                })
-                .catch(err => {
-                    console.log(data)
-                })
+                    .then(data => {
+                        this.products = data.data
+                    })
+                    .catch(err => {
+                        console.log(err.message)
+                    })
             }
         })
 

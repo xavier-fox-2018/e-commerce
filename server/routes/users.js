@@ -27,5 +27,7 @@ router.post('/login', Controller.login)
 router.post('/add-item', upload.single('img'), Controller.addItem)
 router.post('/add-category', Controller.addCategory)
 router.get('/get-category', Controller.getCategory)
+router.put('/edit-item',upload.single('img'), Controller.editItem)
+router.delete('/delete-item', Controller.deleteItem)
 
 module.exports = router;
