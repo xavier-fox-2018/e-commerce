@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <title>Document</title>
+</head>
+<body>
+  <div id="app-3" class="container">
+    <div class="alert alert-success" role="alert" hidden>
+        {{ successAlert }}
+    </div>
+    <!--Nav bar-->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">poll shoPoint</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="container">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul  v-if="myRole === 'admin'" class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Admin
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" v-on:click='showCreateUser'>Create</a>
+                        <a class="dropdown-item" v-on:click="getAllAdmin">List Admin</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Category
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Create</a>
+                        <a class="dropdown-item" href="#">Read</a>
+                        <a class="dropdown-item" href="#">Update</a>
+                        <a class="dropdown-item" href="#">Delete</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Item
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Create</a>
+                        <a class="dropdown-item" href="#">Read</a>
+                        <a class="dropdown-item" href="#">Update</a>
+                        <a class="dropdown-item" href="#">Delete</a>
+                    </div>
+                </li>
+                </ul>
+                <form class="form-inline my-2 my-lg-0 ml-auto">
+                    <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" v-model="search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+                <button type="button" class="btn btn-primary mr-2 ml-3 btn-sm" data-toggle="modal" data-target="#shoppingCartModal" data-whatever="@mdo">Shopping cart</button>
+                <button v-if="isLogin === false" type="button" class="btn btn-primary zml-2 btn-sm" data-toggle="modal" data-target="#signUpModal" data-whatever="@mdo">register</button>
+                <button v-if="isLogin === false" type="button" class="btn btn-primary btn-sm ml-2" data-toggle="modal" data-target="#signInModal" data-whatever="@mdo" v-on:click="clearTextBox">Login</button>
+                <button type="button" v-if="isLogin === true" class="btn btn-danger btn-sm mr-2 ml-2" v-on:click="signOut()">Sign Out</button>
+            </div>
+        </div>
+    </nav>
+    <!--End of Nav Bar-->
+
+    <!--Alert-->
+    <div v-if="showError === true" class="alert alert-danger" role="alert">
+        {{ errorMessage }}
+    </div>
+    <!--End of Alert-->
+    
+    <!--Modal shoppingcart-->
+    <div class="modal fade" id="shoppingCartModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Shopping cart</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div v-for="prod in shoppingCart">
+                    <thead>
+                        <tbody>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                            </tr>
+                            <tr>
+                                <td>{{ prod.name }}</td>
+                                <td>Quantity</td>
+                                <td>{{ prod.price }}</td>
+                            </tr>
+                        </tbody>
+                    </thead>
+                    <h5 class="item">{{ totalPrice }}</h5>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm ml-2 my-2" data-toggle="modal" data-target="#checkoutModal" data-whatever="@mdo" data-dismiss="modal">Checkout</button>
+                    <button type="button" class="btn btn-primary">continue shooping..</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--End of Modal shopping cart-->
+
+    <!--Modal checkout-->
+    <div class="modal fade" id="checkoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Check out ..</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            Total shoping Rp ..
+                            <div class="form-group col-md-4">
+                                <label for="inputState">Choose payment method : </label>
+                                <select id="inputState" class="form-control">
+                                    <option selected>Bank transfer</option>
+                                    <option>Credit Card</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Pay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--End of Modal checkout-->
+
+    <!--Modal signup-->
+    <div class="modal fade" id="signUpModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Sign up new user</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">name:</label>
+                        <input class="form-control" v-model="name" placeholder="name...">
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">email:</label>
+                        <input class="form-control" v-model="email" placeholder="email...">
+                    </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" v-on:click="createUser"  data-dismiss="modal">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--End of Modal signup-->
+
+    <!--Index-->
+    <div class="row" style="position:relative; margin-top:80px">
+        <div class="col-md-3">
+            <div class="btn-group-vertical">
+                <a class="btn btn-primary" href="#" role="button">Link</a>
+                <button class="btn btn-primary" type="submit">Button</button>
+                <input class="btn btn-primary" type="button" value="Traditional">
+                <input class="btn btn-primary" type="submit" value="Modern">
+                <input class="btn btn-primary" type="reset" value="Oldschool">
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="row">
+                <!--List of Goods-->
+                <div class="card ml-2 mt-2" style="width: 13rem;" v-for="product in products">
+                    <img class="card-img-top" src="..." alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        Price :
+                        <h5 class="card-price">{{ product.price }}</h5>
+                        Category :
+                        <h6 class="card-price">{{ product.category }}</h6>
+                        <p class="card-text">{{ product.description }}</p>
+                        <a href="#" class="btn btn-primary" v-on:click="buy(product)">Buy</a>
+                    </div>
+                </div>
+                <!--End List of Goods-->
+
+                <!--List of user admin-->
+                <div v-if="page === 'getAllAdmin'">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Role</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="admin in allAdmins">
+                                <td>{{admin.name}}</td>
+                                <td>{{admin.email}}</td>
+                                <td>{{admin.role}}</td>
+                                <td><button type="button" class="btn btn-warning" v-on:click="showEditUser(admin.id)">Edit</button> <button type="button" class="btn btn-danger" v-on:click="deleteAdmin(admin.id)">Delete</button> </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!--End List of user admin-->
+
+                <!--Create new user-->
+                <div class="container" v-if="page === 'createUser'">
+                    <form>
+                        <h3>Insert new user</h3>                        
+                        <div class="form-group row">
+                            <label for="inputEmail3" class="col-sm-2 col-form-label">Name</label>
+                            <div class="col-sm-10">
+                            <input type="text" class="form-control" placeholder="Name.." v-model="name">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
+                            <div class="col-sm-10">
+                            <input type="email" class="form-control" id="inputEmail3" placeholder="Email.." v-model="email">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-2">Role as administrator</div>
+                            <div class="col-sm-10">
+                            <div class="form-check">
+                                <input type="checkbox" id="checkbox" v-model="cbxRoleAdmin">
+                                <label class="form-check-label" for="gridCheck1">
+                                    Yes (This user can access CRUD of other user!)
+                                </label>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-10">
+                            <button type="submit" class="btn btn-primary" v-on:click="createUser">Create User</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!--End of create new user-->
+
+                <!--Update data user-->
+                <div class="container" v-if="page === 'editUser'">
+                    <form>
+                        <h3>Update data user</h3>                        
+                        <div class="form-group row">
+                            <label for="inputEmail3" class="col-sm-2 col-form-label">Name</label>
+                            <div class="col-sm-10">
+                            <input type="text" class="form-control" placeholder="Name.." v-model="name">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
+                            <div class="col-sm-10">
+                            <input type="email" class="form-control" id="inputEmail3" placeholder="Email.." v-model="email">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-2">Role as administrator</div>
+                            <div class="col-sm-10">
+                            <div class="form-check">
+                                <input type="checkbox" id="checkbox" v-model="cbxRoleAdmin">
+                                <label class="form-check-label" for="gridCheck1">
+                                    Yes (This user can access CRUD of other user!)
+                                </label>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-10">
+                            <button type="submit" class="btn btn-primary" v-on:click="saveEditUser">Update User</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!--End of update data user -->
+            </div>
+        </div>
+    </div>
+    <!--End of Index-->
+
+    <!--Modal login-->
+    <div class="modal fade" id="signInModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Login</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">email:</label>
+                        <input class="form-control" v-model="email" placeholder="email...">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Password:</label>
+                        <br>
+                        <input type="password" v-model="password" placeholder="password..">
+                    </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" v-on:click="login" data-dismiss="modal">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--End of Modal login-->
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+    var app3 = new Vue({
+        el: '#app-3',
+
+        data: {
+            isLogin: false,
+            myId: '',
+            myRole: '',
+            page: '',
+            successAlert: '',
+            dangerAlert:'',
+            totalPrice: 0,
+            shoppingCart: [],
+            search : '',
+            category :'all',
+            products : [],
+            name : '',
+            email : '',
+            password: '',
+            role : '',
+            allAdmins : [],
+            cbxRoleAdmin : null,
+            showError : false,
+            errorMessage : ''
+        },
+
+        watch: {
+            search : function (newValue) {
+
+            },
+
+            category : function() {
+                if ( this.category === 'all' ) {
+                    this.products = this.productDummy
+                } else {
+                    this.products = this.productDummy
+                }
+            },
+
+        },
+
+        methods: {
+
+            signOut(){
+                localStorage.clear()
+                this.myRole = ''
+                this.isLogin = false
+                this.page = ''
+            },
+
+            buy( item ) {
+                this.shoppingCart.push(item)
+                this.totalPrice += item.price
+            },
+
+            getAllAdmin() {
+                axios({
+                    method: 'GET',
+                    url: 'http://localhost:3000/users/',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'autorization': localStorage.getItem('jToken')
+                    }
+                })
+                .then( (response ) => {
+                    this.allAdmins = response.data.usersArr
+                    this.page = 'getAllAdmin'
+                    localStorage.setItem('page', 'getAllAdmin')
+                    localStorage.setItem('admins', JSON.stringify(this.allAdmins))
+                })
+                .catch( err => {
+                    this.showError = true
+                    this.errorMessage = err.message
+                    console.log(err.message)
+                    console.log(`ini feedback catch ${err}`)
+                })
+            },
+
+            deleteAdmin( id ) {
+                axios({
+                    method: 'DELETE',
+                    url: `http://localhost:3000/users/${id}`,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'autorization': localStorage.getItem('jToken')
+                    }
+                })
+                .then( (response ) => {
+                    console.log(`dari delete admin`)
+                    console.log(response)
+                    this.getAllAdmin()
+                })
+                .catch( err => {
+                    console.log(err)
+                    console.log(`ini feedback catch ${err}`)
+                })
+            },
+
+            login( ) {
+                axios({
+                    method: 'POST',
+                    url: 'http://localhost:3000/users/signin',
+                    data: { email: this.email, password: this.password },
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then( response => {
+                    this.myRole = response.data.myRole
+                    this.isLogin = true
+                    localStorage.setItem("jToken" , JSON.stringify(response.data))
+                    localStorage.setItem('myRole' , response.data.myRole)
+                    if (this.myRole === 'admin') {
+                        this.page = 'getAllAdmin'
+                        localStorage.setItem('page', 'getAllAdmin')
+                        this.getAllAdmin()
+                    }
+                    this.showError = false
+                    this.clearTextBox()
+                })
+                .catch( error => {
+                    console.log(error)
+                    console.log(`ini feedback catch ${error}`)
+                    this.showError = true
+                    this.errorMessage = error.message
+                })
+            },
+
+            showCreateUser(){
+                this.clearTextBox()
+                this.page = 'createUser'
+                localStorage.setItem('page', 'createUser')
+            },
+
+            createUser(e) {
+                e.preventDefault()
+                if ( this.cbxRoleAdmin === true ) {
+                    role = "admin"
+                } else {
+                    role = "notAdmin"
+                }
+                axios({
+                    method: 'POST',
+                    url: 'http://localhost:3000/users',
+                    data: { email: this.email, password: this.password, name: this.name, role: role },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'autorization': localStorage.getItem('jToken')
+                    }
+                })
+                .then( response => {
+                    console.log(`ini response signup`)
+                    console.log(`ini feedback response ${response}`)
+                    this.page = 'getAllAdmin'
+                    localStorage.setItem('page', 'getAllAdmin')
+                    this.getAllAdmin()
+                })
+                .catch( err => {
+                    console.log( err )
+                })
+            },
+
+            showEditUser(id) {
+                axios({
+                    method: 'POST',
+                    url: `http://localhost:3000/users/${id}`,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'autorization': localStorage.getItem('jToken')
+                    }
+                })
+                .then( response => {
+                    let data = response.data.obj
+                    this.myId = data.id
+                    this.name = data.name
+                    this.email = data.email
+                    if ( data.role === "admin" ) {
+                        this.cbxRoleAdmin = true
+                    } else {
+                        this.cbxRoleAdmin = false
+                    }
+                    this.page = 'editUser'
+                    localStorage.setItem('page', 'editUser')
+                })
+                .catch( err => {
+                    console.log( err )
+                })
+            },
+
+            saveEditUser(e) {
+                e.preventDefault()
+                if ( this.cbxRoleAdmin === true ) {
+                    role = "admin"
+                } else {
+                    role = "notAdmin"
+                }
+                axios({
+                    method: 'PUT',
+                    url: `http://localhost:3000/users/${this.myId}`,
+                    data: { email: this.email, name: this.name, role: role },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'autorization': localStorage.getItem('jToken')
+                    }
+                })
+                .then( response => {
+                    this.getAllAdmin()
+                    this.page = 'getAllAdmin'
+                    localStorage.setItem('page', 'getAllAdmin')
+                })
+                .catch( err => {
+                    console.log(error)
+                    console.log(`ini feedback catch ${error}`)
+                    this.showError = true
+                    this.errorMessage = error.message
+                })
+            },
+
+            checkToken () {
+                let token = localStorage.getItem('jToken')
+                if ( token ) {
+                    this.isLogin = true
+                } else {
+                    this.isLogin = false
+                }
+            },
+
+            allNeedRefresh () {
+                this.myRole = localStorage.getItem('myRole')
+                this.page = localStorage.getItem('page')
+                this.allAdmins = JSON.parse(localStorage.getItem('admins'))
+                this.showError = false
+            },
+
+            clearTextBox () {
+                this.name = ''
+                this.email = ''
+                this.password = ''
+                this.cbxRoleAdmin = false
+            },
+
+            isEmail : function(input){
+                var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                return re.test(String(input).toLowerCase());
+            }
+        },
+
+        created : function(){
+            this.checkToken()
+            this.allNeedRefresh()
+        }
+        
+    })
+    </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  </body>
+</html>
