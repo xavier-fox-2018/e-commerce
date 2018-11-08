@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Commersive</title>
+    <script defer src="https://use.fontawesome.com/releases/v5.5.0/js/all.js" integrity="sha384-GqVMZRt5Gn7tB9D9q7ONtcp4gtHIUEW/yG7h98J7IpE3kpi+srfFyyB/04OV6pG0" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <style>
+        .fixed-top{
+            position: relative;
+        }
+
+        .container {
+            margin-top: 10px;
+        }
+
+        @font-face {
+            font-family: muli;
+            src: url("https://www.fontsquirrel.com/fonts/list/find_fonts?q%5Bterm%5D=Muli&q%5Bsearch_check%5D=Y");
+        }
+
+        .bg-green{
+            background-color: teal;
+        }
+        .table td{
+            text-align: center;   
+        }
+        .table th{
+            text-align: center;   
+        }
+        .total-cart{
+            background-color: lightseagreen
+        }
+
+        .btn-cart{
+            background-color: teal;
+            border-color: teal;
+            text-decoration-color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper" v-if="page == 'home'">
+        <nav class="navbar navbar-expand-lg navbar-top-links nav navbar-dark bg-green fixed-top">
+            <div class="container">
+                <a class="navbar-brand" href="#">{{title}}</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <input type="text" class="form-control" placeholder="Search" v-model="search">
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="#">Home
+                            <span class="sr-only">(current)</span>
+                        </a>
+                        </li>
+                        <li class="nav-item" v-if="isLogin() === false"  data-toggle="modal" data-target="#loginModal">
+                            <a class="nav-link" href="#">Login</a>
+                        </li>
+                        <li class="nav-item"  v-if="isLogin() === false">
+                            <a class="nav-link" href="#">Register</a>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button" class="btn btn-cart btn-success" data-toggle="modal" data-target="#cartModal">
+                                Cart({{totalCart}}) <i class="fas fa-shopping-cart fa-spin"></i>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    
+        <div class="container">
+    
+                <div class="row">
+          
+                  <div class="col-lg-3">
+          
+                    <h1 class="my-4">{{title}}</h1>
+                    <div class="list-group">
+                      <a href="#" class="list-group-item" v-on:click="filterCategory('veggies')">Veggies</a>
+                      <a href="#" class="list-group-item" v-on:click="filterCategory('fruits')">Fruits</a>
+                      <a href="#" class="list-group-item" v-on:click="filterCategory('cuisines')">Cuisines</a>
+                    </div>
+          
+                  </div>
+                  <!-- /.col-lg-3 -->
+          
+                  <div class="col-lg-9">
+                    <div class="row">
+          
+                      <div v-for="item in items" class="col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100">
+                          <a href="#"><img class="card-img-top" v-bind:src="item.img" alt=""></a>
+                          <div class="card-body">
+                            <h4 class="card-title">
+                              <a href="#">{{item.name}} </a>
+                            </h4>
+                            <h5>Rp {{item.price.toLocaleString()}} </h5>
+                            <h5>Stock : {{item.stockDummy}} </h5>
+                            <p class="card-text"> {{item.description}} </p>
+                          </div>
+                          <div class="card-footer">
+                            
+                              <small class="text-muted">
+                                <div class="form-group">
+                                    <label for="qty" class="col-lg-4">qty</label>
+                                    <div class="col-lg-8">
+                                        <input type="number" min="0" class="form-control col-md-6" v-model="item.qty" name="qty" v-bind:max="item.stock">
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary" v-on:click="addToCart(item)">Add to Cart</button> 
+                            </small>
+                          </div>
+                        </div>
+                      </div> 
+          
+                    </div>
+                    <!-- /.row -->
+          
+                  </div>
+                  <!-- /.col-lg-9 -->
+          
+            </div>
+                <!-- /.row -->
+          
+        </div>
+
+        <!-- Modal Cart -->
+        <div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Shopping Cart</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-hover table-condensed">
+                            <tr>
+                                <th style="width:10%">name</th>
+                                <th style="width:10%">price</th>
+                                <th style="width:10%">qty</th>
+                                <th style="width:10%">subtotal</th>
+                            </tr>
+                            <tbody >
+                                <tr v-for="cart in carts">
+                                    <td>{{cart.name}}  </td>
+                                    <td>{{cart.price}} </td>
+                                    <td>{{cart.qty}} </td>
+                                    <td>{{cart.subtotal}}</td>
+                                </tr>
+                                <tr class="total-cart">
+                                    <td colspan="3"> Total </td>
+                                    <td>{{total}}</td>
+                                </tr>
+                            </tbody>
+                        </table>  
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Continue Shopping</button>
+                        <button type="button" class="btn btn-primary">Checkout</button>
+                    </div>
+                </div>
+            </div>
+        </div> 
+        <!-- Modal Login -->
+        <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Please Login</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p class="alertEmail" style="background-color:tomato" v-show="isEmail(user.email)=== false">Please input a valid email</p>
+                        <input type="text" class="form-control" name="email" id="email" placeholder="Email" v-model="user.email"><br>
+                        <p class="alertPassword" style="background-color:tomato" v-show="user.password.length < 8">Password must be at least 8 characters</p>                        
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Password" v-model="user.password">
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- script -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        var wrapper = new Vue({
+            el : '.wrapper',
+            data: {
+                title: 'Daily Fresh',
+                page: 'home',
+                items:[{
+                    name: 'Tomat',
+                    img: 'tomat.jpg',
+                    price: 5000,
+                    stock: 50,
+                    stockDummy: 50,
+                    qty: 0,
+                    description: 'Tomat Super bisa bikin kenyang',
+                    subtotal: 0,
+                    category: 'veggies'
+                }, {
+                    name: 'Lemon',
+                    img: 'lemon.jpg',
+                    price: 20000,
+                    stock: 20,
+                    stockDummy: 20,
+                    qty: 0,
+                    description: 'Lemon Segar bisa bikin kesengsem',
+                    subtotal: 0,
+                    category: 'fruits'
+                }],
+                carts: [],
+                totalCart: 0,
+                total: 0,
+                filteredItems: [{
+                    name: 'Tomat',
+                    img: 'tomat.jpg',
+                    price: 5000,
+                    stock: 50,
+                    stockDummy: 50,
+                    qty: 0,
+                    description: 'Tomat Super bisa bikin kenyang',
+                    subtotal: 0,
+                    category: 'veggies'
+                }, {
+                    name: 'Lemon',
+                    img: 'lemon.jpg',
+                    price: 20000,
+                    stock: 20,
+                    stockDummy: 20,
+                    qty: 0,
+                    description: 'Lemon Segar bisa bikin kesengsem',
+                    subtotal: 0,
+                    category: 'fruits'
+                }],
+                category: 'all',
+                search: '',
+                user: {
+                    email: '',
+                    password: ''
+                }
+            },
+
+            methods: {
+                addToCart: function(item){
+                    let checkItems = this.items.findIndex(data => data.name == item.name)
+                    this.items[checkItems].stockDummy -= this.items[checkItems].qty
+                    this.items[checkItems].subtotal += this.items[checkItems].qty * this.items[checkItems].price
+                    this.totalCart += Number(this.items[checkItems].qty)
+                    this.total += this.items[checkItems].subtotal
+                    
+                    let checkCarts = this.carts.findIndex(cart=> cart.name == item.name)
+                    if( checkCarts == -1){
+                        this.carts.push(item)
+                    }
+                },
+                
+                filterCategory: function(category){
+                    this.category = category
+                },
+                
+                isLogin: function(){
+                    let token = localStorage.getItem('token')
+                    if(token){
+                        return true
+                    } else {
+                        return false
+                    }
+                },
+
+                setPage: function(page){
+                    this.page = page
+                }, 
+
+                login: function(user){
+                    axios
+                        .post('http://localhost:3000/users/login', this.user)
+                        .then(function(response){
+                            localStorage.setItem('token', response.token)
+                        })
+                        .catch('')
+                }, 
+
+                isEmail: function(input){
+                    
+                    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                    if(this.user.email !== ''){
+                        return re.test(String(input).toLowerCase());
+                    }
+                }
+            },
+
+            watch: {
+                category: function(value){
+                    if(this.category === 'all'){
+                        this.items = this.filteredItems
+                    } else {
+                        this.items = this.filteredItems.filter(item=> item.category === value)
+                    }
+                }
+                
+
+            }
+    })
+
+    </script>
+
+</body>
+</html>
