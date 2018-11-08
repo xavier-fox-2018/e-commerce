@@ -67,8 +67,8 @@
           <div class="summary-checkout col-12 col-lg-4">
             <h4>Cart Total</h4>
             <ul id="summary-table">
-              <li id="Subtotal"></li>
-              <li id="Tax"></li>
+              <li id="Subtotal">{{item.price}}*{{item.quantity}}</li>
+              <li id="Tax">{{item.price* 0.1}}</li>
               <li id="Total"></li>
               <button class="btn w-100">Checkout</button>
             </ul>

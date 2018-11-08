@@ -16,6 +16,7 @@ class Item {
     )
     .catch( err => res.status(500).err(err))
   }
+
   static update (req,res) {
     item.findByIdAndUpdate( req.body.id,{
       name: req.body.taskName,
@@ -50,9 +51,10 @@ class Item {
     .catch (err => res.status(500).json(err))
   }
   
-  static delete (req,res) {
+  static deleteOne (req,res) {
     item.findOneAndDelete({
-      _id: req.body.id
+      _id: req.body.id,
+      user: req.token.user
     })
     .then( data => res.status(200).json(data))
     .catch (err => res.status(500).json(err))

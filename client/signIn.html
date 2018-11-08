@@ -2,8 +2,10 @@
 <html lang="en">
 <head>
   <title>Log In</title>
-  <link href="./style.css" rel="stylesheet" type="text/css">
+  <!-- <link href="./style.css" rel="stylesheet" type="text/css"> -->
   <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script><!-- load google auth2 lib -->
   <meta name="google-signin-client_id" content="803894408351-8uclep7lb8052h78vhoofq8vs77ahub5.apps.googleusercontent.com">
 
   <!-- load jquery script from google cdn -->
@@ -15,20 +17,18 @@
     <input type = "password" id = "password" placeholder = "enter password" required>
     <input type = "submit" value="Sign in">
   </form>
-  <div class="g-signin2" data-onsuccess="onSignIn"></div>
+  <div class="g-signin2" !data-onsuccess="onSignIn" ></div>
   <p id="msg"></p>
   <a href="registration.html">Register as new user</a>
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script><!-- load google auth2 lib -->
   <script>
-      function start() {
-        gapi.load('auth2', function() {
-          auth2 = gapi.auth2.init({
-            //scope: 'additional_scope'
-          });
-        });
-      }
+      // function start() {
+      //   gapi.load('auth2', function() {
+      //     auth2 = gapi.auth2.init({
+      //       //scope: 'additional_scope'
+      //     });
+      //   })
+      // }
+      
       function onSignIn(googleUser) {
         var id_token = googleUser.getAuthResponse().id_token;
         $.ajax({
@@ -46,29 +46,27 @@
             processData: false,
           })
         }
-
   </script>
+
   <script>
     $("document").ready(() => {
-      
+
+      //sign in biasa
       $("#signIn").submit(function() {
-        const signInData = {
+        const data = {
           email : $("#email").val(),
           password : $("#password").val()
         }
-        $.post('http://localhost:3000/signIn' , signInData)
+        $.post('http://localhost:3000/signIn' , data)
         .then( res => {
-            localStorage.setItem ("token", res.token)
-            $("#msg").html('success! Redirecting you to index page...');
-            setTimeout( function () {
-              window.location("http://localhost:8080/index.html")},
-              1000)
+          if(!localStorage.getItem('token')) localStorage.setItem ("token", res.token)
+          $("#msg").html('success! Redirecting you to index page...');
+          setTimeout( function () {
+            window.location.replace("http://localhost:8080/index.html")},
+            1000)
         })
         .catch( err => $("#msg").html(err.responseJSON)
         );
-
-       
-
         return false;
       })
     })

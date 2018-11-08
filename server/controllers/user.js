@@ -1,7 +1,19 @@
 const Model = require('../models/user');
 const bcrypt = require('bcrypt');
+const helperCreateToken = require('../helpers/createToken');
+const jwt = require('jsonwebtoken');
+
 class User {
   static signIn (req,res, next) {
+    if(req.headers.token){
+      console.log('user has token')
+      jwt.verify(req.headers.token, process.env.SECRET, function(err, decoded) {
+        if (err) {
+          
+        }
+        else res.send(200).json('user has signed in with jwt token'); 
+      })
+    }
     Model.findOne({
       email:req.body.email
     })
@@ -12,12 +24,18 @@ class User {
       //check password with bcrypt
         bcrypt.compare(req.body.password, user.password)
         .then( data => {
-          if(!data) throw 'wrong password. Try again.' ;
-          else res.status(200).json(data.items);
+          if(data==false) res.status(500).json('wrong password');
+          else {
+            const token = jwt.sign(
+              user.toObject(), 
+              process.env.SECRET
+              );
+            res.status(200).json({token:token});
+          }
         })
       }
     })
-    .catch( err => res.status(500).err(err))
+    .catch( err => res.status(500).json(err))
   }
 
   static register(req,res, next) {
@@ -30,9 +48,14 @@ class User {
         role : 'customer',
         password: hash,
       })
-      .then( payload => {
-        res.locals.payload=payload;
-        next()
+      .then(payload => {
+        const token = jwt.sign(
+          payload.toObject(), 
+          process.env.SECRET
+          );
+        res.status(200).json({
+          token:token
+        })
       })
     })
     .catch( err => res.status(500).json(err))

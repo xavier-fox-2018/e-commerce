@@ -16,13 +16,14 @@ function verifyGToken (req,res,next) {
       })
       .then(user => {
         //if no user found register
-        if(!user) { userModel.create({
+        if(!user) { 
+          userModel.create({
             name: payload['given_name'] + payload['family_name'],
             email: payload['email'],
             role: 'customer',
             password: '',
             cart: []
-            })
+          })
           .then(newUser => res.status(200).json(newUser))
           .catch(err => res.status(500).json(err))
         }

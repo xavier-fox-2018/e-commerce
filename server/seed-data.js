@@ -8,10 +8,10 @@ db.User.insertOne({
   password: 12345,
   items: []
 })
-db.User.insertOne({
+db.users.insertOne({
+  email:'dan',
   firstName: 'dan',
   lastName: 'darmawan',
-  username: 'customer',
   role:'admin',
   password: 12345,
   items: ['5be15f537fa7721a79080e75']

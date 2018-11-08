@@ -1,7 +1,25 @@
 <nav class=" row navbar navbar-expand-md navbar-light bg-light sticky-top">
   <h1 class="col-4">King Cruises</h1>
-  <a href="#" onclick="signOut();">Sign out</a>
+  <button id="signOut" >Sign outtt</button>
+  <script>
+     $("#signOut").click(function (event) {
+      console.log('clicked')
+      signOut();
+      window.location.replace('http://localhost:8080/signIn.html');
+      })
 
+      function signOut() {
+        localStorage.removeItem('token');
+        gapi.load('auth2', function () {
+          gapi.auth2.init({
+            client_id:'803894408351-8uclep7lb8052h78vhoofq8vs77ahub5.apps.googleusercontent.com'
+          });
+          let auth2 = gapi.auth2.getAuthInstance();
+          auth2.signOut();
+          gapi.auth2.getAuthInstance().disconnect();
+        });
+      }
+  </script>
   <div class="col-4">
       <a class="navbar-brand" href="#">
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive">
@@ -27,6 +45,5 @@
           </li>
         </ul>
       </div>
-      <div class="g-signout2" id="signOut"></div>
     </div>
 </nav>
