@@ -454,7 +454,7 @@
                   <span class="text-muted">${{cart.sub_total}}</span>
                   <div class="mask rgba-purple-light d-flex justify-content-center">
                     <div class="row d-flex justify-content-center" @click="removeFromCart(cart)" style="cursor:pointer">
-                      <h5 class="mt-3">Remove Item</h5>
+                      <h5 class="mt-3">Reduce Quantity</h5>
                     </div>
                   </div>
                 </li>
@@ -765,10 +765,11 @@
         removeFromCart(cartItem){
           axios({
             method : 'DELETE',
-            url : `${this.config.port}/carts/${cartItem._id}`,
+            url : `${this.config.port}/carts`,
             headers : {
               token : localStorage.getItem('token')
-            }
+            },
+            data : cartItem
           })
           .then(response=>{
             this.getUserCart()

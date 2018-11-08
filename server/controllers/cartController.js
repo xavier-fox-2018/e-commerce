@@ -62,9 +62,21 @@ class Controller {
                     }
                 })
                 .then((done)=>{
-                    res.status(200).json({
-                        message : `${input_item.name} added to your carts`
-                    })
+                    Item.findById(input_item._id)
+                    .then((item)=>{
+                        item.stock = item.stock - 1
+                        item.save()
+                        .then((done)=>{
+                            res.status(200).json({
+                                message : `${input_item.name} added to your carts`
+                            })
+                        })
+                        .catch((err)=>{
+                            res.status(500).json({
+                                message : 'Error In Reducing Item Stock'
+                            })
+                        })
+                    })    
                 })
                 .catch((err)=>{
                     console.log(err)
@@ -96,11 +108,11 @@ class Controller {
                         })
                     })
                     .catch((err)=>{
-                        console.log('masuk error')
+                        console.log(err)
                     })
                 })
                 .catch((err)=>{
-
+                    console.log(err)
                 })
             }
         })
@@ -111,26 +123,75 @@ class Controller {
     }
 
     static removeFromCart(req,res){
-        console.log('masuk controller')
-        Cart.findOneAndUpdate({
-            user : req.userId
-        },{
-            $pull : {
-                item_list : {
-                    _id : req.params.id
+
+        if(req.body.qty > 1){
+            Item.findById(req.body.item)
+                .then((resultItem)=>{
+                    resultItem.stock = resultItem.stock + 1
+                    resultItem.save()
+                    .then((done)=>{
+                        Cart.updateOne({
+                            'user': req.userId,
+                            'item_list': { $elemMatch : { item : resultItem._id } }
+                        },{
+                            '$set' : {
+                                'item_list.$.qty' : req.body.qty - 1,
+                                'item_list.$.sub_total' : req.body.sub_total - resultItem.price
+                            }
+                        })
+                        .then((done)=>{
+                            res.status(200).json({
+                                message : `Reduce ${resultItem.name} Quantity In Your Cart`
+                            })
+                        })
+                        .catch((err)=>{
+                            res.status(500).json({
+                                message : 'Add To Cart Error'
+                            })
+                        })
+                    })
+                    .catch((err)=>{
+                        console.log(err)
+                    })
+                })
+                .catch((err)=>{
+                    console.log(err)
+                })
+
+
+        }else if(req.body.qty <= 1){
+            
+            Cart.findOneAndUpdate({
+                user : req.userId
+            },{
+                $pull : {
+                    item_list : {
+                        item : req.body.item._id
+                    }
                 }
-            }
-        })
-        .then((cart)=>{
-            res.status(200).json({
-                message : "Item Removed From Carts"
             })
-        })
-        .catch((err)=>{
-            res.status(500).json({
-                message : "Error In Getting User Carts Data"
+            .then((cart)=>{
+                Item.findById(req.body.item._id)
+                .then((resultItem)=>{
+                    resultItem.stock = resultItem.stock + 1
+                    resultItem.save()
+                    
+                    res.status(200).json({
+                        message : "Item Removed From Carts"
+                    })
+                })
+                .catch((err)=>{
+                    res.status(500).json({
+                        message : 'Error In Adding Item Stock'
+                    })
+                })  
             })
-        })
+            .catch((err)=>{
+                res.status(500).json({
+                    message : "Error In Getting User Carts Data"
+                })
+            })
+        }
     }
 }
 
