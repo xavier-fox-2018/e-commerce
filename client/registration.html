@@ -19,8 +19,8 @@
     <label for="name"><b>name</b></label>
     <input type="text" placeholder="Enter Full name" id="name" required>
 
-    <label for="username"><b>username</b></label>
-    <input type="text" placeholder="Enter username" id="username" required>
+    <label for="email"><b>email</b></label>
+    <input type="text" placeholder="Enter email" id="email" required>
 
     <label for="password"><b>Password</b></label>
     <input type="password" placeholder="Enter Password" id="password" required>
@@ -38,7 +38,7 @@
       $("#registration").submit( () => {
         const formData ={
         "name" : $("#name").val(),
-        "username" : $("#username").val(),
+        "email" : $("#email").val(),
         "password": $("#password").val(),
         }
           $.post("http://localhost:3000/register", formData)

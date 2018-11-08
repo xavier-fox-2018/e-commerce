@@ -96,7 +96,13 @@ input[type=text]:focus {
   text-shadow: 1px 1px 10px #000;
 }
 
-
+.items {
+  border: solid black 1px;
+  padding: 10px 5px;
+}
+.checkout-table {
+  background-color: #f1f1f1;
+}
 /*
 Extra small (xs) devices (portrait phones, less than 576px)
 No media query since this is the default in Bootstrap

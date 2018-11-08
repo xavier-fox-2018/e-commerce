@@ -1,0 +1,2 @@
+CLIENT ID = 803894408351-8uclep7lb8052h78vhoofq8vs77ahub5.apps.googleusercontent.com
+SECRET= 8ZJLIF9mOwPXy1fJCZpHdYrn

@@ -1,14 +1,6 @@
 const jwt = require('jsonwebtoken');
 
 function verifyToken(req, res, next) {
-  let token;
-  let code; 
-  req.headers.authorization ? token = req.headers.authorization : code = req.body.code
-  if(code) {
-    //MAKE GOOGLE API CALL TO GET ACCESS CODE. 
-    //REGISTER USER INTO THE SYSTEM BASED ON INFO IN ACCESS CODE
-    //--- > NO PASSWORD REQUIRED, JUST CREATE A USER ID THAT IS USED FOR SESSION
-  }
   if (!token) return res.status(401).send({ auth: false, message: 'NO TOKEN PROVIDED' });        
 
   jwt.verify(token, process.env.SECRET, function(err, decoded) {
@@ -19,5 +11,6 @@ function verifyToken(req, res, next) {
   })
   ;
 }
+
 
 module.exports = verifyToken;

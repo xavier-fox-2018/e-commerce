@@ -1,7 +1,6 @@
 const item = require('../models/item.js')
 
 class Item {
-  
   static create (req,res) {
     item.create({
       name : req.body.name,

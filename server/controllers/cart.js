@@ -1,8 +1,9 @@
 const Model = require('./models/cart.js')
 
 class Cart {
-  static add () {
-
+  static add (req,res) {
+    //customer can add item to cart
+    Model.create()
   }
   static delete () {
 

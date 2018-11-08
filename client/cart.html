@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Cart</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+  <link href="style.css" rel="stylesheet">
+  <script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+  <script src="header-footer-nav.js"></script>
+</head>
+
+<body>
+  <div id="header"></div>
+  <div class="container-fluid">
+    <div class="row">
+        <div class="detail-checkout col-12 col-lg-8" >
+            <div class="mt-5">
+                <h2>My Cart</h2>
+            </div>
+              <div id="vue" class="checkout-table mt-4">
+                <table class="table-headers" >
+                  <thead>
+                      <tr>
+                          <th></th>
+                          <th>Item</th>
+                          <th>Price</th>
+                          <th>Quantity</th>
+                        </tr>
+                  </thead>
+                 <tbody v-if="Object.keys(mycart).length===0">
+                   <tr >
+                     <td rowspan=4>Cart is empty.</td>
+                   </tr>
+                 </tbody>
+                  <tbody v-for="item in mycart">
+                      <tr class="individual-item">
+                          <td id="item-img">
+                            {{item.picture}}
+                          </td>
+                          <td id="item-name">
+                              <h5>{{item.name}}</h5>
+                          </td>
+                          <td id="item-price">
+                            <span>{{item.price}}</span>
+                          </td>
+                          <td id="item-quantity">
+                            <span>{{item.quantity}}</span>
+                          </td>
+                        </tr>
+                  </tbody>
+                  
+                </table>
+      
+              </div>
+          </div>
+          <div class="summary-checkout col-12 col-lg-4">
+            <h4>Cart Total</h4>
+            <ul id="summary-table">
+              <li id="Subtotal"></li>
+              <li id="Tax"></li>
+              <li id="Total"></li>
+              <button class="btn w-100">Checkout</button>
+            </ul>
+          </div>
+    </div>
+  
+  </div>
+  <div id="footer"></div>
+  <script>$("document").ready ( ()=> {
+    new Vue( {
+      el:"#vue",
+      data:{
+        mycart:[{
+                            name :'Bahamas',
+                            description: '',
+                            stock :200, 
+                            price : 500,
+                            picture: 'img/rooms/queen_room.jpg',
+                            category: 'cruise',
+                            ratings : [4,4,5],
+                            reviews : ['good item','enjoyable stay']
+                          },
+                          {
+                        name :'Bali',
+                        description: '',
+                        stock :5, 
+                        price : 2000,
+                        picture: 'img/rooms/deluxe_room.jpg',
+                        category: 'item',
+                        ratings : [5,5,5],
+                        reviews : ['great item','very enjoyable stay']
+                      }]
+      }
+    })
+  })
+
+  </script>
+</body>
+
+</html>

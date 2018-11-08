@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link href="style.css" rel="stylesheet">
+    <script
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous">
+    </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+    <script src="header-footer-nav.js"></script>
+    
+  </head>
+<body>
+<div id="header"></div>
+<!-- Items-->
+<div id="vue">
+        <div class="container-fluid">
+          <div class="row "></div>
+            <div class="col-md-4 col-sm-6 items" v-for="item in items">
+                <div class="item">
+                    <img class="item-img-top img-responsive" v-bind:src="item.picture">
+                    <div class="item-body">
+                      <h4 class="item-name"> {{item.name}} </h4>
+                      <h4 class="item-price"> Price-per-night: {{item.price}}</h4>
+                      <p class="item-text" > Rating: {{calcAvg(item.ratings)}}</p>
+                      <a class="add-to-cart btn btn-outline-primary"> Add To Cart</a>
+                    </div>         
+                </div>
+            </div>
+  </div>        
+    <div id="footer"></div>
+    <script>
+        $("add-to-cart").click
+        $('document').ready( function () {
+          let items=[];
+          $.get({
+          method:'get',
+          url:"http://localhost:3000/items/all"
+          })
+          .done( res => {
+            res.forEach(item => {
+              items.push(item)
+            });
+            new Vue({
+            el: '#vue',
+            data: {
+              items: [{
+                          name :'Bahamas',
+                          description: '',
+                          stock :200, 
+                          price : 500,
+                          picture: 'img/rooms/queen_room.jpg',
+                          category: 'cruise',
+                          ratings : [4,4,5],
+                          reviews : ['good item','enjoyable stay']
+                        },
+                      {
+                        name :'Bali',
+                        description: '',
+                        stock :5, 
+                        price : 2000,
+                        picture: 'img/rooms/deluxe_room.jpg',
+                        category: 'item',
+                        ratings : [5,5,5],
+                        reviews : ['great item','very enjoyable stay']
+                      },
+                      {
+                        name :'Manado',
+                        description: '',
+                        stock :15, 
+                        price : 500,
+                        picture: 'img/rooms/bunk_room.jpg',
+                        category: 'item',
+                        ratings : [4,3,3,3],
+                        reviews : ['ok item','somewhat enjoyable stay']
+                      },
+                      {
+                        name :'Entertainment Package',
+                        stock : Infinity, 
+                        price : 150,
+                        picture: 'img/rooms/entertainment_theater.jpg',
+                        category: 'Option',
+                        ratings : [4,5,5,4],
+                        reviews : ['great show']
+                      },       
+                      {
+                        name :'Buffet Package',
+                        stock : Infinity, 
+                        price : 300,
+                        picture: 'img/rooms/buffet_food.jpg',
+                        category: 'Option',
+                        ratings : [4,3,5,5],
+                        reviews : ['great','awesome']
+                      }       
+                    ]
+                },
+              methods: {
+                calcAvg: function (ratings) {
+                  let total = 0;
+                  ratings.forEach(rating => total+= rating);
+                  return (total / ratings.length).toFixed(1)
+              }
+            }
+          })
+          })
+          
+        })
+      </script>
+</body>
+</html>
+
+
