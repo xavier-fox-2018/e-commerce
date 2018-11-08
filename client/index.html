@@ -122,21 +122,21 @@
           <div class="modal-body">
             <div class="form-group">
               <label for="registerNameInput">Name</label>
-              <input type="email" class="form-control" id="registerNameInput" aria-describedby="nameHelp" placeholder="Enter Your Name">
+              <input type="email" class="form-control" id="registerNameInput" v-model= "registerNameInput" aria-describedby="nameHelp" placeholder="Enter Your Name">
             </div>
             <div class="form-group">
               <label for="registerEmailInput">Email address</label>
-              <input type="email" class="form-control" id="registerEmailInput" aria-describedby="emailHelp" placeholder="Enter email">
+              <input type="email" class="form-control" id="registerEmailInput" v-model= "registerEmailInput" aria-describedby="emailHelp" placeholder="Enter email">
               <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
             </div>
             <div class="form-group">
               <label for="registerPasswordInput">Password</label>
-              <input type="password" class="form-control" id="registerPasswordInput" placeholder="Password">
+              <input type="password" class="form-control" id="registerPasswordInput" v-model = "registerPasswordInput" placeholder="Password">
             </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Register</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="register">Register</button>
           </div>
         </div>
       </div>
@@ -151,11 +151,19 @@
             </button>
           </div>
           <div class="modal-body">
-            ...
+              <div class="form-group">
+                <label for="loginEmailInput">Email address</label>
+                <input type="email" class="form-control" id="loginEmailInput" v-model="loginEmailInput" aria-describedby="emailHelp"
+                  placeholder="Enter email">
+              </div>
+              <div class="form-group">
+                <label for="registerPasswordInput">Password</label>
+                <input type="password" class="form-control" id="loginPasswordInput" v-model="loginPasswordInput" placeholder="Password">
+              </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="signin">Sign In</button>
           </div>
         </div>
       </div>
@@ -170,7 +178,7 @@
           <h1 class="text-center">Start shopping</h1>
         </div>
       </div>
-      <div class="row">
+      <div class="row mb-4">
         <div class="col-8">
           <div class="thumbcap text-center">
             <img class="img-fluid" src="https://n.nordstrommedia.com/id/6d6f1103-e0a4-4420-a29e-6401736c6847.jpeg?w=1609&h=800" alt="">
@@ -267,15 +275,11 @@
         </div>
       </div>
     </div>
-    <footer>
-      <div class="row">
-        <div class="col">
-          <h6>Pepeshop</h6>
+    <footer class="py-5 bg-dark">
+        <div class="container">
+          <p class="m-0 text-center text-white">Copyright &copy; PepeStore 2018</p>
         </div>
-        <div class="col">
-          <h6 class="text-right">2018</h6>
-        </div>
-      </div>
+        <!-- /.container -->
     </footer>
   </div>
   <script src="https://apis.google.com/js/platform.js" async defer></script>
@@ -295,7 +299,12 @@
       data: {
         filter: true,
         products: [],
-        cart: []
+        cart: [],
+        registerEmailInput:'',
+        registerNameInput: '',
+        registerPasswordInput: '',
+        loginEmailInput: '',
+        loginPasswordInput: ''
       },
       computed: {
         getGrandTotal: function () {
@@ -334,6 +343,31 @@
             }
           })
           return output
+        },
+        register: function () {
+          axios.post('http://localhost:3000/users', {
+            name: this.registerNameInput,
+            email: this.registerEmailInput,
+            password: this.registerPasswordInput
+          })
+          .then(result => {
+            console.log(result)
+          })
+          .catch(error => {
+            console.log(error)
+          })
+        },
+        signin: function () {
+          axios.post('http://localhost:3000/users/login', {
+            email: this.loginEmailInput,
+            password: this.loginPasswordInput
+          })
+          .then(result => {
+            console.log(result)
+          })
+          .catch(error => {
+            console.log(error)
+          })
         }
       },
       mounted: function () {

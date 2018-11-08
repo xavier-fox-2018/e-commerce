@@ -74,7 +74,19 @@ class ProductController {
   }
 
   static getCategory(req, res, next) {
-
+    Category.find()
+    .then(data => {
+      res.status(201).json({
+        result: data,
+        error: null
+      })
+    })
+    .catch(error => {
+      res.status(400).json({
+        result: null,
+        error: error
+      })
+    })
   }
 }
 

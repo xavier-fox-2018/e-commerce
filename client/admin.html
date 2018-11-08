@@ -47,94 +47,98 @@
             </div>
           </li>
         </ul>
-        <div class="row align-middle d-flex align-items-center h-100">
-          <div class="col-5">
-            <p class="pnav mb-0" id="sellLink">Sell on PepeShop</p>
-          </div>
-          <div class="col-2">
-            <p class="pnav mb-0" id="registerLink" data-toggle="modal" data-target="#registerModal">Register</p>
-          </div>
-          <div class="col-3">
-            <button class="btn btn-outline-secondary" type="button" id="button-signin" data-toggle="modal" data-target="#signinModal">Sign
-              In
-            </button>
-          </div>
-          <div class="col-2">
-            <div class="cartdiv" data-toggle="modal" data-target="#cart">
-              <img src="assets/images/cart.png" alt="shoppingcart" width="30" height="30" class="d-inline-block align-top" data-toggle="tooltip"
-                data-placement="bottom" title="Cart">
-            </div>
-          </div>
-        </div>
       </div>
     </nav>
   </header>
 
   <div id="app">
+
+    <div class="modal fade" id="addItemModal" tabindex="-1" role="dialog" aria-labelledby="addItemModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addItemModalLabel">Add a new item</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="">Product name</label>
+              <input type="text" class="form-control" id="prodName" aria-describedby="emailHelp" v-model="productName" placeholder="Product Name">
+            </div>
+            <div class="form-group">
+              <label for="">Product Description</label>
+              <input type="text" class="form-control" id="prodDescription" v-model="productDescription" placeholder="Product Description">
+            </div>
+            <div class="form-group">
+              <label for="">Product Price</label>
+              <input type="number" class="form-control" id="prodPrice" aria-describedby="emailHelp" v-model="productPrice" placeholder="Product Price">
+            </div>
+            <div class="form-group">
+              <label for="prodDescription">Product Stock</label>
+              <input type="number" class="form-control" id="prodStock" v-model="productStock" placeholder="Product Stock">
+            </div>
+            <div class="form-group">
+              <label for="exampleFormControlSelect1">Product Category</label>
+              <select class="form-control" id="exampleFormControlSelect1" v-model="value">
+                <option v-for="category in categories" v-bind:value="category._id">{{category.name}}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="productpic">Product picture</label>
+              <input type="file" class="form-control-file" id="file" ref="file" v-on:change="handleFileUpload()">
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button class="btn btn-secondary" v-on:click="createProduct" data-dismiss="modal">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="container">
       <!-- ADMIN DIV -->
 
       <div class="row ">
         <div class="col my-3">
-          <h1 class="text-center">V PLACEHOLDER ADMIN AREA V</h1>
+          <h1 class="text-center">Welcome back!</h1>
+        </div>
+      </div>
+      <div class="row text-center">
+        <div class="col my-3">
+          <button class="btn btn-primary" data-toggle="modal" data-target="#addItemModal">Add new product</button>
         </div>
       </div>
       <div class="row">
-        <div class="col mx-2 my-2" v-for="element in products">
-          <div class="card" style="width: 18rem;">
+        <div class="col-lg-3 col-md-6 mb-4 mx-2" v-for="element in products">
+          <div class="card h100" >
             <img class="card-img-top" v-bind:src="element.img" alt="Card image cap">
             <div class="card-body">
               <h5 class="card-title">{{element.name}}</h5>
+              <p class="card-text">Stock: {{element.stock}}</p>
               <p class="card-text">{{toCurrency(element.price)}}</p>
               <p class="card-text">{{element.description}}</p>
-              <button class="btn btn-primary" v-on:click="">Add Stock</button>
-              <button class="btn btn-danger" v-on:click="">Delete Product</button>
+              <div class="input-group mb-3">
+                <input type="number" class="form-control" placeholder="Add Stock" aria-label="Add Stock" aria-describedby="button-addon2">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="button" id="button-addon2">Add Stock</button>
+                </div>
+              </div>
+              <button class="btn btn-primary" v-on:click="">Edit</button>
+              <button class="btn btn-danger" v-on:click="">Delete</button>
             </div>
           </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col my-3">
-          <h2 class="text-center">Add a Product</h2>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col my-3">
-          <div class="form-group">
-            <label for="">Product name</label>
-            <input type="text" class="form-control" id="prodName" aria-describedby="emailHelp" v-model="productName" placeholder="Product Name">
-          </div>
-          <div class="form-group">
-            <label for="">Product Description</label>
-            <input type="text" class="form-control" id="prodDescription" v-model="productDescription" placeholder="Product Description">
-          </div>
-          <div class="form-group">
-            <label for="">Product Price</label>
-            <input type="number" class="form-control" id="prodPrice" aria-describedby="emailHelp" v-model="productPrice" placeholder="Product Price">
-          </div>
-          <div class="form-group">
-            <label for="prodDescription">Product Stock</label>
-            <input type="number" class="form-control" id="prodStock" v-model="productStock" placeholder="Product Stock">
-          </div>
-          <div class="form-group">
-            <label for="prodDescription">Product Category</label>
-            <input type="text" class="form-control" id="prodCat"  v-model="productCategory" placeholder="Product Category">
-          </div>
-          <div class="form-group">
-            <label for="productpic">Product picture</label>
-            <input type="file" class="form-control-file" id="file" ref="file" v-on:change="handleFileUpload()">
-          </div>
-          <button class="btn btn-secondary" v-on:click="createProduct">Submit</button>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col my-3">
-          <h1 class="text-center">^ END OF ADMIN AREA ^</h1>
-        </div>
-      </div>
-
     </div>
+    <footer class="py-5 bg-dark">
+        <div class="container">
+          <p class="m-0 text-center text-white">Copyright &copy; PepeStore 2018</p>
+        </div>
+        <!-- /.container -->
+    </footer>
   </div>
   <script src="https://apis.google.com/js/platform.js" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -145,6 +149,8 @@
     crossorigin="anonymous"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="scripts/main.js"></script>
+  <!-- <script type="text/x-template", id="tess">
+  </script> -->
   <script>
 
     new Vue({
@@ -158,18 +164,9 @@
         productStock: 0,
         productCategory: '',
         products: [],
-        filteredData: [{
-          name: 'Gucci Sneakers',
-          img: 'https://n.nordstrommedia.com/id/51c215f3-36eb-44a5-a9b7-74c0a771623a.jpeg?crop=pad&pad_color=FFF&format=jpeg&trim=color&trimcolor=FFF&w=780&h=838&quality=70',
-          price: 7500000,
-          description: 'Gucci New Ace Webbed Low Top Sneaker (Men)'
-        }, {
-          name: 'Gucci Shoulderbag',
-          img: 'https://n.nordstrommedia.com/id/90157a74-6d99-4f25-9b8d-a951bc3cf792.jpeg?crop=pad&pad_color=FFF&format=jpeg&trim=color&trimcolor=FFF&w=780&h=838&quality=70',
-          price: 34000000,
-          description: 'Gucci Medium Syvie Top Handle Leather Bag',
-        }],
-        cart: []
+        categories: [],
+        cart: [],
+        value: ''
       },
       computed: {
         getGrandTotal: function () {
@@ -216,7 +213,7 @@
           let formData = new FormData()
           formData.append('productpic', this.file)
           formData.append('name', this.productName)
-          formData.append('description', this.productDescription)
+          formData.append('description', this.value)
           formData.append('stock', this.productStock)
           formData.append('price', this.productPrice)
           axios.post('http://localhost:3000/products', formData, {
@@ -235,8 +232,12 @@
       mounted: function () {
         axios.get('http://localhost:3000/products')
           .then(response => {
-            console.log(response)
+            //console.log(response)
             this.products = response.data.result
+            return axios.get('http://localhost:3000/products/categories')
+          })
+          .then(data => {
+            this.categories = data.data.result
           })
           .catch(error => {
             console.log(error)
