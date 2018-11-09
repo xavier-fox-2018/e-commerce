@@ -3,29 +3,19 @@ const Category = require('../models/category')
 
 class ProductController {
   static addProduct(req, res, next) {
-    console.log(req)
-    
     Product.create({
       name: req.body.name,
       description: req.body.description,
       stock: Number(req.body.stock),
       price: Number(req.body.price),
+      categoryId: req.body.category,
       img: `http://localhost:3000/${req.file.filename}`
     })
       .then(data => {
-        Category.updateOne({
-          _id: req.body.category
-        }, {
-            $push: {
-              products: data._id
-            }
-          }, (err, raw) => {
-            console.log(req.body.category)
-            res.status(201).json({
-              result: data,
-              error: null
-            })
-          })
+        res.status(201).json({
+          result: data,
+          error: null
+        })
       })
       .catch(error => {
         res.status(400).json({
@@ -51,7 +41,19 @@ class ProductController {
   }
 
   static deleteProduct(req, res, next) {
-
+    Product.findByIdAndDelete(req.params.id)
+    .then(data => {
+      res.status(200).json({
+        result: data,
+        error: null
+      })
+    })
+    .catch(error => {
+      res.status(500).json({
+        result: null,
+        error: error
+      })
+    })
   }
 
   static addCategory(req, res, next) {

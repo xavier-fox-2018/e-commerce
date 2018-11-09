@@ -20,6 +20,7 @@ const upload = multer({
 /* GET users listing. */
 router.get('/', ProductController.getProduct)
 router.post('/', upload.single('productpic'), ProductController.addProduct);
+router.delete('/:id', ProductController.deleteProduct)
 router.get('/categories', ProductController.getCategory)
 router.post('/categories/add', ProductController.addCategory);
 
