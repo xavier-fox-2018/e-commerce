@@ -3,7 +3,9 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.send('ok')
+  res.status(200).json({
+    msg : 'ok'
+  })
 });
 
 module.exports = router;

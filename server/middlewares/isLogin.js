@@ -7,6 +7,7 @@ function isLogin(req, res, next) {
       .findById(decoded.id)
       .then(data => {
         if (data.length > 0) {
+          req.loggedInUser = data
           next()
         } else {
           res.status(500).json({

@@ -2,6 +2,9 @@ const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 
 function isAdmin(req, res, next) {
+
+    // req.loggedInUser.role == 'admin'
+
     const decoded = jwt.verify(req.headers.token, process.env.JWT_SECRET);
     User
       .findById(decoded.id)
