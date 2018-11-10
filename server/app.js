@@ -8,6 +8,7 @@ const itemRoutes = require('./routes/itemRoute')
 const categoryRoutes = require('./routes/categoryRoute')
 const cartRoutes = require('./routes/cartRoute')
 const userRoutes = require('./routes/userRoute')
+const transactionRoutes = require('./routes/transactionRoute')
 
 const mongoose = require('mongoose')
 mongoose.connect(process.env.mlab, {useNewUrlParser : true, useFindAndModify:false})
@@ -25,6 +26,7 @@ app.use('/items',itemRoutes)
 app.use('/categories',categoryRoutes)
 app.use('/users',userRoutes)
 app.use('/carts',cartRoutes)
+app.use('/transactions',transactionRoutes)
 
 app.listen(process.env.port, function(){
     console.log('listening on port',process.env.port)

@@ -79,7 +79,7 @@
         <ul class="navbar-nav nav-flex-icons">
           <li class="nav-item" data-toggle="modal" data-target="#cartModal">
             <a class="nav-link waves-effect">
-              <span class="badge red z-depth-1 mr-1"> {{carts.length}} </span>
+              <span class="badge red z-depth-1 mr-1"> {{itemincart}} </span>
               <i class="fa fa-shopping-cart"></i>
               <span class="clearfix d-none d-sm-inline-block"> Cart </span>
             </a>
@@ -320,7 +320,7 @@
               <!-- Heading -->
               <h4 class="d-flex justify-content-between align-items-center mb-3">
                 <span class="text-muted">Your cart</span>
-                <span class="badge badge-secondary badge-pill">{{carts.length}}</span>
+                <span class="badge badge-secondary badge-pill">{{itemincart}}</span>
               </h4>
 
               <!-- Cart -->
@@ -350,7 +350,7 @@
         </div>
         <div class="modal-footer justify-content-center">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Checkout</button>
+          <button type="button" class="btn btn-primary" @click="checkout">Checkout</button>
         </div>
       </div>
     </div>
@@ -501,6 +501,7 @@
         items : [],
         categories : [],
         carts : [],
+        itemincart : '',
         selected : '',
 
         selected_id : '',
@@ -660,6 +661,29 @@
           .catch(err=>{
             console.log(err)
           })
+        },
+        checkout(){
+          let data = {
+            item_list : this.carts,
+            total_price : this.total_price
+          }
+          
+          axios({
+            method : 'POST',
+            url : `${this.config.port}/transactions`,
+            headers : {
+              token : localStorage.getItem('token')
+            },
+            data
+          })
+          .then(response=>{
+            console.log(response)
+            this.getUserCart()
+          })
+          .catch(err=>{
+            console.log(err)
+          })
+
         }
       },
       created : function(){
@@ -673,11 +697,18 @@
           return this.selected_price + 25
         },
         total_price : function(){
+          let cartLength = 0
+          cartLength = 0
           let totalPrice = 0
+          
           for(let i = 0 ; i < this.carts.length ; i ++){
             let itemPrice = this.carts[i].sub_total
             totalPrice = totalPrice + itemPrice
+            cartLength = cartLength + this.carts[i].qty
           }
+
+          this.itemincart = cartLength
+
           return totalPrice
         }
       },
