@@ -14,7 +14,12 @@ const itemSchema = new Schema({
         type: Number,
         required: [true, 'Item stock is required']
     },
-    imgURL: String
+    imgURL: String,
+    category: {
+        type: Schema.Types.ObjectId,
+        ref: 'Category',
+        required: [true, 'Item category is required']
+    }
 }, {
     timestamps: true
 });

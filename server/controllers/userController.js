@@ -56,7 +56,7 @@ class UserController {
     }
 
     static getProfile(req, res) {
-        User.findById(req.user._id).populate('transactionList')
+        User.findById(req.user._id)
             .then(function(user) {
                 res.status(200).json(user);
             })
