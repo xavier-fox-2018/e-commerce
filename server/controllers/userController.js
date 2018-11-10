@@ -51,53 +51,6 @@ class Controller {
         });
     }
 
-    // static gsignin(req,res){
-
-    //     client.verifyIdToken({
-    //         idToken: req.body.gtoken,
-    //         audience: process.env.CLIENT_ID
-            
-    //     },function(err,result){
-    //         let pEmail = result.payload.email
-    //         let pName = result.payload.name
-
-    //         User.findOne({
-    //             email : pEmail
-    //         },function(err,result){
-    //             if(result === null){
-    //                 User.create({
-    //                     name : pName,
-    //                     email : pEmail,
-    //                     oAuth : true,
-    //                     password : null
-    //                 },function(err,response){
-    //                     if(err){
-    //                         res.status(500)({
-    //                             message : 'Internal Server Error'
-    //                         })
-    //                     }else{
-    //                         const token = jwt.sign({id: response._id, name : response.name , email : response.email},process.env.secret_key)
-    //                         res.status(200).json({
-    //                             token : token,
-    //                             userId : response._id
-    //                         })
-    //                     }
-    //                 })
-    //             }else if(err){
-    //                 res.status(500).json({
-    //                     message : 'Internal Server Error'
-    //                 })
-    //             }else{
-    //                 const token = jwt.sign({id: result._id, name : result.name , email : result.email},process.env.secret_key)
-    //                 res.status(200).json({
-    //                     token : token,
-    //                     userId : result._id
-    //                 })
-    //             }
-    //         })
-    //     });
-    // }
-
     static login(req,res){
         if(req.body.email.length < 1 || req.body.password.length < 1){
             res.status(422).json({
@@ -115,12 +68,14 @@ class Controller {
                     let token = jwt.sign({
                         id : user._id,
                         name : user.name,
-                        email : user.email
+                        email : user.email,
+                        is_admin : user.is_admin
                     },process.env.secret_key) 
 
                     res.status(200).json({
                         token : token,
-                        userId : user._id
+                        userId : user._id,
+                        is_admin : user.is_admin
                     })
                 }else{
                     res.status(401).json({

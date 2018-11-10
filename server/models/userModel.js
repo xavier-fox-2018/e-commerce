@@ -14,6 +14,10 @@ const userSchema = new Schema ({
     is_oauth : {
         type : Boolean,
         default : false
+    },
+    is_admin : {
+        type : Boolean,
+        default : false
     }
 },{
     timestamps : true
