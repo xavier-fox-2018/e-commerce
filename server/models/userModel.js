@@ -20,11 +20,7 @@ const userSchema = new Schema({
     }, 
     role: {
         type: String,
-        default: 'User'
-    },
-    viaThirdParty: {
-        type: Boolean, 
-        default: false
+        default: 'user'
     }
 }, {
     timestamps: true

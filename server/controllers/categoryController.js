@@ -40,7 +40,7 @@ class CategoryController {
     }
 
     static update(req, res) {
-        Category.updateOne({id: req.params.id}, {
+        Category.updateOne({_id: req.params.id}, {
             name: req.body.name
         })
             .then(function(result) {
@@ -56,7 +56,7 @@ class CategoryController {
     }
 
     static delete(req, res) {
-        Category.deleteOne({id: req.params.id})
+        Category.deleteOne({_id: req.params.id})
             .then(function(result) {
                 res.status(200).json({
                     result: result,

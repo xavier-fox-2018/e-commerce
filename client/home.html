@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <title>New-Commerce</title>
+    </head>
+    <body>
+
+        <!--MAIN TEMPLATE-->
+        <div id="app">
+            <nav class="navbar navbar-expand-sm navbar-dark bg-success mb-2" id="top-nav">
+                <div class="container">
+                    <a href="home.html" id="home-nav" class="navbar-brand font-weight-bold">New-Commerce</a>
+                    <button class="navbar-toggler" data-toggle="collapse" data-target="#div-main-nav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="div-main-nav">
+                        <ul class="navbar-nav font-weight-bold ml-auto" id="main-nav">
+                            <li class="nav-item dropdown mr-2">
+                                <a class="nav-link dropdown-toggle" data-toggle="dropdown">Category</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item">Electronics</a>
+                                    <a class="dropdown-item">Books</a>
+                                    <a class="dropdown-item">Fashion</a>
+                                    <a class="dropdown-item">Office & Stationery</a>
+                                    <a @click="showListItem" class="dropdown-item">Hobby Toys</a>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <form class="form-inline mr-2">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-search"></i>
+                                            </span>
+                                        </div>
+                                        <input type="text" class="form-control mr-3" placeholder="Search Products">
+                                    </div>
+                                    <button class="btn btn-outline-light">Search</button>
+                                </form>
+                            </li>
+                            <li v-on:click="showCart" class="nav-item mr-2">
+                                <a role="button" class="nav-link">
+                                    <i class="fas fa-shopping-cart mr-1"></i>
+                                    Cart
+                                    <span class="badge badge-dark px-2 py-1">{{ cartBadge }}</span>
+                                </a>
+                            </li>
+                            <li class="nav-item mr-2">
+                                <a class="nav-link">
+                                    <i class="fas fa-bell mr-1"></i>
+                                    Notifications
+                                </a>
+                            </li>
+                            <li v-on:click="showProfile" class="nav-item mr-2">
+                                <a role="button" class="nav-link">
+                                    <i class="fas fa-user-ninja"></i>
+                                    Profile
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link">
+                                    <i class="fas fa-question-circle mr-1"></i>
+                                    Help
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <!--CATEGORY AND ITEM LIST-->
+            <div v-if="categoryListShow" class="container">
+                <div class="d-flex justify-content-center align-items-center bg-light rounded col-4 mt-3" id="category-path-link">
+                    <button class="btn btn-link">Home</button>
+                    <i class="fas fa-angle-right"></i>
+                    <button class="btn btn-link">Category</button>
+                    <i class="fas fa-angle-right"></i>
+                    <button class="btn btn-link">Hobby Toys</button>
+                    <i class="fas fa-angle-right"></i>
+                    <button class="btn btn-link disabled">Model Kits</button>
+                </div>
+                <div class="row mt-4">
+
+                    <!-- LEFT BAR MENU -->
+                    <div class="col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex flex-column justify-content-start">
+                                    <p>Category</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>Hobby Toys</div>
+                                        <button class="btn btn-link">
+                                            <i class="fas fa-angle-down"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="mb-3">Search in this category</div>
+                                <search-item :keyword="keyword" :searchitem="searchItem" @send-keyword="receiveKeyword($event)" :getitems="getItems"></search-item>
+                                <hr>
+                                <div class="mb-3">Price</div>
+                                <form class="mb-4">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="Minimum">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="Maximum">
+                                    </div>
+                                </form>
+                                <hr>
+                                <div class="mb-3">Location</div>
+                                <form class="mb-4">
+                                    <div class="form-group d-flex justify-content-start">
+                                        <input type="checkbox" class="ml-3 mr-3">
+                                        <div class="align-self-center">Jakarta</div>
+                                    </div>
+                                    <div class="form-group d-flex justify-content-start">
+                                        <input type="checkbox" class="ml-3 mr-3">
+                                        <div class="align-self-center">Bandung</div>
+                                    </div>
+                                    <div class="form-group d-flex justify-content-start">
+                                        <input type="checkbox" class="ml-3 mr-3">
+                                        <div class="align-self-center">Palembang</div>
+                                    </div>
+                                    <div class="form-group d-flex justify-content-start">
+                                        <input type="checkbox" class="ml-3 mr-3">
+                                        <div class="align-self-center">Surabaya</div>
+                                    </div>
+                                    <div class="form-group d-flex justify-content-start">
+                                        <input type="checkbox" class="ml-3 mr-3">
+                                        <div class="align-self-center">Malang</div>
+                                    </div>
+                                </form>
+                                <hr>
+                                <div class="mb-3">Condition</div>
+                                <form>
+                                    <div class="form-group d-flex justify-content-start">
+                                        <input type="checkbox" class="ml-3 mr-3">
+                                        <div class="align-self-center">Near Mint</div>
+                                    </div>
+                                    <div class="form-group d-flex justify-content-start">
+                                        <input type="checkbox" class="ml-3 mr-3">
+                                        <div class="align-self-center">Used</div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ITEM LIST -->
+                    <div class="col-lg-9">
+                        <div class="card-columns">
+                            <div v-for="item in items" class="card">
+                                <img class="card-img-top img-fluid" v-bind:src="item.imgURL" alt="">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ item.name }}</h5>
+                                    <div class="d-flex justify-content-between">
+                                        <p class="card-text text-danger">{{ item.price }}</p>
+                                        <p class="card-text text-success" v-if="item.stock !== 0">Stock: {{ item.stock }}</p>
+                                        <p class="card-text text-danger font-weight-bold" v-else>Out of Stock</p>
+                                    </div>
+                                    <p class="card-text">
+                                        <small class="text-muted">by RareItemShop</small>
+                                        <i class="fas fa-chess-queen"></i>
+                                    </p>
+                                    <span>
+                                        <i class="fas fa-map-marker-alt mr-1 mb-3"></i>
+                                        Jakarta
+                                    </span>
+                                    <button v-on:click="addItemToCart(item._id)" :disabled="item.stock === 0" class="btn btn-outline-danger btn-block">
+                                        <i class="fas fa-shopping-cart mr-2"></i>
+                                        Add to cart
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--SHOPPING CART-->
+            <shopping-cart :cart-show="cartShow" :getusercart="getUserCart" :getcartbadge="getCartBadge" :gettotalprice="getTotalPrice" :cart="cart" :total-price="totalPrice" :getitems="getItems" :showlistitem="showListItem" :getusertransactions="getUserTransactions"></shopping-cart>
+
+            <!-- USER PROFILE -->
+            <div v-if="profileShow" class="container">
+                <div class="row">
+                    <div class="col-lg-10 mt-4 d-flex flex-column justify-content-start">
+                        <div class="d-flex justify-content-start align-items-center" id="">
+                            <div class="display-4">User Profile</div>
+                            <button @click="logout" class="btn btn-outline-danger ml-auto">Log out</button>
+                        </div>
+                        <div class="d-flex flex-column mt-4">
+                            <h3 class="lead mb-3">Name: {{ user.username }}</h3>
+                            <h3 class="lead mb-3">Email: {{ user.email }}</h3>
+                            <h3 class="lead mb-3">Transaction List:</h3>
+                            <div v-for="trans in transactions" class="lead mb-4 card">
+                                <div class="card-head">
+                                    <h3 class="lead">Transaction ID: {{ trans._id }}</h3>
+                                    <h3 class="lead">Order time: {{ trans.createdAt }}</h3>
+                                    <h3 class="lead">Item List:</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex flex-column" v-for="item in trans.itemList">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h3 class="lead">Item</h3>
+                                            <h3 class="lead">{{ item.item.name }}</h3>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h3 class="lead">Price</h3>
+                                            <h3 class="lead">{{ item.item.price }}</h3>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h3 class="lead">Quantity</h3>
+                                            <h3 class="lead">{{ item.qty }}</h3>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-4">
+                                            <h3 class="lead">Subtotal</h3>
+                                            <h3 class="lead">{{ item.subTotal }}</h3>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <h3 class="lead">Total Price</h3>
+                                        <h3 class="lead">{{ trans.totalPrice }}</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <script
+            src="https://code.jquery.com/jquery-3.3.1.js"
+            integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+            crossorigin="anonymous">
+        </script>
+        <script 
+            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous">
+        </script>
+        <script 
+            src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous">
+        </script>
+
+        <!--VUE INSTANCE-->
+        <script src="components/searchItems.js"></script>
+        <script src="components/shoppingCart.js"></script>
+        <script>
+            var app = new Vue({
+                el: '#app',
+                data: {
+                    cartShow: false,
+                    categoryListShow: true,
+                    profileShow: false,
+                    items: [],
+                    cartBadge: 0,
+                    user: {},
+                    keyword: '',
+                    cart: [],
+                    totalPrice: 0,
+                    transactions: []
+                },
+                methods: {
+                    showCart: function() {
+                        this.cartShow = true;
+                        app.getUserCart();
+                        app.getTotalPrice();
+                        this.categoryListShow = false;
+                        this.profileShow = false;
+                    },
+                    showListItem: function() {
+                        this.categoryListShow = true;
+                        this.cartShow = false;
+                        this.profileShow = false;
+                    },
+                    showProfile: function() {
+                        this.profileShow = true;
+                        this.cartShow = false;
+                        this.categoryListShow = false;
+                    },
+                    getItems: function() {
+                        axios({
+                            method: 'GET',
+                            url: 'http://localhost:3000/items'
+                        })
+                            .then(function(items) {
+                                let itemsData = items.data;
+                                app.items = itemsData;
+                            })
+                            .catch(function(err) {
+                                console.log('Get All Items Error: ', err);
+                            });
+                    },
+                    addItemToCart: function(itemId) {
+                        axios({
+                            method: 'PATCH',
+                            url: `http://localhost:3000/carts/add/${itemId}`,
+                            headers: {
+                                'access-token': localStorage.getItem('token')
+                            }
+                        })
+                            .then(function(result) {
+                                app.getCartBadge();
+                                app.getItems();
+                                app.getUserCart();
+                            })
+                            .catch(function(err) {
+                                console.log('Add Item To Cart Error: ', err);
+                            });
+                    },
+                    getCartBadge: function() {
+                        axios({
+                            method: 'GET',
+                            url: 'http://localhost:3000/carts',
+                            headers: {
+                                'access-token': localStorage.getItem('token')
+                            }
+                        })
+                            .then(function(cart) {
+                                let badgeCount = 0;
+                                let itemList = cart.data.itemList;
+                                for (let i = 0; i < itemList.length; i++) {
+                                    badgeCount += itemList[i].qty;
+                                }
+                                app.cartBadge = badgeCount;
+                            })
+                            .catch(function(err) {
+                                console.log('Get Cart Badge Error: ', err);
+                            });
+                    },
+                    getUserCart: function() {
+                        axios({
+                            method: 'GET',
+                            url: 'http://localhost:3000/carts',
+                            headers: {
+                                'access-token': localStorage.getItem('token')
+                            }
+                        })
+                            .then(function(cart) {
+                                app.cart = cart.data.itemList;
+                            })
+                            .catch(function(err) {
+                                console.log('Get User Cart Error: ', err);
+                            });
+                    },
+                    receiveKeyword: function(value) {
+                        app.keyword = value;
+                        app.searchItem();
+                    },
+                    searchItem: function() {
+                        axios({
+                            method: 'GET',
+                            url: `http://localhost:3000/items/search/${this.keyword}`,
+                            headers: {
+                                'access-token': localStorage.getItem('token')
+                            }
+                        })
+                            .then(function(items) {
+                                app.items = items.data;
+                            })
+                            .catch(function(err) {
+                                console.log('Search Items Error: ', err);
+                            });
+                    },
+                    getTotalPrice: function() {
+                        axios({
+                            method: 'GET',
+                            url: 'http://localhost:3000/carts',
+                            headers: {
+                                'access-token': localStorage.getItem('token')
+                            }
+                        })
+                            .then(function(cart) {
+                                let totalPrice = 0;
+                                for (let i = 0; i < cart.data.itemList.length; i++) {
+                                    totalPrice += cart.data.itemList[i].subTotal;
+                                }
+
+                                app.totalPrice = totalPrice;
+                            })
+                            .catch(function(err) {
+                                console.log('Get Total Price Error: ', err);
+                            });
+                    },
+                    logout: function() {
+                        localStorage.removeItem('token');
+                        location.replace('/index.html');
+                    },
+                    getUserProfile: function() {
+                        axios({
+                            method: 'GET',
+                            url: 'http://localhost:3000/users/profile',
+                            headers: {
+                                'access-token': localStorage.getItem('token')
+                            }
+                        })
+                            .then(function(user) {
+                                app.user = user.data;
+                            })
+                            .catch(function(err) {
+                                console.log('Get User Profile Error: ', err);
+                            });
+                    },
+                    getUserTransactions: function() {
+                        axios({
+                            method: 'GET',
+                            url: `http://localhost:3000/transactions`,
+                            headers: {
+                                'access-token': localStorage.getItem('token')
+                            }
+                        })
+                            .then(function(transactions) {
+                                for (let i = 0; i < transactions.data.length; i++) {
+                                    let date = new Date(transactions.data[i].createdAt);
+                                    let year = date.getFullYear();
+                                    let month = date.getMonth() + 1;
+                                    let day = date.getDate();
+
+                                    let newDate = `${day}/${month}/${year}`;
+                                    transactions.data[i].createdAt = newDate;
+                                }
+                                app.transactions = transactions.data;
+                            })
+                            .catch(function(err) {
+                                console.log('Get User Transactions Error: ', err);
+                            });
+                    }
+                }, 
+                created: function() {
+                    this.getItems();
+                    this.getCartBadge();
+                    this.getUserCart();
+                    this.getUserProfile();
+                    this.getUserTransactions();
+                },
+                watch: {
+                    keyword() {
+                        if (this.keyword.length === 0) {
+                            this.getItems();
+                        } else {
+                            this.searchItem(this.keyword);
+                        }
+                    },
+                    cartBadge() {
+                        this.getCartBadge();
+                    }
+                }
+            })
+        </script>
+    </body>
+</html>

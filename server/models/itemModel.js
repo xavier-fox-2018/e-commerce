@@ -19,6 +19,14 @@ const itemSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Category',
         required: [true, 'Item category is required']
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
+    sold: {
+        type: Number,
+        default: 0
     }
 }, {
     timestamps: true

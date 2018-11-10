@@ -16,7 +16,7 @@ itemRouter.post('/uploadimage', isLogin, isAdmin,
         })
 });
 itemRouter.post('/', isLogin, isAdmin, ItemController.add);
-itemRouter.put('/:id', isLogin, isAdmin, ItemController.update);
+itemRouter.put('/:id', isLogin, ItemController.update);
 itemRouter.delete('/:id', isLogin, isAdmin, ItemController.delete);
 itemRouter.get('/search/:keyword', ItemController.searchByName);
 

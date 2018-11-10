@@ -8,7 +8,8 @@ class UserController {
         let user = new User({
             username: req.body.username,
             email: req.body.email,
-            password: req.body.password
+            password: req.body.password,
+            role: req.body.role
         });
         user.save()
             .then(function(user) {
@@ -41,7 +42,10 @@ class UserController {
             .then(function(user) {
                 if (user) {
                     const token = jwt.sign({id: user._id, username: user.username, email: user.email}, process.env.JWT_KEY);
-                    res.status(201).json({token: token});
+                    res.status(201).json({
+                        token: token,
+                        role: user.role
+                    });
                 } else {
                     const err = {
                         message: 'Wrong username or password'

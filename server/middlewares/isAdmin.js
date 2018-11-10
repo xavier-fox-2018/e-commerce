@@ -5,7 +5,7 @@ function isAdmin(req, res, next) {
         try {
             User.findById(req.user._id)
                 .then(function(user) {
-                    if (user.role === 'Admin') {
+                    if (user.role === 'admin') {
                         next();
                     } else {
                         res.status(401).json({
