@@ -46,8 +46,8 @@ Vue.component('shopping-cart', {
                             </div>
                             <div v-for="item in cart" class="card mb-4">
                                 <div class="card-header">
-                                    Seller: <strong class="mr-1">RareItemShop</strong>
-                                    <i class="fas fa-chess-queen"></i>
+                                    Product Details
+                                    <i class="fas fa-sun"></i>
                                 </div>
                                 <div class="card-body d-flex justify-content-between">
                                     <div class="media d-flex flex-column align-self-center">
@@ -66,9 +66,6 @@ Vue.component('shopping-cart', {
                                         </a>
                                     </div>
                                 </div>
-                                <button class="card-text btn btn-link ml-auto">
-                                    <small class="h6">Send notes to seller</small>
-                                </button>
                             </div>
                         </div>
                         <div class="col-lg-4 mt-4 d-flex flex-column">

@@ -1,16 +1,16 @@
 #top-nav {
-    background-color: #11a29a !important; 
-    /* #aa423b */
-    /* #f43c2c */
+    /* background-color: #11a29a !important;  */
+    /* background-color: #485BA7 !important; */
+    background-color: #D2506A !important;
 }
 
 #main-nav {
-    font-family: Lato;
+    font-family: 'Lato', sans-serif;
     font-size: 15px;
 }
 
 #home-nav {
-    font-family: Oswald;
+    font-family: 'Oswald', sans-serif;
     font-size: 35px;
 }
 
@@ -22,13 +22,16 @@
     width: 50px;
 }
 
+#category-path-link {
+    width: 270px;;
+}
+
 #category-path-link button {
     color: #0099cc;
-    font-family: Oswald;
+    font-family: 'Oswald', sans-serif;
 }
 
 #registerForm {
-    /* background-color: #800000; */
     color: #800000;
 }
 
@@ -39,10 +42,6 @@
 #linkToLogin {
     color: #20b2aa;
     font-size: 15px;
-}
-
-#errorAlert {
-    
 }
 
 .category-list {
@@ -103,4 +102,33 @@
 
 #editItemModal, #editCategoryModal, #addItemModal, #deleteCategoryConfirm {
     font-family: 'Titillium Web', sans-serif;
+}
+
+.itemList-h3 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 25px !important;
+}
+
+.totalPrice-h3 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 25px !important;
+}
+
+.trans-detail {
+    height: 50px;;
+}
+
+.trans-modal {
+    max-width: 50% !important;
+}
+
+.btn-trans-detail {
+    font-family: 'Oswald', sans-serif;
+    /* background-color: #77003c; */
+    background-color: #daa520;
+    color: white;
+}
+
+.nav-link:hover, .dropdown-item:hover {
+    cursor: pointer;
 }

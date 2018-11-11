@@ -21,6 +21,10 @@ const userSchema = new Schema({
     role: {
         type: String,
         default: 'user'
+    }, 
+    purchaseCount: {
+        type: Number,
+        default: 0
     }
 }, {
     timestamps: true

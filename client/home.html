@@ -5,7 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <link rel="stylesheet" href="style.css">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css?family=Lato|Oswald|Roboto+Slab|Titillium+Web" rel="stylesheet"> 
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -15,7 +16,9 @@
 
         <!--MAIN TEMPLATE-->
         <div id="app">
-            <nav class="navbar navbar-expand-sm navbar-dark bg-success mb-2" id="top-nav">
+
+            <!-- NAVBAR -->
+            <nav class="navbar navbar-expand-sm navbar-dark mb-2" id="top-nav">
                 <div class="container">
                     <a href="home.html" id="home-nav" class="navbar-brand font-weight-bold">New-Commerce</a>
                     <button class="navbar-toggler" data-toggle="collapse" data-target="#div-main-nav">
@@ -26,11 +29,7 @@
                             <li class="nav-item dropdown mr-2">
                                 <a class="nav-link dropdown-toggle" data-toggle="dropdown">Category</a>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item">Electronics</a>
-                                    <a class="dropdown-item">Books</a>
-                                    <a class="dropdown-item">Fashion</a>
-                                    <a class="dropdown-item">Office & Stationery</a>
-                                    <a @click="showListItem" class="dropdown-item">Hobby Toys</a>
+                                    <a @click="showListItem" v-for="category in categories" class="dropdown-item">{{ category.name }}</a>
                                 </div>
                             </li>
                             <li class="nav-item">
@@ -53,12 +52,6 @@
                                     <span class="badge badge-dark px-2 py-1">{{ cartBadge }}</span>
                                 </a>
                             </li>
-                            <li class="nav-item mr-2">
-                                <a class="nav-link">
-                                    <i class="fas fa-bell mr-1"></i>
-                                    Notifications
-                                </a>
-                            </li>
                             <li v-on:click="showProfile" class="nav-item mr-2">
                                 <a role="button" class="nav-link">
                                     <i class="fas fa-user-ninja"></i>
@@ -66,10 +59,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link">
-                                    <i class="fas fa-question-circle mr-1"></i>
-                                    Help
-                                </a>
+                                <button @click="logout" class="btn btn-outline-light ml-auto">Log out</button>
                             </li>
                         </ul>
                     </div>
@@ -78,14 +68,12 @@
 
             <!--CATEGORY AND ITEM LIST-->
             <div v-if="categoryListShow" class="container">
-                <div class="d-flex justify-content-center align-items-center bg-light rounded col-4 mt-3" id="category-path-link">
+                <div class="d-flex justify-content-center align-items-center bg-light rounded mt-3" id="category-path-link">
                     <button class="btn btn-link">Home</button>
                     <i class="fas fa-angle-right"></i>
                     <button class="btn btn-link">Category</button>
                     <i class="fas fa-angle-right"></i>
                     <button class="btn btn-link">Hobby Toys</button>
-                    <i class="fas fa-angle-right"></i>
-                    <button class="btn btn-link disabled">Model Kits</button>
                 </div>
                 <div class="row mt-4">
 
@@ -95,62 +83,16 @@
                             <div class="card-body">
                                 <div class="d-flex flex-column justify-content-start">
                                     <p>Category</p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>Hobby Toys</div>
-                                        <button class="btn btn-link">
-                                            <i class="fas fa-angle-down"></i>
-                                        </button>
-                                    </div>
+                                    <ul class="list-group">
+                                        <li class="d-flex justify-content-between align-items-center list-group-item category-list" :class="{active: activeCategory === category.name}"  v-for="category in categories" @click="getOneCategory(category._id)">
+                                            <div class="d-flex justify-content-center align-items-center">{{ category.name }}</div>
+                                        </li>
+                                    </ul>
                                 </div>
                                 <hr>
                                 <div class="mb-3">Search in this category</div>
                                 <search-item :keyword="keyword" :searchitem="searchItem" @send-keyword="receiveKeyword($event)" :getitems="getItems"></search-item>
-                                <hr>
-                                <div class="mb-3">Price</div>
-                                <form class="mb-4">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" placeholder="Minimum">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" placeholder="Maximum">
-                                    </div>
-                                </form>
-                                <hr>
-                                <div class="mb-3">Location</div>
-                                <form class="mb-4">
-                                    <div class="form-group d-flex justify-content-start">
-                                        <input type="checkbox" class="ml-3 mr-3">
-                                        <div class="align-self-center">Jakarta</div>
-                                    </div>
-                                    <div class="form-group d-flex justify-content-start">
-                                        <input type="checkbox" class="ml-3 mr-3">
-                                        <div class="align-self-center">Bandung</div>
-                                    </div>
-                                    <div class="form-group d-flex justify-content-start">
-                                        <input type="checkbox" class="ml-3 mr-3">
-                                        <div class="align-self-center">Palembang</div>
-                                    </div>
-                                    <div class="form-group d-flex justify-content-start">
-                                        <input type="checkbox" class="ml-3 mr-3">
-                                        <div class="align-self-center">Surabaya</div>
-                                    </div>
-                                    <div class="form-group d-flex justify-content-start">
-                                        <input type="checkbox" class="ml-3 mr-3">
-                                        <div class="align-self-center">Malang</div>
-                                    </div>
-                                </form>
-                                <hr>
-                                <div class="mb-3">Condition</div>
-                                <form>
-                                    <div class="form-group d-flex justify-content-start">
-                                        <input type="checkbox" class="ml-3 mr-3">
-                                        <div class="align-self-center">Near Mint</div>
-                                    </div>
-                                    <div class="form-group d-flex justify-content-start">
-                                        <input type="checkbox" class="ml-3 mr-3">
-                                        <div class="align-self-center">Used</div>
-                                    </div>
-                                </form>
+                                <hr>                                
                             </div>
                         </div>
                     </div>
@@ -167,14 +109,6 @@
                                         <p class="card-text text-success" v-if="item.stock !== 0">Stock: {{ item.stock }}</p>
                                         <p class="card-text text-danger font-weight-bold" v-else>Out of Stock</p>
                                     </div>
-                                    <p class="card-text">
-                                        <small class="text-muted">by RareItemShop</small>
-                                        <i class="fas fa-chess-queen"></i>
-                                    </p>
-                                    <span>
-                                        <i class="fas fa-map-marker-alt mr-1 mb-3"></i>
-                                        Jakarta
-                                    </span>
                                     <button v-on:click="addItemToCart(item._id)" :disabled="item.stock === 0" class="btn btn-outline-danger btn-block">
                                         <i class="fas fa-shopping-cart mr-2"></i>
                                         Add to cart
@@ -192,46 +126,69 @@
             <!-- USER PROFILE -->
             <div v-if="profileShow" class="container">
                 <div class="row">
-                    <div class="col-lg-10 mt-4 d-flex flex-column justify-content-start">
+                    <div class="col-lg-10 mt-4 d-flex flex-column justify-content-start mx-auto">
                         <div class="d-flex justify-content-start align-items-center" id="">
                             <div class="display-4">User Profile</div>
                             <button @click="logout" class="btn btn-outline-danger ml-auto">Log out</button>
                         </div>
                         <div class="d-flex flex-column mt-4">
-                            <h3 class="lead mb-3">Name: {{ user.username }}</h3>
+                            <h3 class="lead mb-3">Username: {{ user.username }}</h3>
                             <h3 class="lead mb-3">Email: {{ user.email }}</h3>
-                            <h3 class="lead mb-3">Transaction List:</h3>
+                            <h3 class="lead mb-4">Transaction List:</h3>
                             <div v-for="trans in transactions" class="lead mb-4 card">
-                                <div class="card-head">
-                                    <h3 class="lead">Transaction ID: {{ trans._id }}</h3>
-                                    <h3 class="lead">Order time: {{ trans.createdAt }}</h3>
-                                    <h3 class="lead">Item List:</h3>
-                                </div>
-                                <div class="card-body">
-                                    <div class="d-flex flex-column" v-for="item in trans.itemList">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <h3 class="lead">Item</h3>
-                                            <h3 class="lead">{{ item.item.name }}</h3>
-                                        </div>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <h3 class="lead">Price</h3>
-                                            <h3 class="lead">{{ item.item.price }}</h3>
-                                        </div>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <h3 class="lead">Quantity</h3>
-                                            <h3 class="lead">{{ item.qty }}</h3>
-                                        </div>
-                                        <div class="d-flex justify-content-between align-items-center mb-4">
-                                            <h3 class="lead">Subtotal</h3>
-                                            <h3 class="lead">{{ item.subTotal }}</h3>
-                                        </div>
+                                <div class="card-head d-flex justify-content-between align-items-center mt-3 mb-3">
+                                    <div class="d-flex flex-column justify-content-center ml-3">
+                                        <div class="lead">Transaction ID: {{ trans._id }}</div>
+                                        <div class="lead">Order time [dd/mm/yyyy]: {{ trans.createdAt }}</div>
                                     </div>
-                                    <div class="d-flex justify-content-between">
-                                        <h3 class="lead">Total Price</h3>
-                                        <h3 class="lead">{{ trans.totalPrice }}</h3>
+                                    <div class="d-flex border trans-detail mr-3">
+                                        <button class="btn btn-trans-detail" data-toggle="modal" data-target="#transDetailModal" @click="populateTransDetailModal(trans.itemList, trans.totalPrice)">
+                                            Details
+                                            <i class="fas fa-box-open ml-1"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TRANSACTION DETAIL MODAL -->
+            <div class="modal fade" id="transDetailModal">
+                <div class="modal-dialog trans-modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title pl-1">Transaction Detail</h5>
+                            <button class="close pr-4" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <h3 class="lead mb-4 itemList-h3 pl-2">Item List</h3>
+                            <div class="d-flex flex-column px-2" v-for="item in trans_detail.itemList">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h3 class="lead">Item</h3>
+                                    <h3 class="lead">{{ item.item.name }}</h3>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h3 class="lead">Price</h3>
+                                    <h3 class="lead">{{ item.item.price }}</h3>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h3 class="lead">Quantity</h3>
+                                    <h3 class="lead">{{ item.qty }}</h3>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h3 class="lead">Subtotal</h3>
+                                    <h3 class="lead">{{ item.subTotal }}</h3>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <h3 class="lead totalPrice-h3 pl-2">Total Price</h3>
+                                <h3 class="lead totalPrice-h3 pr-2">{{ trans_detail.totalPrice }}</h3>
+                            </div>
+                        </div>
+                        <div class="modal-footer d-flex justify-content-center mb-2 mt-2">
+                            <button class="btn btn-danger" data-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
@@ -266,7 +223,14 @@
                     keyword: '',
                     cart: [],
                     totalPrice: 0,
-                    transactions: []
+                    transactions: [],
+                    categories: [],
+                    activeCategory: '',
+                    activeCategoryId: '',
+                    trans_detail: {
+                        itemList: [],
+                        totalPrice: 0
+                    }
                 },
                 methods: {
                     showCart: function() {
@@ -299,6 +263,41 @@
                                 console.log('Get All Items Error: ', err);
                             });
                     },
+                    getCategories: function() {
+                        axios({
+                            method: 'GET', 
+                            url: `http://localhost:3000/categories`, 
+                            headers: {
+                                'access-token': localStorage.getItem('token')
+                            }
+                        })
+                            .then(function(categories) {
+                                app.categories = categories.data;
+                                app.items = categories.data[0].itemList;
+                                app.activeCategory = categories.data[0].name;
+                                app.activeCategoryId = categories.data[0]._id;
+                            })
+                            .catch(function(err) {
+                                console.log('Get All Categories Error: ', err);
+                            });
+                    },
+                    getOneCategory: function(categoryId) {
+                        axios({
+                            method: 'GET', 
+                            url: `http://localhost:3000/categories/${categoryId}`,
+                            headers: {
+                                'access-token': localStorage.getItem('token')
+                            }
+                        })
+                            .then(function(category) {
+                                app.activeCategory = category.data.name;
+                                app.activeCategoryId = category.data._id;
+                                app.items = category.data.itemList;
+                            })
+                            .catch(function(err) {
+                                console.log('Get One Category Error: ', err);
+                            });
+                    },
                     addItemToCart: function(itemId) {
                         axios({
                             method: 'PATCH',
@@ -309,7 +308,8 @@
                         })
                             .then(function(result) {
                                 app.getCartBadge();
-                                app.getItems();
+                                // app.getItems();
+                                app.getOneCategory(app.activeCategoryId);
                                 app.getUserCart();
                             })
                             .catch(function(err) {
@@ -432,14 +432,19 @@
                             .catch(function(err) {
                                 console.log('Get User Transactions Error: ', err);
                             });
+                    },
+                    populateTransDetailModal: function(itemList, totalPrice) {
+                        this.trans_detail.itemList = itemList;
+                        this.trans_detail.totalPrice = totalPrice;
                     }
                 }, 
                 created: function() {
-                    this.getItems();
+                    // this.getItems();
                     this.getCartBadge();
                     this.getUserCart();
                     this.getUserProfile();
                     this.getUserTransactions();
+                    this.getCategories();
                 },
                 watch: {
                     keyword() {

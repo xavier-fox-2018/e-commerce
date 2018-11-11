@@ -9,7 +9,11 @@ const categorySchema = new Schema({
     itemList: [{
         type: Schema.Types.ObjectId,
         ref: 'Item'
-    }]
+    }], 
+    isDeleted: {
+        type: Boolean,
+        default: false
+    }
 }, {
     timestamps: true
 });
