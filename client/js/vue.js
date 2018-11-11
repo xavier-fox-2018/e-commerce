@@ -27,7 +27,7 @@ new Vue({
         this.isLogin = true
         this.role = localStorage.getItem('role')
       }
-      axios.get('http://localhost:3000/store/item')
+      axios.get('http://server.pemmz-palzu.site/store/item')
         .then(response => {
           response.data.forEach(element => {
             this.items.push(element)
@@ -52,7 +52,7 @@ new Vue({
       formData.append('picture', this.file)
       this.disableButton = true
       axios({
-        url: 'http://localhost:3000/store/picture', 
+        url: 'http://server.pemmz-palzu.site/store/picture', 
         method: 'post',
         data: formData,
         headers: {
@@ -64,7 +64,7 @@ new Vue({
           console.log(response)
           newItem.image = response.data.url
           axios({
-            url: `http://localhost:3000/store/item/`,
+            url: `http://server.pemmz-palzu.site/store/item/`,
             method: 'post',
             headers: { token: localStorage.getItem('token') },
             data: newItem
@@ -99,7 +99,7 @@ new Vue({
         formData.append('picture', this.file)
         this.disableButton = true
         axios({
-          url: 'http://localhost:3000/store/picture', 
+          url: 'http://server.pemmz-palzu.site/store/picture', 
           method: 'post',
           data: formData,
           headers: {
@@ -110,7 +110,7 @@ new Vue({
           .then(response => {
             this.detail.image = response.data.url
             axios({
-              url: `http://localhost:3000/store/item/${detail._id}`,
+              url: `http://server.pemmz-palzu.site/store/item/${detail._id}`,
               method: 'put',
               headers: { token: localStorage.getItem('token') },
               data: { detail }
@@ -130,7 +130,7 @@ new Vue({
           })
       } else {
         axios({
-          url: `http://localhost:3000/store/item/${detail._id}`,
+          url: `http://server.pemmz-palzu.site/store/item/${detail._id}`,
           method: 'put',
           headers: { token: localStorage.getItem('token') },
           data: { detail }
@@ -147,7 +147,7 @@ new Vue({
     deleteItem(id) {
       if (confirm('Are you sure want to delete this item?')) {
         axios({
-          url: `http://localhost:3000/store/item/${id}`,
+          url: `http://server.pemmz-palzu.site/store/item/${id}`,
           method: 'delete',
           headers: { token: localStorage.getItem('token') }
         })
@@ -254,7 +254,7 @@ new Vue({
           }
         }
       }
-      axios.get(`http://localhost:3000/store/category/${this.categoryId}`)
+      axios.get(`http://server.pemmz-palzu.site/store/category/${this.categoryId}`)
         .then(response => {
           response.data.forEach(element => {
             this.filteredItems.push(element)
@@ -265,7 +265,7 @@ new Vue({
         })
     },
     getCategories() {
-      axios.get('http://localhost:3000/store/category')
+      axios.get('http://server.pemmz-palzu.site/store/category')
         .then(response => {
           response.data.forEach(element => {
             this.categories.push({ name: element.name, id: element._id })
@@ -278,12 +278,12 @@ new Vue({
     checkout() {
       location.reload()
       // for (let i in this.carts) {
-      //   axios.post(`http://localhost:3000/store/item/${this.carts[i].id}/stock`, {
+      //   axios.post(`http://server.pemmz-palzu.site/store/item/${this.carts[i].id}/stock`, {
       //     stock: this.carts[i].stock
       //   })
       // }
       // console.log('masuk')
-      // axios.post('http://localhost:3000/transaction', {
+      // axios.post('http://server.pemmz-palzu.site/transaction', {
       //   items: this.carts,
       //   total: this.cartsTotal
       // })
@@ -299,7 +299,7 @@ new Vue({
     },
     addNewCategory() {
       axios({
-        url: 'http://localhost:3000/store/category', 
+        url: 'http://server.pemmz-palzu.site/store/category', 
         method: 'post',
         headers: { token: localStorage.getItem('token') },
         data: { name: this.name }
@@ -317,7 +317,7 @@ new Vue({
     deleteCategory(id) {
       if (confirm('Are you sure want to delete this category?'))
       axios({
-        url: `http://localhost:3000/store/category/${id}`,
+        url: `http://server.pemmz-palzu.site/store/category/${id}`,
         method: 'delete',
         headers: { token: localStorage.getItem('token') }
       })

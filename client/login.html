@@ -97,7 +97,7 @@
         register() {
           let regexEmail = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/
           if (regexEmail.test(this.email)) {
-            axios.post('http://localhost:3000/user/register', {
+            axios.post('http://server.pemmz-palzu.site/user/register', {
               name: this.name,
               email: this.email,
               password: this.password
@@ -119,7 +119,7 @@
         login() {
           let regexEmail = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/
           if (regexEmail.test(this.email)) {
-            axios.post('http://localhost:3000/user/login', {
+            axios.post('http://server.pemmz-palzu.site/user/login', {
               email: this.email,
               password: this.password
             })
