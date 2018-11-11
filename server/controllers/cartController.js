@@ -109,6 +109,7 @@ class Controller {
             userId: user._id,
             isPaid: true,
         })
+        .populate('items')
         .then(data => {
             res.send(data)
         })
