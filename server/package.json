@@ -1,0 +1,22 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": "google, cloud, platform, storage, file, upload",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/storage": "^2.3.0",
+    "bcrypt": "^3.0.2",
+    "dotenv": "^6.1.0",
+    "express": "^4.16.4",
+    "jsonwebtoken": "^8.3.0",
+    "mongodb": "^3.1.8",
+    "mongoose": "^5.3.9",
+    "multer": "^1.4.1"
+  }
+}
