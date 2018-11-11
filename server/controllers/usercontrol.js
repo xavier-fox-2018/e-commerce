@@ -1,9 +1,11 @@
 require('dotenv').config()
 const User = require('../models/user')
+const Cart = require('../models/cart')
+const Transaction = require('../models/transaction')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
-const { OAuth2Client } = require('google-auth-library');
-const client = new OAuth2Client(process.env.GOOGLE_CLIENTID);
+
+
 
 
 class UserController {
@@ -17,9 +19,20 @@ class UserController {
       OAuth: false
     })
       .then(user => {
-        res.status(201).json({
-          result: user,
-          error: null
+        Cart.create({
+          userId: user._id,
+          products: []
+        })
+        .then(cart => {
+          res.status(201).json({
+            result: user,
+            error: null
+          })
+        })
+        .catch(error => {
+          res.status(500).json({
+            error_message: 'failed to create new cart'
+          })
         })
       })
       .catch(error => {
@@ -47,7 +60,6 @@ class UserController {
         }
       })
   }
-
   static loginUserLocal(req, res, next) {
     User.findOne({ email: req.body.email })
       .then(data => {
@@ -62,6 +74,7 @@ class UserController {
             res.status(200).json({
               result: {
                 message: 'successfully logged in',
+                role: data.role,
                 token
               },
               error: null
@@ -91,63 +104,96 @@ class UserController {
         })
       })
   }
-
-  static loginUserGoogle(req, res, next) {
-    client.verifyIdToken({
-      idToken: req.body.token,
-      audience: process.env.GOOGLE_CLIENTID
-    }, (error, response) => {
-      const payload = response.getPayload();
-      console.log(payload)
-      User.findOne({ email: payload.email })
-        .then(data => {
-          console.log(data)
-          if (data) {
-            res.status(200).json({
-              result: data,
-              token: jwt.sign({
-                id: data._id,
-                name: data.name,
-                email: data.email
-              }, process.env.JWT_SECRET),
-              error: null
-            })
-          } else {
-            User.create({
-              name: payload.name,
-              email: payload.email,
-              password: 'q1w2e3r4',
-              OAuth: true
-            })
-              .then(data => {
-                res.status(200).json({
-                  result: data,
-                  token: jwt.sign({
-                    id: data._id,
-                    name: data.name,
-                    email: data.email
-                  }, process.env.JWT_SECRET),
-                  error: null
-                })
-              })
-              .catch(error => {
-                res.status(500).json({
-                  result: null,
-                  error: error
-                })
-              })
-          }
-        })
-        .catch(error => {
-          res.status(500).json({
-            result: null,
-            error: {
-              error_code: error
-            }
-          })
-        })
-    });
+  static getCart (req, res, next) {
+    Cart.findOne({userId: req.auth_user.id}).populate('products')
+    .then(data => {
+      res.status(200).json({
+        result: data,
+        error: null
+      })
+    })
+    .catch(error => {
+      res.status(500).json({
+        result: null,
+        error: error
+      })
+    })
   }
+  static addToCart (req, res, next) {
+    Cart.findOneAndUpdate({userId: req.auth_user.id}, {
+      $push: {
+        products: req.body.productId
+      }
+    })
+    .then(data => {
+      return  Cart.findOne({userId: req.auth_user.id}).populate('products')
+    })
+    .then(data => {
+      res.status(200).json({
+        result: data,
+        error: null
+      })
+    })
+    .catch(error => {
+      res.status(500).json({
+        result: null,
+        error: error
+      })
+    })
+  }
+  static removeFromCart (req, res, next) {
+    Cart.findOne({userId: req.auth_user.id})
+    .then(data => {
+      let filtered = data.products.filter(value => value != req.body.productId )
+      data.products = filtered
+      return data.save()
+    })
+    .then(data => {
+      return  Cart.findOne({userId: req.auth_user.id}).populate('products')
+    })
+    .then(data => {
+      res.status(200).json({
+        result: data,
+        error: null
+      })
+    })
+    .catch(error => {
+      console.log(error)
+      res.status(500).json({
+        result: null,
+        error: error
+      })
+    })
+  }
+  static checkout (req, res, next) {
+    Transaction.create({
+      userId: req.auth_user.id,
+      products: req.body.products,
+      totalPrice: req.body.totalPrice,
+      purchaseDate: new Date()
+    })
+    .then(data => {
+      return Cart.findOneAndUpdate({userId: req.auth_user.id}, {
+        products: []
+      })
+    })
+    .then(data => {
+      return  Cart.findOne({userId: req.auth_user.id}).populate('products')
+    })
+    .then(data => {
+      res.status(200).json({
+        result: data,
+        error: null
+      })
+    })
+    .catch(error => {
+      res.status(500).json({
+        result: null,
+        error: error
+      })
+    })
+  }
+
 
 }
 

@@ -1,5 +1,5 @@
 UserController = require('./usercontrol')
-CartController = require('./cartcontrol')
+TransactionController = require('./transactioncontrol')
 ProductController = require('./productcontrol')
 class Controller {
   static home (req, res, next){
@@ -9,4 +9,4 @@ class Controller {
   }
 }
 
-module.exports = {Controller, UserController, CartController, ProductController}
+module.exports = {Controller, UserController, TransactionController, ProductController}
