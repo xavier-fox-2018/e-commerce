@@ -4,10 +4,10 @@ const CategoryController = require('../controllers/categoryController.js')
 const isAdmin = require('../middlewares/isAdmin.js')
 const auth = require('../middlewares/auth')
 
-router.post('/', auth.isAdmin, CategoryController.create);
+router.post('/', auth.isLogin, auth.isAdmin, CategoryController.create);
 router.get('/', CategoryController.show);
-router.delete('/:id', auth.isAdmin, CategoryController.delete);
-router.put('/:id', auth.isAdmin, CategoryController.update)
+router.delete('/:id', auth.isLogin, auth.isAdmin, CategoryController.delete);
+router.put('/:id', auth.isLogin, auth.isAdmin, CategoryController.update)
 
 
 module.exports = router;

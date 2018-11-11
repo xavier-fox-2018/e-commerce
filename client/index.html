@@ -17,7 +17,8 @@
       <div class="row text-light pt-2 pb-2">
         <div class="col-md-5">
           <i class="fa fa-envelop-o" aria-hidden="true"></i>
-            placeholder@gmail.com
+            {{getUserEmail}}
+          <p></p>
         </div>
         <div class="col-md-2">
           <i class="fa fa-user-o" aria-hidden="true"></i>
@@ -25,6 +26,7 @@
         </div>
         <div class="col-md-2">
           <i class="fa fa-cart-plus" aria-hidden="true"></i>
+          <span>{{ totalItems }}</span>
           <button class="btn btn-outline-success" data-target="#cartModal" data-toggle="modal">
               My Cart
           </button>
@@ -35,7 +37,6 @@
       </div>  
     </div>
   </div>
-
   <div class="container-fluid bg-black">
     <nav class="navbar container navbar-expand-lg navbar-dark bg-black">
       <a class="navbar-brand" href="#"></a>
@@ -45,15 +46,6 @@
     
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Category
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">coat</a>
-              <a class="dropdown-item" href="#">Accessory</a>
-            </div>
-          </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
           <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
@@ -133,142 +125,35 @@
         </div>
         <div class="row">
             <div class="col-md-4">
-              <div class="row border py-3" v-bind:class="{ currentCategory : checkCategory('coat')}">
+             <div class="row border py-3" v-for="category in categories" v-bind:class="{ currentCategory : checkCategory(category._id)}">
                 <div class="container text-center">
-                  <p class="category" v-on:click="changeCategory('coat')">
-                    Coat
-                  </p>
-                </div>
-              </div>
-              <div class="row border py-3" v-bind:class="{ currentCategory : checkCategory('accessory')}">
-                <div class="container text-center" >
-                  <p class="category" id="accessory" v-on:click="changeCategory('accessory')">
-                    Accessory
-                  </p>
-                </div>
-              </div>
-              <div class="row border py-3" v-bind:class="{ currentCategory : checkCategory('shoes')}">
-                <div class="container text-center" >
-                  <p class="category" id="shoes" v-on:click="changeCategory('shoes')">
-                    Shoes
-                  </p> 
-                </div>
-              </div>
-              <div class="row border py-3" v-bind:class="{ currentCategory : checkCategory('hats')}">
-                <div class="container text-center" >
-                  <p class="category" id="hats" v-on:click="changeCategory('hats')">
-                    Hats
-                  </p>  
+                <p class="category" v-on:click="changeCategory(category._id)">
+                {{category.name}}
+                </p>
                 </div>
               </div>
             </div>
             <div class="col-md-8">
                 <div class="container pb-5">
                     <div class="row mb-2">
-                        <div class="col-md-4 mb-3" v-if="product.category == currentCategory && product.stok > 0" v-for="product in products">
+                        <div class="col-md-4 mb-3" v-if="product.category == currentCategory" v-for="product in products">
                             <div class="card" >
-                              <img v-bind:src="product.img" class="card-img-top" alt="winter coat">
+                              <img v-bind:src="product.url_img" class="card-img-top" alt="winter coat">
                               <div class="card-body">
                                 <h5>{{ product.name }}</h5>
                                 <h5>$ {{ product.price }}</h5>
-                                <button class="btn btn-danger" v-on:click="setDetail(product)" data-toggle="modal" data-target="#itemModal">
+                                <button class="btn btn-danger" v-on:click="addToCart(product)">
                                   <i class="fa fa-cart-plus" aria-hidden="true" ></i>
-                                  BUY 
+                                  Add to Cart 
                                 </button>
                               </div>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-  </div>
-
-  <div class="container-fluid bg-light-gray mb-5 pb-5">
-    <div class="container pt-5">
-      <div class="row">
-        <h3>Winter Coat</h3>
-      </div>
-      <div class="underline">
-      </div>
-    </div>
-    <div class="container mt-5">
-      <div class="row mb-2">
-          <div class="col-md-3" v-for="coat in products" v-if="coat.category == 'coat'  && coat.stok > 0" >
-              <div class="card" >
-                <img class="card-img-top" alt="winter coat" v-bind:src="coat.img">
-                <div class="card-body">
-                  <h5>{{ coat.name }}</h5>
-                  <h5>$ {{ coat.price }}</h5>
-                  <button class="btn btn-danger" v-on:click="setDetail(coat)" data-toggle="modal" data-target="#itemModal">
-                    <i class="fa fa-cart-plus" aria-hidden="true"></i>
-                    BUY 
-                  </button>
-                </div>
-              </div>
-          </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="container mt-5">
-    <div class="row">
-      <h3>Winter Accessory</h3>
-    </div>
-    <div class="row">
-      <div class="underline"></div>
-    </div>
-  </div>
-
-  <div class="container mt-5 pb-5">
-      <div class="row mb-2">
-          <div class="col-md-3" v-for="accessory in products"  >
-              <div class="card" v-if="accessory.category == 'accessory'  && accessory.stok > 0 ">
-                <img v-bind:src="accessory.img" class="card-img-top" alt="winter coat">
-                <div class="card-body">
-                  <h5>{{ accessory.name }}</h5>
-                  <h5>$ {{ accessory.price }}</h5>
-                  <button class="btn btn-danger" v-on:click="setDetail(accessory)" data-toggle="modal" data-target="#itemModal">
-                    <i class="fa fa-cart-plus" aria-hidden="true"></i>
-                    BUY 
-                  </button>
-                </div>
-              </div>
-          </div>
-      </div>
-  </div>
-  
-  <!-- Modal -->
-  <div class="modal fade" id="itemModal" tabindex="-1" role="dialog" aria-labelledby="itemModal" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">{{ detailItem.name }}</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-            <div class="row">
-                  <div class="col-md-6">
-                    <img alt="" v-bind:src="detailItem.img" style="max-width: 120px;">
-                  </div>
-                  <div class="col-md-4">
-                    <p>Price : $ {{ detailItem.price }}</p>
-                    <p>Stok : {{ detailItem.stok }}</p>
-                    <div class="row">
-                      <div class="pl-3">total : </div> 
-                      <input type="text" class="form-class ml-3" style="max-width: 60px;" v-model="totalBought" id="totalBuy">
-                    </div>
-                  </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" v-on:click="addToCart(detailItem)" v-bind:disabled="checkStock(totalBought, detailItem)" >Add To Cart</button>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -282,13 +167,19 @@
           </button>
         </div>
         <div class="modal-body">
-            <div class="row mb-3" v-for="item in cart">
-                  <div class="col-md-6">
-                    <img alt="" v-bind:src="item.img" style="max-width: 120px;">
+            <div class="row mb-3" v-for="product in cart.cartItems">
+                  <div class="col-md-3">
+                    <img alt="" v-bind:src="product.item.url_img" style="max-width: 120px;">
                   </div>
                   <div class="col-md-6">
-                    {{item.name}}
+                    Quantity : {{product.quantity}} <br>
+                    Subtotal : $ {{product.subTotal}}
                   </div>
+            </div>
+            <div class="row border pt-3 pb-3">
+              <div class="container">
+                  Total Price : $ {{ totalPrice }}
+              </div>
             </div>
         </div>
         <div class="modal-footer">
@@ -410,191 +301,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <script>
-    var app = new Vue({
-      el : '#app',
-      data : {
-        isLogin : false,
-        totalBought : 1,
-        page : 'home',
-        header: 'WeCommerce',
-        user : {},
-        detailItem : {},
-        currentCategory : 'coat',
-        cart : [],
-        products : [
-          { 
-            id : 1,
-            stok : 0,
-            name : 'Black Long Coat',
-            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
-            price : '340',
-            category : 'coat'  
-          }, 
-          { 
-            id : 2,
-            stok : 3,
-            name: 'Blue White Coat',
-            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
-            price : '370',
-            category : 'coat'  
-          }, 
-          { 
-            id : 3,
-            stok : 3,
-            name: 'Navy Cool Coat',
-            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
-            price : '440',
-            category : 'coat'  
-          }, 
-          { 
-            id : 4,
-            stok : 3,
-            name: 'Yellow Coat',
-            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
-            price : '340',
-            category : 'coat'  
-          },
-          { 
-            id : 5,
-            stok : 3,
-            name : 'White Long Scarf',
-            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
-            price : '340',
-            category : 'accessory'   
-          }, 
-          { 
-            id : 6,
-            stok : 3,
-            name: 'Warm Black Glove',
-            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
-            price : '370',
-            category : 'accessory'  
-          }, 
-          { 
-            id : 7,
-            stok : 3,
-            name: 'Mufler',
-            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
-            price : '440',
-            category : 'accessory'  
-          }, 
-          { 
-            id : 8,
-            stok : 3,
-            name: 'Black Scarf',
-            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
-            price : '340',
-            category : 'accessory'
-          }, 
-          { 
-            id : 9,
-            stok : 3,
-            name: 'Black Shoes',
-            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
-            price : '34',
-            category : 'shoes'
-          }, 
-          { 
-            id : 10,
-            stok : 3,
-            name: 'Fox fur hats',
-            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
-            price : '340',
-            category : 'hats'
-          }
-        ]
-      },
-      mounted : function () {
-        if (localStorage.getItem('token')) {
-          this.isLogin = true;
-        }
-      },
-      computed : {
-
-      },
-      
-      methods : {
-        changeCategory: function (param) {
-          console.log(param);
-          this.currentCategory = param;
-        },
-        checkCategory: function (param) {
-          if (this.currentCategory == param) {
-            return true;
-          } else {
-            return false;
-          }
-        },
-        setDetail: function (item) {
-          this.detailItem = item
-          console.log(this.detailItem);
-        },
-        addToCart: function (item) {
-          const product = this.products.filter(data => data.id == item.id);
-          if (product[0].stok > 0 ) {
-            product[0].stok -= 1;
-            this.cart.push(item.id);
-          }
-        },
-        checkStock: function (total, item) {
-          if (item.stok >= total && total > 0) {
-            return false;
-          } else return true;
-        },
-        login : function () {
-          console.log(this.user);
-        },
-        register () {
-          axios({
-            method: 'post',
-            url: 'http://localhost:3000/users/',
-            data: {
-              name : this.user.name,
-              email : this.user.email,
-              address : this.user.address,
-              password : this.user.password
-            }
-          })
-          .then(data => {
-            console.log(data)
-            location.reload();
-          })
-          .catch(err => console.log(err))
-        },
-
-        login () {
-          axios({
-            method: 'post',
-            url: 'http://localhost:3000/users/login',
-            data: {
-              email : this.user.email,
-              password : this.user.password
-            }
-          })
-          .then(response => {
-            localStorage.setItem('token', response.data.token);
-            localStorage.setItem('isAdmin', response.data.admin);
-            this.isLogin = true;
-            console.log(response.data);
-            if (response.data.admin == true) {
-              window.location.href = "admin.html"
-            }
-            
-          })
-          .catch(err => console.log(err))
-        },
-
-        logout () {
-          this.isLogin = false;
-          localStorage.clear();
-          location.reload();
-        }
-
-          
-        
-      }
-    })
-  </script>
+  <script src="src/user.js"></script>
 </body>
 </html>

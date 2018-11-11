@@ -1,5 +1,6 @@
 const Item = require('../models/item.js');
-const helper = require('../helper/helper.js')
+const helper = require('../helper/helper.js');
+const multer = require('multer');
 
 class ItemController {
 
@@ -10,7 +11,8 @@ class ItemController {
         description : req.body.description,
         price : Number(req.body.price),
         stock : Number(req.body.stock),
-        category : req.body.category
+        category : req.body.category,
+        url_img : req.body.url_img  
       })
       .then((data) => {
         res.status(200).json(data)
@@ -42,6 +44,12 @@ class ItemController {
         item.price = Number(req.body.price);
         item.stock = Number(req.body.stock);
         item.category = req.body.category;
+        console.log(item);
+        
+        return item.save()
+      })
+      .then(item => {
+        res.status(200).json(item)
       })
       .catch(err => {
         res.status(500).json(err)

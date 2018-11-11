@@ -39,63 +39,63 @@
 
   <div class="container-fluid bg-light-gray pt-5">
     <div class="container">
-        <div class="row col-md-4 justify-content-center">
-            <h3>Category</h3>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-              <div class="row border py-3" v-for="category in categories" v-bind:class="{ currentCategory : checkCategory(category.name)}">
-                <div class="container text-center">
-                  <p class="category" v-on:click="changeCategory(category)">
-                    {{ category.name }}
-                  </p>
-                </div>
-              </div>
-              <div class="row border py-3" v-bind:class="{ currentCategory : checkCategory('coat')}">
-                <div class="container text-center">
-                  <p class="category" v-on:click="changeCategory('coat')">
-                    Coat
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-8">
-                <div class="container pb-5">
-                    <div class="row mb-2">
-                        <div class="col-md-4 mb-3" v-if="product.category == currentCategory && product.stok > 0" v-for="product in products">
-                            <div class="card" >
-                              <img v-bind:src="product.img" class="card-img-top" alt="winter coat">
-                              <div class="card-body">
-                                <h5>{{ product.name }}</h5>
-                                <h5>$ {{ product.price }}</h5>
-                                <button class="btn btn-danger" v-on:click="setDetail(product)" data-toggle="modal" data-target="#itemModal">
-                                  <i class="fa fa-cart-plus" aria-hidden="true" ></i>
-                                  BUY 
-                                </button>
-                              </div>
-                            </div>
-                        </div>
+      <div class="row justify-content-center pb-3">
+        <h5>ADMIN - Item</h5>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <button class="btn btn-success mb-3" data-toggle="modal" data-target="#itemModal"> add item </button>
+          <div class="row border py-3">
+            <div class="container text-center">
+              <div class="row">
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col">Name</div>
+                        <div class="col">Price</div>
+                        <div class="col">Description</div>
+                        <div class="col">Stock</div>
                     </div>
                 </div>
+              </div>
             </div>
+          </div>
+          
+          <div class="row border py-3" v-for="item in items">
+            <div class="container text-center">
+            <div class="row">
+                <div class="col-md-8">
+                  
+                  <div class="row">
+                    <div class="col">{{item.name}}</div>
+                    <div class="col">{{item.price}}</div>
+                    <div class="col">{{item.description}}</div>
+                    <div class="col">{{item.stock}}</div>
+                  </div>
+                  
+                </div>
+                <div class="col-md-4"><button class="btn btn-primary" data-toggle="modal" data-target="#updateItemModal" v-on:click="editItem(item)">update</button> || <button class="btn btn-danger" v-on:click="deleteItem(item)">delete</button></div>
+            </div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
   </div>
-
+  <hr class="py-0 ">
   <div class="container-fluid bg-light-gray pt-5">
     <div class="container">
       <div class="row justify-content-center pb-3">
-        <h5>ADMIN - Update , Delete , Add Category</h5>
+        <h5>ADMIN -  Category</h5>
       </div>
       <div class="row">
         <div class="col-md-4">
             <button class="btn btn-success mb-3" data-toggle="modal" data-target="#categoryModal"> add </button>
-            <div class="row border py-3" v-for="category in categories" v-bind:class="{ currentCategory : checkCategory(category.name)}">
-                <div class="container text-center">
-                  <p class="category" v-on:click="changeCategory(category)">
-                    {{ category.name }}
-                  </p>
-                </div>
+            <div class="row border py-3" v-for="category in categories">
+              <div class="container text-center">
+              <p class="category" v-on:click="changeCategory(category)">
+              {{category.name}}
+              </p>
+              </div>
             </div>
         </div>
         <div class="col-md-8">
@@ -104,12 +104,13 @@
                 <input type="text" class="form-control" id="usr" v-model="currentCategory.name">
             </div>
             <button class="btn btn-success mb-3" v-on:click="updateCategory()"> Change </button>  
-        </div>
+            <button type="button" class="mb-3 btn btn-danger" v-on:click="deleteCategory">Delete</button>
+          </div>
       </div>
     </div>
   </div>
 
-  <!-- Modal -->
+  <!-- Modal Item -->
   <div class="modal fade" id="itemModal" tabindex="-1" role="dialog" aria-labelledby="itemModal" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -120,28 +121,76 @@
           </button>
         </div>
         <div class="modal-body">
-            <div class="row">
-                  <div class="col-md-6">
-                    <img alt="" v-bind:src="detailItem.img" style="max-width: 120px;">
-                  </div>
-                  <div class="col-md-4">
-                    <p>Price : $ {{ detailItem.price }}</p>
-                    <p>Stok : {{ detailItem.stok }}</p>
-                    <div class="row">
-                      <div class="pl-3">total : </div> 
-                      <input type="text" class="form-class ml-3" style="max-width: 60px;" v-model="totalBought" id="totalBuy">
-                    </div>
-                  </div>
+            <div class="container">
+              <div class="form-group">
+                <label for="usr">Name:</label>
+                <input type="text" class="form-control" v-model="item.name">
+                <label for="usr">Description:</label>
+                <input type="text" class="form-control" v-model="item.description">
+                <label for="usr">Price:</label>
+                <input type="text" class="form-control" v-model="item.price">
+                <label for="usr">Stock:</label>
+                <input type="text" class="form-control" v-model="item.stock">
+                <label for="exampleFormControlSelect1">Product Category</label>
+                <select class="form-control" id="exampleFormControlSelect1" v-model="value">
+                  <option v-for="category in categories" v-bind:value="category._id">{{category.name}}</option>
+                </select>
+                <div class="custom-file mb-3 mt-3">
+                  <input class="custom-file-input" type="file" v-on:change="getImageToUpload($event)">
+                  <label class="custom-file-label text-left" for="createImage">{{item.imgURL.name}}</label>
+              </div>
+            </div>
             </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" v-on:click="addToCart(detailItem)" v-bind:disabled="checkStock(totalBought, detailItem)" >Add To Cart</button>
+          <button type="button" class="btn btn-primary" v-on:click="addItem()" data-dismiss="modal" >submit</button>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Modal Item Update -->
+  <div class="modal fade" id="updateItemModal" tabindex="-1" role="dialog"  aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Item update</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              <div class="container">
+                <div class="form-group">
+                  <label for="usr">Name:</label>
+                  <input type="text" class="form-control" v-model="updateItem.name">
+                  <label for="usr">Description:</label>
+                  <input type="text" class="form-control" v-model="updateItem.description">
+                  <label for="usr">Price:</label>
+                  <input type="text" class="form-control" v-model="updateItem.price">
+                  <label for="usr">Stock:</label>
+                  <input type="text" class="form-control" v-model="updateItem.stock">
+                  <label for="exampleFormControlSelect1">Product Category</label>
+                  <select class="form-control" id="exampleFormControlSelect1" v-model="value">
+                    <option v-for="category in categories" v-bind:value="category._id" v-bind:selected="checkUpdateCategory(updateItem.category, category._id)">{{category.name}}</option>
+                  </select>
+                  <div class="custom-file mb-3 mt-3">
+                    <input class="custom-file-input" type="file" v-on:change="getImageToUpdate($event)">
+                    <label class="custom-file-label text-left" for="createImage">{{detailItem.imgURL.name}}</label>
+                </div>
+              </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" v-on:click="updatingItem(updateItem._id)" data-dismiss="modal" >submit</button>
+          </div>
+        </div>
+      </div>
+  </div>
+
+  <!-- Modal Cart -->
   <div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="cartModal" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -213,8 +262,9 @@
       </div>
     </div>
   </footer>
-  <!-- Modal -->
-<div class="modal fade" id="categoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+
+  <!-- ModalCategory -->
+  <div class="modal fade" id="categoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -231,7 +281,7 @@
 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" v-on:click="addCategory">Save</button>
+          <button type="button" class="btn btn-primary" v-on:click="addCategory" data-dismiss="modal">Save</button>
         </div>
       </div>
     </div>
@@ -242,199 +292,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <script>
-    var app = new Vue({
-      el : '#app',
-      data : {
-        isLogin : false,
-        totalBought : 1,
-        page : 'home',
-        header: 'WeCommerce',
-        user : {},
-        detailItem : {},
-        currentCategory : 'outwear',
-        category : {},
-        categories : [],
-        cart : [],
-        products : [
-          { 
-            id : 1,
-            stok : 0,
-            name : 'Black Long Coat',
-            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
-            price : '340',
-            category : 'coat'  
-          }, 
-          { 
-            id : 2,
-            stok : 3,
-            name: 'Blue White Coat',
-            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
-            price : '370',
-            category : 'coat'  
-          }, 
-          { 
-            id : 3,
-            stok : 3,
-            name: 'Navy Cool Coat',
-            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
-            price : '440',
-            category : 'coat'  
-          }, 
-          { 
-            id : 4,
-            stok : 3,
-            name: 'Yellow Coat',
-            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
-            price : '340',
-            category : 'coat'  
-          },
-          { 
-            id : 5,
-            stok : 3,
-            name : 'White Long Scarf',
-            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
-            price : '340',
-            category : 'accessory'   
-          }, 
-          { 
-            id : 6,
-            stok : 3,
-            name: 'Warm Black Glove',
-            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
-            price : '370',
-            category : 'accessory'  
-          }, 
-          { 
-            id : 7,
-            stok : 3,
-            name: 'Mufler',
-            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
-            price : '440',
-            category : 'accessory'  
-          }, 
-          { 
-            id : 8,
-            stok : 3,
-            name: 'Black Scarf',
-            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
-            price : '340',
-            category : 'accessory'
-          }, 
-          { 
-            id : 9,
-            stok : 3,
-            name: 'Black Shoes',
-            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
-            price : '34',
-            category : 'shoes'
-          }, 
-          { 
-            id : 10,
-            stok : 3,
-            name: 'Fox fur hats',
-            img : 'http://www.fratellirossilecce.it/images/placeholder-350x350.jpg',
-            price : '340',
-            category : 'hats'
-          }
-        ]
-      },
-      created : function () {
-        const role = localStorage.getItem('isAdmin');
-        if (!role) {
-          window.location.href = "index.html"
-        } else if (localStorage.getItem('token')) {
-          this.isLogin = true;
-        }
-
-        // code ini pindahin ke method, misal nama method nya getCategories()
-        // jadi disini tinggal manggil aja this.getCategories()
-        axios.get('http://localhost:3000/categories').then(response => {
-          this.categories = response.data
-          console.log(this.categories)
-        }) 
-      },
-      computed : {
-
-      },
-      
-      methods : {
-        changeCategory: function (objCategory) {
-          console.log("=====",objCategory);
-          this.currentCategory = objCategory;
-        },
-        checkCategory: function (param) {
-          if (this.currentCategory == param) {
-            return true;
-          } else {
-            return false;
-          }
-        },
-        setDetail: function (item) {
-          this.detailItem = item
-          console.log(this.detailItem);
-        },
-        addToCart: function (item) {
-          const product = this.products.filter(data => data.id == item.id);
-          if (product[0].stok > 0 ) {
-            product[0].stok -= 1;
-            this.cart.push(item.id);
-          }
-        },
-        checkStock: function (total, item) {
-          if (item.stok >= total && total > 0) {
-            return false;
-          } else return true;
-        },
-        login : function () {
-          console.log(this.user);
-        },
-        register () {
-          axios({
-            method: 'post',
-            url: 'http://localhost:3000/users/',
-            data: {
-              name : this.user.name,
-              email : this.user.email,
-              address : this.user.address,
-              password : this.user.password
-            }
-          })
-          .then(data => {
-            console.log(data)
-            location.reload();
-          })
-          .catch(err => console.log(err))
-        },
-        logout () {
-          this.isLogin = false;
-          localStorage.clear();
-          location.reload();
-        },
-
-        addCategory () {
-          axios({
-            method: 'post',
-            url: 'http://localhost:3000/categories/',
-            headers : {
-              token : localStorage.getItem('token')
-            },
-            data: {
-              name : this.category.name
-            }
-          })
-          .then(data => {
-            console.log(data)
-            // location.reload();
-            // this.getCategories()h
-          })
-          .catch(err => console.log(err))
-        }
-
-          
-        
-      }
-    })
-  </script>
+  <script src="src/vue.js"></script>
 </body>
 </html>

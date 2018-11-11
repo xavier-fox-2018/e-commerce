@@ -6,7 +6,8 @@ const itemSchema = new Schema({
   description: String,
   price:   Number,
   stock: Number,
-  category: { type: Schema.Types.ObjectId, ref: 'Category' }
+  category: { type: Schema.Types.ObjectId, ref: 'Category' },
+  url_img: String
 });
 
 const Item = mongoose.model('Item', itemSchema);

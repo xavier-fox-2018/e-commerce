@@ -1,21 +1,19 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const validator = require('validator');
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
-const customerSchema = new Schema({
-  name:  String,
-  address: String,
-  email:   {
-    type : String,
-    validate : {
-      validator : validator.isEmail
-    }
-  },
-  phone: String,
-  password : String
-});
+const cartSchema = new Schema({
+    cartItems: [{
+        item: { type: Schema.Types.ObjectId, ref: 'Item' },
+        quantity: { type: Number, default: 0 },
+        subTotal: {type : Number , default: 0}
+    }],
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    checkOut : String
+})
 
-const Customer = mongoose.model('Customer', customerSchema);
+const Cart = mongoose.model('Cart', cartSchema)
 
-module.exports = Customer;
-
+module.exports = Cart
