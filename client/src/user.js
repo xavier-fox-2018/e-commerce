@@ -3,6 +3,7 @@ var app = new Vue({
   data : {
     isLogin : false,
     totalBought : 1,
+    registerSuccess : false,
     page : 'home',
     header: 'WeCommerce',
     user : {
@@ -36,6 +37,9 @@ var app = new Vue({
       this.currentCategory = param;
       this.getProducts();
     },
+    dismissNotif : function (param) {
+      this.registerSuccess = false;
+    },
     checkCategory: function (param) {
       if (this.currentCategory == param) {
         return true;
@@ -50,7 +54,7 @@ var app = new Vue({
     addToCart: function (item) {
       axios({
         method: 'post',
-        url: 'http://localhost:3000/carts/',
+        url: 'http://35.220.229.99:3000/carts/',
         headers : {
           token : localStorage.getItem('token')
         },
@@ -71,7 +75,7 @@ var app = new Vue({
     },
     getProducts: function () {
       axios
-        .get('http://localhost:3000/items')
+        .get('http://35.220.229.99:3000/items')
         .then(response => {
           this.products = response.data;
           console.log(this.products)
@@ -83,7 +87,7 @@ var app = new Vue({
     getCarts: function () {
       axios({
         method: 'get',
-        url: 'http://localhost:3000/carts/',
+        url: 'http://35.220.229.99:3000/carts/',
         headers : {
           token : localStorage.getItem('token')
         }
@@ -106,7 +110,7 @@ var app = new Vue({
     },
     getCategories() {
       axios
-        .get('http://localhost:3000/categories')
+        .get('http://35.220.229.99:3000/categories')
         .then(response => {
           this.categories = response.data
           console.log(this.categories)
@@ -119,7 +123,7 @@ var app = new Vue({
       console.log(this.user)
       axios({
         method: 'post',
-        url: 'http://localhost:3000/users/',
+        url: 'http://35.220.229.99:3000/users/',
         data: {
           name : this.user.name,
           email : this.user.email,
@@ -129,14 +133,14 @@ var app = new Vue({
       })
       .then(data => {
         console.log(data)
-        location.reload();
+        this.registerSuccess = true
       })
       .catch(err => console.log(err))
     },
     login () {
       axios({
         method: 'post',
-        url: 'http://localhost:3000/users/login',
+        url: 'http://35.220.229.99:3000/users/login',
         data: {
           email : this.user.email,
           password : this.user.password
@@ -156,7 +160,7 @@ var app = new Vue({
       .catch(err => console.log(err))
     },
     checkout (cart) {
-      axios.post('http://localhost:3000/transactions/', {
+      axios.post('http://35.220.229.99:3000/transactions/', {
         cartItems : this.cart.cartItems,
         totalPrice : this.totalPrice
       }, {
@@ -166,7 +170,7 @@ var app = new Vue({
       })
       .then(function (response) {
         axios
-          .delete(`http://localhost:3000/carts/${cart._id}`, {
+          .delete(`http://35.220.229.99:3000/carts/${cart._id}`, {
             headers : {
               token : localStorage.getItem('token')
             }
@@ -190,7 +194,7 @@ var app = new Vue({
       
       axios({
         method : 'patch',
-        url : `http://localhost:3000/carts/${itemId}`,
+        url : `http://35.220.229.99:3000/carts/${itemId}`,
         headers : {
           token : localStorage.getItem('token')
         }

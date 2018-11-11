@@ -72,7 +72,7 @@ var app = new Vue({
     this.getItems();
 
     axios
-      .get('http://localhost:3000/users/role', {
+      .get('http://35.220.229.99:3000/users/role', {
         headers : {
           token : this.token
         }
@@ -102,7 +102,7 @@ var app = new Vue({
   methods : {
     getCategories: function () {
       axios
-        .get('http://localhost:3000/categories')
+        .get('http://35.220.229.99:3000/categories')
         .then(response => {
           this.categories = response.data
         })
@@ -112,7 +112,7 @@ var app = new Vue({
     },
     getItems: function () {
       axios
-        .get('http://localhost:3000/items')
+        .get('http://35.220.229.99:3000/items')
         .then(response => {
           this.items = response.data;
         })
@@ -147,7 +147,7 @@ var app = new Vue({
     addCategory () {
       axios({
         method: 'post',
-        url: 'http://localhost:3000/categories/',
+        url: 'http://35.220.229.99:3000/categories/',
         headers : {
           token : localStorage.getItem('token')
         },
@@ -162,7 +162,7 @@ var app = new Vue({
       .catch(err => console.log(err))
     },
     updateCategory () {
-      axios.put(`http://localhost:3000/categories/${this.currentCategory._id}`, 
+      axios.put(`http://35.220.229.99:3000/categories/${this.currentCategory._id}`, 
       {
         name : this.currentCategory.name
       },{
@@ -179,7 +179,7 @@ var app = new Vue({
       })
     },
     deleteCategory () {
-      axios.delete(`http://localhost:3000/categories/${this.currentCategory._id}`,
+      axios.delete(`http://35.220.229.99:3000/categories/${this.currentCategory._id}`,
       {
         headers : {
           token : this.token
@@ -198,7 +198,7 @@ var app = new Vue({
       let formData = new FormData();
       formData.append('image', this.item.imgURL);
       axios
-        .post(`http://localhost:3000/items/upload`, formData, {
+        .post(`http://35.220.229.99:3000/items/upload`, formData, {
           headers : {
             token : this.token
           }
@@ -207,7 +207,7 @@ var app = new Vue({
           console.log(res)
           axios({
             method: 'post',
-            url: 'http://localhost:3000/items',
+            url: 'http://35.220.229.99:3000/items',
             headers : {
               token : this.token
             },
@@ -234,7 +234,7 @@ var app = new Vue({
       this.item.imgURL = link.target.files[0];
     },
     deleteItem (objItem) {
-      axios.delete(`http://localhost:3000/items/${objItem._id}`,
+      axios.delete(`http://35.220.229.99:3000/items/${objItem._id}`,
       {
         headers : {
           token : this.token
@@ -266,7 +266,7 @@ var app = new Vue({
       if(this.updateItem.imgURL.name === '') {
         axios({
           method : 'PUT',
-          url : `http://localhost:3000/items/${id}`,
+          url : `http://35.220.229.99:3000/items/${id}`,
           data : {
             name : this.updateItem.name,
             price : this.updateItem.price,
@@ -293,7 +293,7 @@ var app = new Vue({
         let formData = new FormData();
         formData.append('image', this.updateItem.imgURL);
         axios
-          .post(`http://localhost:3000/items/upload`, formData, {
+          .post(`http://35.220.229.99:3000/items/upload`, formData, {
             headers : {
               token : this.token
             }
@@ -301,7 +301,7 @@ var app = new Vue({
           .then(res => {
             axios({
               method : 'PUT',
-              url : `http://localhost:3000/items/${id}`,
+              url : `http://35.220.229.99:3000/items/${id}`,
               data : {
                 name : this.updateItem.name,
                 price : this.updateItem.price,

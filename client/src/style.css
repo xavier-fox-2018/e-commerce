@@ -25,6 +25,10 @@ p.category:hover {
   top:200px
 }
 
+.cart {
+  max-height: 100px !important;
+}
+
 .media img{
   max-width: 120px;
   height: auto;
