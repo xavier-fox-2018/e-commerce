@@ -3,14 +3,6 @@ const Cart = require('../models/cartModel')
 
 class Controller {
     static create(req,res){
-        console.log('req userid',req.userId)
-        console.log('req body',req.body)
-
-        let transaction = {
-            user : req.userId,
-            item_list : req.body.item_list,
-            total_price : req.body.total_price
-        }
 
         Transaction.create({
             user : req.userId,
@@ -31,19 +23,33 @@ class Controller {
             })
             .catch((err)=>{
                 res.status(500).json({
+                    error : err,
                     message : "Error in Emptying Cart After Checkout"
                 })
             })
         })
         .catch((err)=>{
             res.status(500).json({
+                error : err,
                 message : "Error In Creating Transaction"
             })
         })
     }
 
     static read(req,res){
-        
+        Transaction.find({
+            user : req.userId
+        })
+        .populate('item_list.item')
+        .then((transaction)=>{
+            res.status(200).json(transaction)
+        })
+        .catch((err)=>{
+            res.status(500).json({
+                message : "Error In Reading User Transactions",
+                error : err
+            })
+        })
     }
 
 }

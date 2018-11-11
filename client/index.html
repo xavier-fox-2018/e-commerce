@@ -93,8 +93,8 @@
             </a>
           </li>
         </ul>
-        <ul class="navbar-nav nav-flex-icons">
-          <li class="nav-item" data-toggle="modal" data-target="#modalLRForm">
+        <ul class="navbar-nav nav-flex-icons" @click="getMyTransaction" data-toggle="modal" data-target="#myTransactionModal">
+          <li class="nav-item">
             <a class="nav-link waves-effect">
               <i class="fa fa-user"></i>
               <span class="clearfix d-none d-sm-inline-block"> My Transaction </span>
@@ -458,11 +458,59 @@
   </div>
   <!--Modal: Login / Register Form-->
 
+  <!-- Modal My Transaction -->
+  <div class="modal fade" id="myTransactionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">My Transaction</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!--Accordion wrapper-->
+          <div class="accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
+            <!-- Accordion card -->
+            <div class="card" v-for="transaction in my_transaction">
+              <!-- Card header -->
+              <div class="card-header" role="tab" :id="'heading'+transaction._id">
+                <a class="collapsed" data-toggle="collapse" data-parent="#accordionEx" :href="'#collapse'+transaction._id" aria-expanded="false"
+                  :aria-controls="'#collapse'+transaction._id">
+                  <h5 class="mb-0">
+                    {{transaction.createdAt}} <i class="fa fa-angle-down rotate-icon"></i>
+                  </h5>
+                </a>
+              </div>
+              <!-- Card body -->
+              <div :id="'collapse'+transaction._id" class="collapse" role="tabpanel" aria-labelledby="headingThree3" data-parent="#accordionEx">
+                <div class="card-body">
+                  <strong>Item List :</strong>
+                  <ul v-for="item in transaction.item_list">
+                    <li>{{item.qty}} {{item.item.name}} for ${{item.sub_total}} (${{item.item.price}}/each)</li>
+                  </ul>
+                  <strong>Total : ${{transaction.total_price}}</strong>
+                </div>
+              </div>
+            </div>
+            <!-- Accordion card -->
+          </div>
+          <!--/.Accordion wrapper-->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal My Transaction -->
+
+
   <!--Footer-->
   <footer class="page-footer text-center font-small mt-4 wow fadeIn">
 
     <hr class="my-4">
-    <!-- {{items}} -->
 
     <!--Copyright-->
     <div class="footer-copyright py-3">
@@ -503,6 +551,7 @@
         carts : [],
         itemincart : '',
         selected : '',
+        my_transaction : '',
 
         selected_id : '',
         selected_name : '',
@@ -683,7 +732,21 @@
           .catch(err=>{
             console.log(err)
           })
-
+        },
+        getMyTransaction(){
+          axios({
+            method : 'GET',
+            url : `${this.config.port}/transactions`,
+            headers : {
+              token : localStorage.getItem('token')
+            }
+          })
+          .then(response=>{
+            this.my_transaction = response.data.reverse()
+          })
+          .catch(err=>{
+            console.log(err.responseJSON.message)
+          })
         }
       },
       created : function(){
