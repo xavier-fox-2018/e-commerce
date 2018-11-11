@@ -37,6 +37,16 @@
       </div>  
     </div>
   </div>
+  <div class="container" v-if="isCheckOut">
+    <div class="row">
+      <div class="col-lg-9 py-3 px-3 bg-success text-white" >
+        Transaction is being processed , check email for continue to transfer
+      </div>
+      <div class="col-lg-3 py-3 px-3 bg-success">
+        <button class="btn btn-primary" v-on:click="dismiss">dismiss</button>
+      </div>
+    </div>
+  </div>
   <div class="container-fluid bg-black">
     <nav class="navbar container navbar-expand-lg navbar-dark bg-black">
       <a class="navbar-brand" href="#"></a>
@@ -167,13 +177,16 @@
           </button>
         </div>
         <div class="modal-body">
-            <div class="row mb-3" v-for="product in cart.cartItems">
+            <div class="row mb-3" v-if="cart.cartItems!=null" v-for="product in cart.cartItems">
                   <div class="col-md-3">
                     <img alt="" v-bind:src="product.item.url_img" style="max-width: 120px;">
                   </div>
                   <div class="col-md-6">
                     Quantity : {{product.quantity}} <br>
                     Subtotal : $ {{product.subTotal}}
+                  </div>
+                  <div class="col-md-3">
+                    <button class="btn btn-danger" v-on:click="removeItemFromCart(product.item._id)" data-dismiss="modal">Remove</button>
                   </div>
             </div>
             <div class="row border pt-3 pb-3">
@@ -184,7 +197,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" v-on:click="addToCart(detailItem)">Checkout</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="checkout(cart)">Checkout</button>
         </div>
       </div>
     </div>

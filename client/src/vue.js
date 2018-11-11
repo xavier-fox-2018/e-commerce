@@ -69,12 +69,31 @@ var app = new Vue({
   created () {
     this.getCategories();
     this.getItems();
-    const role = localStorage.getItem('isAdmin');
-    if (!role) {
-      window.location.href = "index.html"
-    } else if (localStorage.getItem('token')) {
-      this.isLogin = true;
-    }
+
+    axios
+      .get('http://localhost:3000/users/role', {
+        headers : {
+          token : this.token
+        }
+      })
+      .then(data => {
+        if(data.data === false) {
+          window.location.href = "index.html"
+        } else {
+          this.isLogin = true
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        window.location.href = "index.html";
+      })
+
+    // const role = localStorage.getItem('isAdmin');
+    // if (!role) {
+    //   window.location.href = "index.html"
+    // } else if (localStorage.getItem('token')) {
+    //   this.isLogin = true;
+    // }
   },
   computed : {
 

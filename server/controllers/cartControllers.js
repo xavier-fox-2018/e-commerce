@@ -1,5 +1,5 @@
 const Cart = require('../models/cart')
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 const Item = require('../models/item')
 
 class CartController {
@@ -148,6 +148,31 @@ class CartController {
       })
   }
 
+  static delete(req, res) {
+    Cart
+      .findById(req.params.id)
+      .then(data => {
+        if(data.user.equals(req.user.id)) {
+          Cart
+            .deleteOne({
+              user : req.user.id
+            })
+            .then(data => {
+              res.status(200).json(data)
+            })
+            .catch(err => {
+              res.status(500).json(err)
+          })
+        } else {
+          res.status(400).json({
+            msg : 'unauthorized access'
+          })
+        }
+      })
+      .catch(err => {
+        res.status(500).json(err)
+      })
+  }
 }
 
 module.exports = CartController

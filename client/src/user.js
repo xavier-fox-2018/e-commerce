@@ -14,7 +14,8 @@ var app = new Vue({
     cart : [],
     products : [],
     totalItems : 0,
-    totalPrice : 0
+    totalPrice : 0,
+    isCheckOut : false
   },
   created () {
     this.getCategories();
@@ -88,10 +89,17 @@ var app = new Vue({
         }
       })
       .then(cartList => {
-        this.cart = cartList.data;
-        this.totalItems = this.cart.cartItems.length;
-        for(let i = 0 ; i < this.totalItems; i++) {
-          this.totalPrice += this.cart.cartItems[i].subTotal;
+        if(cartList.data != null) {
+          this.cart = cartList.data;
+          this.totalItems = this.cart.cartItems.length;
+          this.totalPrice = 0;
+          for(let i = 0 ; i < this.totalItems; i++) {
+            this.totalPrice += this.cart.cartItems[i].subTotal;
+          }
+        } else {
+          this.totalPrice = 0;
+          this.cart = [];
+          this.totalItems = 0;
         }
       })
       .catch(err => console.log(err))
@@ -125,7 +133,6 @@ var app = new Vue({
       })
       .catch(err => console.log(err))
     },
-
     login () {
       axios({
         method: 'post',
@@ -137,7 +144,6 @@ var app = new Vue({
       })
       .then(response => {
         localStorage.setItem('token', response.data.token);
-        localStorage.setItem('isAdmin', response.data.admin);
         localStorage.setItem('email', this.user.email)
         this.isLogin = true;
         this.getCarts();
@@ -149,11 +155,62 @@ var app = new Vue({
       })
       .catch(err => console.log(err))
     },
+    checkout (cart) {
+      axios.post('http://localhost:3000/transactions/', {
+        cartItems : this.cart.cartItems,
+        totalPrice : this.totalPrice
+      }, {
+        headers : {
+          token : localStorage.getItem('token')
+        }
+      })
+      .then(function (response) {
+        axios
+          .delete(`http://localhost:3000/carts/${cart._id}`, {
+            headers : {
+              token : localStorage.getItem('token')
+            }
+          })
+          .then(data => {
+            console.log('checkout success');
+            app.getCarts();
+            app.isCheckOut = true;
+          })
+          .catch(err => {
+            console.log(err);
+            
+          })
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
+    removeItemFromCart (itemId) {
+      console.log(itemId);
+      
+      axios({
+        method : 'patch',
+        url : `http://localhost:3000/carts/${itemId}`,
+        headers : {
+          token : localStorage.getItem('token')
+        }
+      })
+      .then(data => {
+        console.log(data);
+        this.getCarts();
 
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
     logout () {
       this.isLogin = false;
       localStorage.clear();
       location.reload();
+    },
+    dismiss() {
+      this.isCheckOut = false
     }
   }
 })

@@ -73,6 +73,9 @@ class UserController {
       })
   }
   
+  static getRole (req, res) {
+    res.status(200).json(req.user.isAdmin)
+  }
 }
 
 module.exports = UserController;
