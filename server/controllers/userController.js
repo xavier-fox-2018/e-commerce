@@ -12,7 +12,7 @@ class UserController {
         address : req.body.address,
         email : req.body.email,
         password : hash,
-        isAdmin : true
+        isAdmin : false
       })
       .then((response) => {
         res.status(201).json({
