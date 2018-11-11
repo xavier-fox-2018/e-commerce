@@ -146,7 +146,7 @@
             <div class="col-md-8">
                 <div class="container pb-5">
                     <div class="row mb-2">
-                        <div class="col-md-4 mb-3" v-if="product.category == currentCategory" v-for="product in products">
+                        <div class="col-md-4 mb-3" v-if="(product.category == currentCategory) && product.stock > 0" v-for="product in products">
                             <div class="card" >
                               <img v-bind:src="product.url_img" class="card-img-top" alt="winter coat">
                               <div class="card-body">

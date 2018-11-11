@@ -19,7 +19,7 @@ var app = new Vue({
   },
   created () {
     this.getCategories();
-    this.changeCategory("5be2bed8cb9b98492b9b4312")
+    this.changeCategory("5be81a70fb15db0e1e92c3e7")
     if (localStorage.getItem('token')) {
       this.isLogin = true;
       this.getCarts();  

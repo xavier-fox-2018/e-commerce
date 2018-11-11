@@ -8,8 +8,8 @@ const mongoose = require('mongoose');
 var app = require('../app');
 var debug = require('debug')('server:server');
 var http = require('http');
-//mongoose.connect(process.env.URL);
-mongoose.connect('mongodb://localhost:27017/wecommerce')
+mongoose.connect(process.env.URL);
+// mongoose.connect('mongodb://localhost:27017/wecommerce')
 /**
  * Get port from environment and store in Express.
  */
