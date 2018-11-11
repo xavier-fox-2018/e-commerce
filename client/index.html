@@ -45,15 +45,14 @@
             <button type="submit" id="buttonSearch" class="btn btn-outline-dark btn-md"><i class="fas fa-search"></i></button>
           </div>
         </li>
-        <li class="nav-item ml-auto my-auto">
+        <li class="nav-item ml-auto my-auto" v-if="role == 'customer'">
           <a href="#" class="nav-link text-dark" role="button" data-toggle="modal" data-target="#cartModal"><i class="fa fa-lg fa-shopping-cart"></i></a>
         </li>
-        <li class="nav-item my-auto">
+        <li class="nav-item my-auto" v-if="role == 'customer'">
           <a href="#" class="nav-link text-dark" id="checkout" data-toggle="popover" data-placement="bottom"><i class="far fa-lg fa-credit-card"></i></a>
         </li>
         <li class="nav-item my-auto">
-          <a href="#" class="nav-link text-dark" id="notification" data-toggle="popover" data-placement="bottom"><i
-              class="far fa-lg fa-bell"></i></a>
+          <a href="#" class="nav-link text-dark" id="notification" data-toggle="popover" data-placement="bottom"><i class="far fa-lg fa-bell"></i></a>
         </li>
         <li class="nav-item my-auto">
           <a href="#" class="nav-link text-dark"><i class="far fa-lg fa-user"></i></a>
@@ -70,37 +69,178 @@
         <li class="nav-item">
           <a href="#" class="nav-link text-light">REVIEW</a>
         </li>
-        <li class="nav-item ml-auto">
-          <a href="#" class="nav-link text-light">REGISTER</a>
+        <li class="nav-item ml-auto" v-if="isLogin">
+          <a href="/login.html" class="nav-link text-light" v-on:click="signOut">SIGN OUT</a>
         </li>
-        <li class="nav-item">
-          <a href="/login.html" class="nav-link text-light">LOGIN</a>
+        <li class="nav-item ml-auto" v-else>
+          <a href="/login.html" class="nav-link text-light">LOGIN / REGISTER</a>
         </li>
+
       </ul>
     </div>
   </header>
 
+  <!-- Alert -->
+  <div class="alert alert-warning alert-dismissible fade show" role="alert" v-if="alert">
+    {{ alert }}
+    <button type="button" class="close" aria-label="Close" v-on:click="closeAlert">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
   <!-- Admin Section! -->
-  <main v-if="role === 'admin'">
+  <main v-if="role === 'admin'" class="mb-5">
+    
+        
+    <!-- Modal Only!! -->
+    <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addCategoryModalTitle">Add Category</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" placeholder="Input name" v-model="name" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="addNewCategory">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="updateItemModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="updateItemModalTitle">Update Item</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" v-model="detail.name" />
+              </div>
+              <div class="form-group">
+                <label for="name">Price</label>
+                <input type="text" class="form-control" v-model="detail.price" />
+              </div>
+              <div class="form-group">
+                <label for="name">Stock</label>
+                <input type="text" class="form-control" v-model="detail.stock" />
+              </div>
+              <div class="form-group">
+                <label for="name">Description</label>
+                <textarea name="description" class="form-control" v-model="detail.description"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="name">Image</label>
+                <input type="text" class="form-control" v-model="detail.image" />
+              </div>
+              <div class="form-group">
+                <label for="category">Category</label>
+                <select name="category" class="form-control" multiple v-model="category">
+                  <option v-for="category in categories" v-bind:value="category.id">{{ category.name }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="updateItem(detail)">Update Item</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <!-- Main Section -->
     <section id="input" class="container mt-5">
+      <!-- Input item -->
       <div class="row">
-        <div class="form-group col-4 mx-auto text-center">
-          <h3>Input Item Here</h3>
+        <h3 class="col-12 text-center">Input Item Here</h3>
+        <div class="form-group col-6 mx-auto">
           <label for="name">Name</label>
           <input type="text" class="form-control" v-model="name">
+        </div>
+        <div class="form-group col-6 mx-auto">
           <label for="name">Price</label>
-          <input type="text" class="form-control" v-model="price">
+          <input type="number" class="form-control" min="0" v-model="price">
+        </div>
+        <div class="form-group col-6 mx-auto">
           <label for="name">Stock</label>
-          <input type="text" class="form-control" v-model="stock">
-          <label for="name">Description</label>
-          <input type="text" class="form-control" v-model="description">
+          <input type="number" class="form-control" min="0" v-model="stock">
+        </div>
+        <div class="form-group col-6 mx-auto">
           <label for="name">Image</label>
           <input type="text" class="form-control" v-model="image">
+        </div>
+        <div class="form-group col">
+          <label for="name">Description</label>
+          <input type="text" class="form-control" v-model="description">
           <label for="name">Category</label>
           <select name="category" class="form-control" multiple v-model="category">
             <option v-for="category in categories" v-bind:value="category.id">{{ category.name }}</option>
           </select>
-          <button type="submit" class="form-control btn btn-primary mt-3" v-on:click="addNewItem">Add</button>
+          <button type="submit" class="form-control btn btn-primary my-3 w-25" v-on:click="addNewItem">Add</button>
+        </div>
+      </div>
+
+      <!-- Edit, Delete item -->
+      <div class="row">
+        <!-- Category -->
+        <div class="col-2">
+          <h3>Category</h3>
+          <ul class="list-group">
+            <li class="list-group-item" v-for="category in categories" v-bind:class="{ active: category.active }"> 
+              <div v-on:click="searchByCategory(category)" v-bind:value="category.id">{{ category.name }}</div>
+              <button type="button" class="btn btn-danger" v-on:click="deleteCategory(category.id)" ><i class="fa fa-trash"></i></button>
+            </li>
+          </ul>
+          <button type="button" class="btn btn-outline-danger m-3" data-toggle="modal" data-target="#addCategoryModal">Add Category</button>
+        </div>
+
+        <!-- Items -->
+        <div class="col-10">
+          <h3>Items</h3>
+          <div id="itemDisplay" class="row" v-if="categoryName != ''">
+            <div class="card col-4 text-center" v-for="item in filteredItems">
+              <img v-bind:src="item.image" class="card-img-top">
+              <div class="card-body">
+                <h5 class="card-title"> {{ item.name }} </h5>
+                <p v-if="item.stock > 0">Stock: {{ item.stock }}</p>
+                <p v-else>Stock: <i>Not Available</i></p>
+                <p class="card-text price">{{ convertToRupiah(item.price) }}</p>
+                <p class="card-text"> {{ item.description }} </p>
+                <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#updateItemModal"
+                v-on:click="editItem(item)">EDIT</button>
+                <button type="button" class="btn btn-outline-danger"
+                v-on:click="deleteItem(item._id)">DELETE</button>
+              </div>
+            </div>
+          </div>
+          <div id="itemDisplay" class="row" v-else>
+            <div class="card col-4 text-center" v-for="item in items">
+              <img v-bind:src="item.image" class="card-img-top">
+              <div class="card-body">
+                <h5 class="card-title"> {{ item.name }} </h5>
+                <p v-if="item.stock > 0">Stock: {{ item.stock }}</p>
+                <p v-else>Stock: <i>Not Available</i></p>
+                <p class="card-text price">{{ convertToRupiah(item.price) }}</p>
+                <p class="card-text"> {{ item.description }} </p>
+                <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#updateItemModal"
+                v-on:click="editItem(item)">EDIT</button>
+                <button type="button" class="btn btn-outline-danger"
+                v-on:click="deleteItem(item._id)">DELETE</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -126,10 +266,10 @@
                 <img v-bind:src="item.image" class="card-img-top">
                 <div class="card-body">
                   <h5 class="card-title"> {{ item.name }} </h5>
-                  <p class="card-text">Qty: {{ item.quantity }}</p>
+                  <p class="card-text">Qty: {{ Number(item.quantity) }}</p>
                   <p class="card-text price">{{ convertToRupiah(item.price) }}</p>
                   <p class="card-text"> {{ item.description }} </p>
-                  <button type="button" class="btn btn-outline-danger" v-on:click="removeFromCart(item.id)">CANCEL
+                  <button type="button" class="btn btn-outline-danger" v-on:click="removeFromCart(item.id)" data-dismiss="modal">CANCEL
                     ORDER</button>
                 </div>
               </div>
@@ -142,7 +282,7 @@
             <h3 v-if="cartsTotal > 0">Total <span class="price">{{ convertToRupiah(cartsTotal) }}</span></h3>
             <div>
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-danger" :disabled="carts.length == 0">Checkout</button>
+              <button type="button" class="btn btn-danger" :disabled="carts.length == 0" v-on:click="checkout">Checkout</button>
             </div>
           </div>
         </div>
@@ -178,7 +318,11 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">CLOSE</button>
-            <button type="button" class="btn btn-danger" :disabled="detail.stock == 0" v-on:click="addToCart(detail)" data-dismiss="modal">ADD TO
+            <button type="button" class="btn btn-danger" 
+            :disabled="detail.stock == 0" 
+            v-on:click="addToCart(detail)" 
+            v-bind:value="detail.id"
+            data-dismiss="modal">ADD TO
               CART</button>
           </div>
         </div>
@@ -186,6 +330,7 @@
     </div>
 
     <!-- And here is the main section -->
+    <!-- Carousel Section -->
     <section id="promoCarousel" class="carousel slide mx-auto w-100" data-ride="carousel">
       <div class="carousel-inner">
         <div class="carousel-item active">
@@ -365,6 +510,7 @@
       </div>
     </div>
   </div>
+  
   <footer class="container-fluid text-white bg-dark p-5" v-if="role === 'customer'">
     <div class="row p-3">
       <div class="col-6">

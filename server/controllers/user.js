@@ -1,6 +1,8 @@
+require('dotenv').config()
 const User = require('../models/user')
 const isEmailExists = require('../helpers/isEmailExists')
 const crypto = require('crypto')
+const jwt = require('jsonwebtoken')
 
 class UserController {
   static getUser (req, res) {
@@ -29,7 +31,7 @@ class UserController {
     isEmailExists(user.email)
       .then(() => {
         user.save()
-        .then(() => {
+        .then(data => {
           res.status(201).json({ message: 'new user has successfully created!' })
         })
         .catch(err => {
@@ -38,7 +40,7 @@ class UserController {
         })
       })
       .catch(err => {
-        res.status(400).json(err)
+        res.status(400).json({ message: 'Email already exist!' })
       })
   }
 
@@ -50,7 +52,8 @@ class UserController {
                          .digest('hex')
 
         if (data.password == hash) {
-          res.status(200).json({ message: 'login success!' })
+          let token = jwt.sign({ id: data._id, name: data.name, email: data.email, role: data.role }, process.env.SECRET)
+          res.status(200).json({ message: 'login success!', token, role: data.role })
         } else {
           res.status(400).json({ message: 'your password is wrong!' })
         }

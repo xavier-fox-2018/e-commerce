@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>test</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+  <div id="components-demo">
+    <button-counter title="hello"></button-counter>
+    <button-counter title="to"></button-counter>
+    <button-counter title="my world!"></button-counter>
+  </div>
+  <div id="blog-demo">
+    <blog-title 
+      v-for="prop in props"
+      v-bind:key="prop.id"
+      v-bind:title="prop.title"
+    ></blog-title>
+  </div>
+  <script>
+    Vue.component('button-counter', {
+      props: ['title'],
+      data: () => {
+        return {
+          count: 0
+        }
+      },
+      template: `<button v-on:click="count++">
+        {{ title }} 
+        You clicked me {{ count }} time
+        </button>`
+    })  
+    new Vue({ el: '#components-demo' })
+
+    Vue.component('blog-title', {
+      props: ['title'],
+      template: `<h3>{{ title }}</h3>`
+    })
+    new Vue({
+      el: '#blog-demo',
+      data: {
+        props: [
+          { id: 1, title: 'welcome' },
+          { id: 2, title: 'to my' },
+          { id: 3, title: 'humble world!' }
+        ]
+      }
+    })
+  </script>
+</body>
+</html>

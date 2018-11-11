@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 mongoose.connect('mongodb://localhost:27017/e_commerce', { useNewUrlParser: true })
 
-const CartSchema = new Schema({
+const TransactionSchema = new Schema({
   itemId: [{
     type: Schema.Types.ObjectId,
     ref: 'Item'
@@ -14,9 +14,13 @@ const CartSchema = new Schema({
   paid: {
     type: Boolean,
     default: false
+  },
+  total: {
+    type: Number,
+    default: 0
   }
 })
 
-const Cart = mongoose.model('Cart', CartSchema)
+const Transaction = mongoose.model('Transaction', TransactionSchema)
 
-module.exports = Cart
+module.exports = Transaction
