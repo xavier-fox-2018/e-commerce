@@ -3,7 +3,7 @@ const schema = mongoose.Schema
 
 var cartSchema = new schema({
     userId: {type: schema.Types.ObjectId, ref:'User'},
-    items: [{typr: schema.Types.ObjectId, ref:'Product'}],
+    items: [{type: schema.Types.ObjectId, ref:'Product'}],
     isPaid: false
 })
 

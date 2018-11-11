@@ -27,7 +27,7 @@
                     <div class="col">
                         <ul class="nav justify-content-end">
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Logout</a>
+                                <a class="nav-link" v-on:click="logOut" href="">Logout</a>
                             </li>
                         </ul>
                     </div>
@@ -240,7 +240,7 @@
                             <div v-if="addItemStatus === 'editsalah'" class="alert alert-danger">
                                 <strong>Success!</strong> Indicates a successful or positive action.
                             </div>
-                        </form> 
+                        </form>
                         <button type="submit" v-on:click="onClickEditItem" class="btn btn-primary">Register</button>
                         </form>
                     </div>
@@ -287,28 +287,31 @@
                 file: ''
             },
             methods: {
-                onClickListItem(){
-                    this.currentView='viewList'
+                logOut:function(){
+                    localStorage.removeItem('token')
+                },
+                onClickListItem() {
+                    this.currentView = 'viewList'
                     axios.get('http://localhost:3000/users/get-all-items')
-                    .then(data => {
-                        this.products = data.data
-                    })
-                    .catch(err => {
-                        console.log(err.message)
-                    })
+                        .then(data => {
+                            this.products = data.data
+                        })
+                        .catch(err => {
+                            console.log(err.message)
+                        })
                 },
 
-                onClickDeletItem: function(event){
-                    axios.delete(`http://localhost:3000/users/delete-item`, {data: {id: event.id}})
-                    .then(data => {
-                        this.products = data.data
-                    })
-                    .catch(err => {
-                        console.log(err)
-                    })
+                onClickDeletItem: function (event) {
+                    axios.delete(`http://localhost:3000/users/delete-item`, { data: { id: event.id } })
+                        .then(data => {
+                            this.products = data.data
+                        })
+                        .catch(err => {
+                            console.log(err)
+                        })
                 },
-                
-                onClickEditItem: function(event){
+
+                onClickEditItem: function (event) {
                     event.preventDefault()
                     let data = this.itemWillUpdate
                     data.category = this.value._id
@@ -327,15 +330,15 @@
                             'Content-Type': 'multipart/form-data'
                         }
                     })
-                            .then(data => {
-                                this.products = data.data
-                                this.addItemStatus ='editbetul'
-                            })
-                            .catch(err => {
-                                console.log(err)
-                                this.addItemStatus ='editsalah'
-                            })
-                    
+                        .then(data => {
+                            this.products = data.data
+                            this.addItemStatus = 'editbetul'
+                        })
+                        .catch(err => {
+                            console.log(err)
+                            this.addItemStatus = 'editsalah'
+                        })
+
                 },
                 editItem: function (input) {
                     axios.get('http://localhost:3000/users/get-category')
@@ -423,9 +426,20 @@
             },
             mounted: function () {
                 console.log('vue has been mounted')
-                axios.get('http://localhost:3000/users/get-all-items')
+
+                axios.post('http://localhost:3000/users/get-all-items', {
+                    token: localStorage.getItem('token')
+                })
                     .then(data => {
-                        this.products = data.data
+                        console.log(data)
+                        if (data.data === 'error') {
+                            window.location.href = 'http://localhost:8080'
+                        } else {
+                            this.products = data.data
+
+                        }
+
+
                     })
                     .catch(err => {
                         console.log(err.message)

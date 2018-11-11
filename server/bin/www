@@ -4,8 +4,8 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/Bonavide', { useNewUrlParser: true });
-// mongoose.connect('mongodb://bonavide:bonavide123@ds253203.mlab.com:53203/bonavide', { useNewUrlParser: true });
+// mongoose.connect('mongodb://localhost:27017/Bonavide', { useNewUrlParser: true });
+mongoose.connect('mongodb://bonavide:bonavide123@ds253203.mlab.com:53203/bonavide', { useNewUrlParser: true });
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
