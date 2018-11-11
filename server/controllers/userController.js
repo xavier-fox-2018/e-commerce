@@ -24,7 +24,7 @@ class Controller {
                 description: val.description,
                 stock: val.stock,
                 price: val.price,
-                picture: 'http://localhost:3000/' + val.picture,
+                picture: 'http://35.200.243.58:3000/' + val.picture,
                 id: val._id
             }))
 
@@ -43,7 +43,7 @@ class Controller {
                     description: val.description,
                     stock: val.stock,
                     price: val.price,
-                    picture: 'http://localhost:3000/' + val.picture,
+                    picture: 'http://35.200.243.58:3000/' + val.picture,
                     id: val._id
                 }))
                 res.send(filtered)
@@ -208,7 +208,7 @@ class Controller {
                     description: val.description,
                     stock: val.stock,
                     price: val.price,
-                    picture: 'http://localhost:3000/' + val.picture,
+                    picture: 'http://35.200.243.58:3000/' + val.picture,
                     id: val._id
                 }))
                 res.send(filtered)
@@ -232,7 +232,7 @@ class Controller {
                     description: val.description,
                     stock: val.stock,
                     price: val.price,
-                    picture: 'http://localhost:3000/' + val.picture,
+                    picture: 'http://35.200.243.58:3000/' + val.picture,
                     id: val._id
                 }))
                 res.send(filtered)
