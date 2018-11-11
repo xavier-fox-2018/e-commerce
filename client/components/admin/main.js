@@ -13,6 +13,8 @@ Vue.component('admin-menu', {
                     <!--Card-->
                     <div class="card">
                         <a class="btn btn-danger" @click="getAllTransactions">Get All transactions</a>
+                        <input type="date" v-model="startDate">
+                        <input type="date" v-model="endDate">
 
                         <!--Card content-->
                         <div class="card-body">
@@ -32,7 +34,7 @@ Vue.component('admin-menu', {
 
                                 <!-- Table body -->
                                 <tbody>
-                                    <tr v-for="transaction,index in transactions" :key="index" @click="getTransactionDetail(transaction)" style="cursor:pointer" data-toggle="modal" data-target="#transactionDetailModal">
+                                    <tr v-for="transaction,index in filteredData" :key="index" @click="getTransactionDetail(transaction)" style="cursor:pointer" data-toggle="modal" data-target="#transactionDetailModal">
                                         <th scope="row">{{transaction._id}}</th>
                                         <td>{{transaction.createdAt}}</td>
                                         <td>{{transaction.user.name}}</td>
@@ -157,7 +159,13 @@ Vue.component('admin-menu', {
             },
             transactions : '',
             transactiondetail : '',
-            userdetail : ''
+            userdetail : '',
+
+            startDate : null,
+            endDate : null,
+            data: {
+                all: ''
+            }
         }
     },
     methods : {
@@ -167,9 +175,12 @@ Vue.component('admin-menu', {
                 url : `${this.config.port}/transactions`
             })
             .then(response=>{
-                console.log(response.data)
+                // console.log(response.data)
                 this.transactions = response.data
                 this.selecteduser = response.data.user
+
+                this.data.all = response.data
+                // console.log('this data all',this.data.all)
             })
             .catch(err=>{
                 console.log(err)
@@ -187,6 +198,20 @@ Vue.component('admin-menu', {
             .catch(err=>{
                 console.log(err)
             })
+        }
+    },
+    computed : {
+        filteredData() {
+            let startDate = this.startDate;
+            let endDate = this.endDate;
+            return _.filter(this.data.all, (function (data) {
+                if ((_.isNull(startDate) && _.isNull(endDate))) {
+                    return true
+                } else {
+                    let date = data.createdAt.slice(0,10);
+                    return (date >= startDate && date <= endDate);
+                }
+            }))
         }
     }
 })
