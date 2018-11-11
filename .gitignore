@@ -1,4 +1,6 @@
 7morning.txt
 morning
-.gitignores
+.gitignore
 keyfile.json
+node_modules
+.env
