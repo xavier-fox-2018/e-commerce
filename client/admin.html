@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous"
+    />
+    <link href="./style/admin.css" rel="stylesheet" />
+    <link href="./style/modal.css" rel="stylesheet" />
+</head>
+<body>
+    
+    <div id="app">
+
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <a class="navbar-brand" href="#">E-CommerceKu Admin</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav mr-auto"></ul>
+                <form class="form-inline mt-2 mt-md-0">
+                    <a class="btn btn-outline-warning" href="#" v-on:click="contentCategory">Categories</a> |
+                    <a class="btn btn-outline-warning" href="#">Items</a> |
+                    <a class="btn btn-outline-danger" href="#">TGL - JAM</a> |
+                </form>
+            </div>
+        </nav>
+
+        <div class="container-fluid">    
+            <div class="row content text-center">
+                <div class="col-sm-12 sidenav" v-html="content"></div>
+            </div>
+        </div>
+                  
+        <footer class="container-fluid text-center">
+            <p>Footer Text</p>
+        </footer>
+
+        <!-- use the modal component, pass in the prop -->
+        <modal v-if="showModal" @close="showModal = false">
+            <h3 slot="header">custom header fdsfds dsfdsfds dsfdsfds dsfdsffdsf</h3>
+        </modal>
+        <!-- template for the modal component -->
+        <script type="text/x-template" id="modal-template">
+            <transition name="modal">
+                <div class="modal-mask">
+                    <div class="modal-wrapper">
+                    <div class="modal-container">
+                        <div class="modal-header">
+                            <slot name="header">
+                                default header
+                            </slot>
+                        </div>
+                        <div class="modal-body">
+                            <slot name="body">
+                                default body
+                            </slot>
+                        </div>
+                        <div class="modal-footer">
+                            <slot name="footer">
+                                default footer
+                                <button class="modal-default-button" @click="$emit('close')">
+                                OK
+                                </button>
+                            </slot>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </transition>
+        </script>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="js/adminVue.js"></script>
+
+</body>
+</html>
