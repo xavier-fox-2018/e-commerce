@@ -13,11 +13,33 @@ Vue.component('admin-menu', {
                     <!--Card-->
                     <div class="card">
                         <a class="btn btn-danger" @click="getAllTransactions">Get All transactions</a>
-                        <input type="date" v-model="startDate">
-                        <input type="date" v-model="endDate">
-
+                        
                         <!--Card content-->
                         <div class="card-body">
+                        
+                            <!-- Grid row -->
+                            <div class="row d-flex justify-content-center mb-3">
+                                <div class="col-sm-3 col-md-2 col-lg-2 mt-1">
+                                    <strong>Filter</strong>
+                                </div>
+
+                                <!-- Grid column -->
+                                <div class="col-sm-4 col-md-4 col-lg-4">
+                                    <!-- Default input -->
+                                    <input v-model="startDate" type="date" class="form-control" placeholder="Start Date">
+                                    </div>
+                                    <!-- Grid column -->
+                                    
+                                    -
+
+                                    <!-- Grid column -->
+                                    <div class="col-sm-4 col-md-4 col-lg-4">
+                                    <!-- Default input -->
+                                    <input v-model="endDate" type="date" class="form-control" placeholder="End Date">
+                                </div>
+                                <!-- Grid column -->
+                            </div>
+                            <!-- Grid row -->
 
                             <!-- Table  -->
                             <table class="table table-hover">
