@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 require('dotenv').config()
-mongoose.connect(process.env.MONGOOSE_ACCESS, { useNewUrlParser: true });
 
 const Schema = mongoose.Schema;
 const customerSchema = new Schema({
@@ -16,6 +15,7 @@ const customerSchema = new Schema({
     },
     "password": String,
     "money": Number,
+    "role": String,
     "salt": String,
     "oauth": Boolean
 })

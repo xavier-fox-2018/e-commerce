@@ -1,12 +1,15 @@
 var express = require('express');
 var router = express.Router();
-var Items = require('../controllers/items.js')
+var Item = require('../controllers/items.js')
+var Middleware = require('../middlewares/index.js')
+var multer = require('multer');
+const images = require('../helpers/images');
 
-router.post('/create', Items.createItem)
-router.get('/', Items.getItems)
-
-router.get('/', function(req, res, next) {
-    res.send('respond with a resource');
-});
+router.post('/', Middleware.isLogin, Middleware.isAdmin, images.multer.single('image'), images.sendUploadToGCS, Item.createItem);
+router.get('/', Item.getItems);
+router.delete('/:id', Middleware.isLogin, Middleware.isAdmin, Item.deleteItem);
+router.put('/:id', Middleware.isLogin, Middleware.isAdmin, images.multer.single('image'), images.sendUploadToGCS, Item.updateItem);
+router.get('/:name', Item.search)
+    // Middleware.isLogin, Middleware.isAdmin,
 
 module.exports = router;

@@ -1,13 +1,14 @@
 var mongoose = require('mongoose');
 require('dotenv').config()
-mongoose.connect(process.env.MONGOOSE_ACCESS, { useNewUrlParser: true });
 
 const Schema = mongoose.Schema;
 const itemsSchema = new Schema({
     name: String,
     description: String,
     price: Number,
-    stock: Number
+    stock: Number,
+    image: String,
+    category_id: { type: Schema.Types.ObjectId, ref: 'Category' }
 })
 
 const Item = mongoose.model('Item', itemsSchema)

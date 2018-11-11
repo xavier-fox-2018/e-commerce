@@ -8,7 +8,9 @@ var indexRouter = require('./routes/index');
 var customersRouter = require('./routes/customers');
 var cartsRouter = require('./routes/carts');
 var itemsRouter = require('./routes/items');
-
+var categoriesRouter = require('./routes/categories');
+var transactionsRouter = require('./routes/transactions.js');
+var topupsRouter = require('./routes/topups');
 var cors = require('cors')
 var app = express();
 app.use(cors())
@@ -21,12 +23,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '/uploads')));
 
 app.use('/', indexRouter);
 app.use('/customers', customersRouter);
 app.use('/carts', cartsRouter);
 app.use('/items', itemsRouter);
-
+app.use('/categories', categoriesRouter);
+app.use('/transactions', transactionsRouter);
+app.use('/topups', topupsRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     next(createError(404));

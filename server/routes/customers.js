@@ -1,13 +1,11 @@
 var express = require('express');
 var router = express.Router();
-var Customers = require('../controllers/customers.js')
+var Customer = require('../controllers/customers.js')
+var Middleware = require('../middlewares/index.js')
 
-
-router.post('/signup', Customers.signup)
-router.post('/signin', Customers.signin)
-router.post('/gsigin', Customers.gsignin)
-router.get('/', function(req, res, next) {
-    res.send('respond with a resource');
-});
+router.post('/signup', Customer.signup)
+router.post('/signin', Customer.signin)
+router.post('/signinAdmin', Customer.signinAdmin)
+router.get('/', Middleware.isLogin, Customer.getCustomer)
 
 module.exports = router;
