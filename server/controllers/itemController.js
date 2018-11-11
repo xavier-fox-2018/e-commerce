@@ -74,12 +74,13 @@ class Controller {
             _id : req.params.id
         },{
             name : req.body.name,
-            image_url : req.body.image,
+            image_url : req.body.image_url,
             category : req.body.category,
             description : req.body.description,
             price : req.body.price
         })
         .then((updatedItem)=>{
+
             res.status(200).json({
                 message : "Update Item Success",
                 updated : updatedItem
@@ -105,6 +106,25 @@ class Controller {
         .catch((err)=>{
             res.status(500).json({
                 message : "Delete Failed"
+            })
+        })
+    }
+
+    static changeToDeleted(req,res){
+        Item.findOneAndUpdate({
+            _id : req.params.id
+        },{
+            deleted : true
+        })
+        .then((done)=>{
+            res.status(200).json({
+                message : "Item Status Change To Deleted"
+            })
+        })
+        .catch((err)=>{
+            res.status(500).json({
+                message : "Error Changing Item Status To Deleted",
+                error : err
             })
         })
     }

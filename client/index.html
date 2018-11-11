@@ -93,7 +93,7 @@
             </a>
           </li>
         </ul>
-        <ul class="navbar-nav nav-flex-icons" @click="getMyTransaction" data-toggle="modal" data-target="#myTransactionModal">
+        <ul v-if="islogin && !isadmin" class="navbar-nav nav-flex-icons" @click="getMyTransaction" data-toggle="modal" data-target="#myTransactionModal">
           <li class="nav-item">
             <a class="nav-link waves-effect">
               <i class="fa fa-user"></i>
@@ -162,13 +162,16 @@
       </nav>
       <!--/.Navbar-->
 
+      <div class="row d-flex justify-content-center mb-5">
+        <div class="btn btn-secondary" data-toggle="modal" data-target="#addNewItem">Add New Item</div>
+      </div>
+
       <!--Section: Products v.3-->
       <section class="text-center mb-4">
-
         <!--Grid row-->
         <div class="row wow fadeIn" v-if="!selected_id">
           <!--Grid column-->
-          <div class="col-lg-3 col-md-6 mb-4" v-for="item in items">
+          <div class="col-lg-3 col-md-6 mb-4" v-for="item in items" v-if="item.deleted !== true">
             <!--Card-->
             <div class="card" v-on:click="getItem(item._id)">
               <!--Card image-->
@@ -235,15 +238,15 @@
               <span>${{selected_price}}</span>
             </p>
             <p class="lead font-weight-bold">{{selected_name}}</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Et dolor suscipit libero eos atque quia ipsa sint
-              voluptatibus!
-              Beatae sit assumenda asperiores iure at maxime atque repellendus maiores quia sapiente.</p>
+            <p>{{selected_description}}.</p>
             <div class="d-flex justify-content-left">
               <!-- Default input -->
-              <input type="number" value="1" min="1" aria-label="Search" class="form-control" style="width: 100px">
+              <!-- <input type="number" value="1" min="1" aria-label="Search" class="form-control" style="width: 100px"> -->
               <button class="btn btn-primary btn-md my-0 p" v-on:click="addToCart()">Add to cart
                 <i class="fa fa-shopping-cart ml-1"></i>
               </button>
+              <button class="btn btn-success btn-md my-0 p" data-toggle="modal" data-target="#editItem" @click="readBeforeEdit(selected._id)">Edit</button>
+              <button class="btn btn-danger btn-md my-0 p" @click="deleteItem(selected._id)">Delete</button>
             </div>
           </div>
           <!--Content-->
@@ -508,6 +511,103 @@
   </div>
   <!-- Modal My Transaction -->
 
+  <!-- Modal Add New Item-->
+  <div class="modal fade" id="addNewItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header mdb-color lighten-3">
+          <h5 class="modal-title text-white" id="exampleModalLabel">Add New Item</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Default form group -->
+          <div>
+            <!-- Default input -->
+            <div class="form-group">
+              <label for="addNewItemName">Name</label>
+              <input v-model="addNewItemName" type="text" class="form-control" id="addNewItemName" placeholder="Item Name">
+            </div>
+            <!-- Default input -->
+            <div class="form-group">
+              <label for="addNewItemImage">Image</label>
+              <input v-on:change="getImageAdd($event)" type="file" class="form-control" id="addNewItemImage" placeholder="Item Image">
+            </div>
+            <select class="browser-default custom-select" v-model="addNewItemCategory">
+              <option v-for="category in categories" :value="category._id">{{category.name}}</option>
+            </select>
+            <!-- Default input -->
+            <div class="form-group">
+              <label for="addNewItemDescription">Description</label>
+              <input v-model="addNewItemDescription" type="text" class="form-control" id="addNewItemDescription" placeholder="Item Description">
+            </div>
+            <!-- Default input -->
+            <div class="form-group">
+              <label for="addNewItemPrice">Price</label>
+              <input v-model="addNewItemPrice" type="number" class="form-control" id="addNewItemPrice" placeholder="Item Price">
+            </div>
+          </div>
+          <!-- Default form group -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" @click="addNewItem">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal Add New Item -->
+
+  <!-- Modal Edit Item-->
+  <div class="modal fade" id="editItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header mdb-color lighten-3">
+          <h5 class="modal-title text-white" id="exampleModalLabel">Edit Item</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Default form group -->
+          <div>
+            <!-- Default input -->
+            <div class="form-group">
+              <label for="editItemName">Name</label>
+              <input v-model="editItemName" type="text" class="form-control" id="editItemName" placeholder="Item Name">
+            </div>
+            <!-- Default input -->
+            <div class="form-group">
+              <label for="editItemImage">Image</label>
+              <input v-on:change="getEditImage($event)" type="file" class="form-control" id="editItemImage" placeholder="Item Image">
+            </div>
+            <select class="browser-default custom-select" v-model="editItemCategory">
+              <option v-for="category in categories" :value="category._id">{{category.name}}</option>
+            </select>
+            <!-- Default input -->
+            <div class="form-group">
+              <label for="editItemDescription">Description</label>
+              <input v-model="editItemDescription" type="text" class="form-control" id="editItemDescription"
+                placeholder="Item Description">
+            </div>
+            <!-- Default input -->
+            <div class="form-group">
+              <label for="editItemPrice">Price</label>
+              <input v-model="editItemPrice" type="number" class="form-control" id="editItemPrice" placeholder="Item Price">
+            </div>
+          </div>
+          <!-- Default form group -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" @click="updateItem">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal Add New Item -->
 
   <!--Footer-->
   <footer class="page-footer text-center font-small mt-4 wow fadeIn">
@@ -518,7 +618,7 @@
     <!--Copyright-->
     <div class="footer-copyright py-3">
       © 2018 Copyright
-      <a href="https://mdbootstrap.com/education/bootstrap/" target="_blank"> </a>
+      <a href="#" target="_blank"> </a>
     </div>
     <!--/.Copyright-->
 
@@ -568,12 +668,189 @@
         selected_price : '',
 
         islogin : false,
+        isadmin : false,
         login_email : '',
         login_password : '',
 
-        search : ''
+        search : '',
+        
+        addNewItemName : '',
+        addNewItemImage : '',
+        addNewItemCategory : '',
+        addNewItemDescription : '',
+        addNewItemPrice : '',
+        
+        editItemId : '',
+        editItemName : '',
+
+        editImageAdd : '',
+        editImage : '',
+
+        editItemCategory : '',
+        editItemDescription : '',
+        editItemPrice : ''
+
       },
       methods : {
+        deleteItem : function(id){
+          // console.log(id)
+          axios({
+            method : 'PUT',
+            url : `${this.config.port}/items/delete/${id}`,
+            headers : {
+              token : localStorage.getItem('token')
+            }
+          })
+          .then(response=>{
+            // console.log(response)
+            this.getAllItems()
+          })
+          .catch(err=>{
+            console.log(err)
+          })
+        },
+        readBeforeEdit : function(id){
+          // console.log('read before edit',id)
+          axios({
+            method : 'GET',
+            url : `${this.config.port}/items/${id}`,
+            headers : {
+              token : localStorage.getItem('token')
+            }
+          })
+          .then(response=>{
+            this.editItemId = response.data._id
+            this.editItemName = response.data.name
+            
+            // nantinya untuk mengecek ada perubahan atau tidak
+            this.editImage = response.data.image_url
+            this.editImageAdd = response.data.image_url
+
+            this.editItemCategory = response.data.category._id
+            this.editItemDescription = response.data.description
+            this.editItemPrice = response.data.price
+          })
+          .catch(err=>{
+            console.log('error reading data before edit')
+          })
+        },
+        updateItem : function(){
+          // console.log(this.editImageAdd ,'===============', this.editImage)
+
+          if(this.editImage === this.editImageAdd){
+            // console.log('no change in image....')
+            let data = {
+                name : this.editItemName,
+                image_url : this.editImage,
+                category : this.editItemCategory, 
+                description : this.editItemDescription,
+                price : this.editItemPrice
+              }
+
+            // console.log('data to post',data)
+
+              axios({
+                method : 'PUT',
+                url : `${this.config.port}/items/${this.editItemId}`,
+                headers : {
+                  token : localStorage.getItem('token')
+                },
+                data
+              })
+              .then(response=>{
+                // console.log('edit item success')
+                this.getAllItems()
+              })
+              .catch(err=>{
+                console.log(err)
+              })
+          }else{
+            let formdata = new FormData()
+            formdata.append('image', this.editImageAdd);
+            // console.log('image to upload',this.editImageAdd)
+            
+            axios.post(`http://localhost:3000/items/upload`, formdata, {})
+            .then(response=>{
+              console.log('upload success...')
+              console.log(response.data.link)
+
+              let data = {
+                name : this.editItemName,
+                image_url : response.data.link,
+                category : this.editItemCategory, 
+                description : this.editItemDescription,
+                price : this.editItemPrice
+              }
+
+              axios({
+                method : 'PUT',
+                url : `${this.config.port}/items/${this.selected._id}`,
+                headers : {
+                  token : localStorage.getItem('token')
+                },
+                data
+              })
+              .then(response=>{
+                console.log('edit item success')
+                this.getAllItems()
+              })
+              .catch(err=>{
+                console.log(err)
+              })
+            
+            })
+            .catch(err=>{
+              console.log(err)
+            })
+          }
+        },
+        addNewItem : function(){
+
+          let formdata = new FormData()
+          formdata.append('image', this.addNewItemImage);
+          
+          axios.post(`http://localhost:3000/items/upload`, formdata, {
+                  
+          })
+          .then(response=>{
+            console.log('upload success')
+            // console.log(response.data.link)
+
+            let data = {
+              name : this.addNewItemName,
+              image_url : response.data.link,
+              category : this.addNewItemCategory, 
+              description : this.addNewItemDescription,
+              price : this.addNewItemPrice
+            }
+
+            axios({
+              method : 'POST',
+              url : `${this.config.port}/items`,
+              headers : {
+                token : localStorage.getItem('token')
+              },
+              data
+            })
+            .then(response=>{
+              console.log('add new item success')
+              this.getAllItems()
+            })
+            .catch(err=>{
+              console.log(err)
+            })
+           
+          })
+          .catch(err=>{
+            console.log(err)
+          })
+        },
+        getImageAdd : function(link) {
+          this.addNewItemImage = link.target.files[0];
+        },
+        getEditImage : function(link) {
+          this.editImageAdd = link.target.files[0];
+        },
         login : function(){
           axios({
             method : 'POST',
@@ -586,21 +863,31 @@
           .then(response=>{
             console.log('user logged in...')
             localStorage.setItem('token',response.data.token)
+            localStorage.setItem('isAdmin',response.data.isAdmin)
             this.islogin = true
+            if(response.data.is_admin){
+              this.isadmin = true
+            }
           })
           .catch(err=>{
+            console.log('login failed...')
             console.log(err)
           })
         },
         logout : function(){
           console.log('user logged out...')
           localStorage.removeItem('token')
+          localStorage.removeItem('isAdmin')
           this.islogin = false
+          this.isadmin = false
         },
         checkToken : function(){
           let token = localStorage.getItem('token')
           if(token){
             this.islogin = true
+            if(localStorage.getItem('isAdmin')){
+              this.isadmin = true
+            }
           }else{
             this.islogin = false
           }
