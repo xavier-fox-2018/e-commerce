@@ -22,13 +22,13 @@ class TransactionController {
   }
 
   static read(req, res) {
-    Cart
-      .findOne({user: req.user.id}).populate('cartItems.item')
-      .then(function(cart) {
-            res.status(200).json(cart);
+    Transaction
+      .find().populate('cartItems.item')
+      .then(function(data) {
+            res.status(200).json(data);
       })
       .catch(function(err) {
-            res.status(500).json(err.message);
+            res.status(500).json(err);
       });
   }
 

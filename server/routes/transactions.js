@@ -6,6 +6,7 @@ const auth = require('../middlewares/auth')
 const TransactionController = require('../controllers/transactionControllers')
 
 router.post('/', auth.isLogin, TransactionController.create);
+router.get('/', auth.isLogin, auth.isAdmin, TransactionController.read);
 // router.post('/', auth.isLogin, CartController.create);
 // router.get('/', auth.isLogin, CartController.read);
 // router.patch('/:id', auth.isLogin, CartController.removeItem);
