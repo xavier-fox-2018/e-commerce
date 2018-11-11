@@ -14,6 +14,7 @@ class Middleware {
         }
     }
     static isLogin(req, res, next) {
+        // console.log('dari middleware', req.headers)
         if (req.headers["token"] !== undefined) {
             let decoded = Helper.verifyToken(req.headers["token"]);
             Customer.findOne({
