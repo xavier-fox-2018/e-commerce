@@ -93,56 +93,27 @@ new Vue({
       this.detail = item
     },
     updateItem(detail) {
-      if (this.file) {
-        // Upload image first to get the url
-        let formData = new FormData()
-        formData.append('picture', this.file)
-        this.disableButton = true
-        axios({
-          url: 'http://server.pemmz-palzu.site/store/picture', 
-          method: 'post',
-          data: formData,
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            token: localStorage.getItem('token')
-          }
+      console.log(detail)
+      axios({
+        url: `http://server.pemmz-palzu.site/store/item/${detail._id}`,
+        method: 'put',
+        headers: { token: localStorage.getItem('token') },
+        data: {
+          name: detail.name,
+          description: detail.description,
+          image: detail.image,
+          price: detail.price,
+          stock: detail.stock,
+          category: detail.category
+        }
+      })
+        .then(response => {
+          this.alert = 'Item successfully updated!'
+          console.log(response)
         })
-          .then(response => {
-            this.detail.image = response.data.url
-            axios({
-              url: `http://server.pemmz-palzu.site/store/item/${detail._id}`,
-              method: 'put',
-              headers: { token: localStorage.getItem('token') },
-              data: { detail }
-            })
-              .then(response => {
-                this.alert = 'Item successfully updated!'
-                this.file = ''
-                console.log(response)
-              })
-              .catch(error => {
-                console.log(error)
-              })
-          })
-          .catch(error => {
-            console.log(error)
-            this.alert = 'Error! cannot send image'
-          })
-      } else {
-        axios({
-          url: `http://server.pemmz-palzu.site/store/item/${detail._id}`,
-          method: 'put',
-          headers: { token: localStorage.getItem('token') },
-          data: { detail }
+        .catch(error => {
+          console.log(error)
         })
-          .then(response => {
-            this.alert = 'Item successfully updated!'
-            console.log(response)
-          })
-          .catch(error => {
-            console.log(error)
-          })
-      }
     },
     deleteItem(id) {
       if (confirm('Are you sure want to delete this item?')) {
@@ -277,25 +248,6 @@ new Vue({
     },
     checkout() {
       location.reload()
-      // for (let i in this.carts) {
-      //   axios.post(`http://server.pemmz-palzu.site/store/item/${this.carts[i].id}/stock`, {
-      //     stock: this.carts[i].stock
-      //   })
-      // }
-      // console.log('masuk')
-      // axios.post('http://server.pemmz-palzu.site/transaction', {
-      //   items: this.carts,
-      //   total: this.cartsTotal
-      // })
-      //   .then(response => {
-      //     console.log('masuksini')
-      //     console.log(response)
-      //     this.carts = []
-      //     this.cartsTotal = 0
-      //   })
-      //   .catch(error => {
-      //     console.log(error)
-      //   })
     },
     addNewCategory() {
       axios({

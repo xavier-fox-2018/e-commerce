@@ -34,12 +34,9 @@
     <!-- Login form -->
     <main class="container" v-if="loginPage">
       <!-- Alert -->
-      <div class="alert alert-warning alert-dismissible fade show" role="alert" v-if="alert">
-        {{ alert }}
-        <button type="button" class="close" aria-label="Close" v-on:click="closeAlert">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
+      <alert-box 
+        v-bind:text="alert"
+      ></alert-box>
       <h2 class="text-center mt-5">Login Here</h2>
       <section class="mt-2 col-6 mx-auto border border-dark p-4 rounded">
           <div class="form-group ml-5">
@@ -57,12 +54,9 @@
     <!-- Register form -->
     <main class="container" v-else>
       <!-- Alert -->
-      <div class="alert alert-warning alert-dismissible fade show" role="alert" v-if="alert">
-        {{ alert }}
-        <button type="button" class="close" aria-label="Close" v-on:click="closeAlert">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
+      <alert-box 
+        v-bind:text="alert"
+      ></alert-box>
       <h2 class="text-center mt-5">Register Here</h2>
       <section class="mt-2 col-6 mx-auto border border-dark p-4 rounded">
           <div class="form-group ml-5">
@@ -81,6 +75,22 @@
   </div>
 
   <script>
+    Vue.component('alert-box', {
+      props: ['text'],
+      methods: {
+        closeAlert() {
+          this.text = ''
+        }
+      },
+      template: `
+      <div class="alert alert-warning alert-dismissible fade show" role="alert" v-if="text">
+        {{ text }}
+        <button type="button" class="close" aria-label="Close" v-on:click="closeAlert">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      `
+    })
     let app = new Vue({
       el: '#app',
       data: {
@@ -113,7 +123,7 @@
                 this.password = ''
               })
           } else {
-            this.alert = 'Please insert the correct email!'
+            this.alert = 'Please insert email correctly!'
           }
         },
         login() {
@@ -134,7 +144,7 @@
                 this.password = ''
               })
           } else {
-            this.alert = 'Please insert the correct email!'
+            this.alert = 'Please insert email correctly!'
           }
         },
         closeAlert() {
