@@ -17,7 +17,9 @@ new Vue({
     categoryId: '',
     role: 'customer',
     alert: '',
-    isLogin: false
+    isLogin: false,
+    file: '',
+    disableButton: false
   },
   methods: {
     init() {
@@ -41,25 +43,47 @@ new Vue({
         name: this.name,
         price: this.price,
         description: this.description,
-        image: this.image,
         stock: this.stock,
         category: this.category
       }
+
+      // Upload image first to get the url
+      let formData = new FormData()
+      formData.append('picture', this.file)
+      this.disableButton = true
       axios({
-        url: `http://localhost:3000/store/item/`,
+        url: 'http://localhost:3000/store/picture', 
         method: 'post',
-        headers: { token: localStorage.getItem('token') },
-        data: newItem
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          token: localStorage.getItem('token')
+        }
       })
         .then(response => {
-          this.name = ''
-          this.price = 0
-          this.description = 0
-          this.image = ''
-          this.stock = 0
-          this.items.push(response.data)
           console.log(response)
-          this.alert = 'New Item Successfully created!'
+          newItem.image = response.data.url
+          axios({
+            url: `http://localhost:3000/store/item/`,
+            method: 'post',
+            headers: { token: localStorage.getItem('token') },
+            data: newItem
+          })
+            .then(responses => {
+              this.name = ''
+              this.price = 0
+              this.description = 0
+              this.image = ''
+              this.file = ''
+              this.stock = 0
+              this.items.push(responses.data)
+              console.log(responses)
+              this.alert = 'New Item Successfully created!'
+              this.disableButton = false
+            })
+            .catch(error => {
+              console.log(error)
+            })
         })
         .catch(error => {
           console.log(error)
@@ -69,19 +93,56 @@ new Vue({
       this.detail = item
     },
     updateItem(detail) {
-      axios({
-        url: `http://localhost:3000/store/item/${detail._id}`,
-        method: 'put',
-        headers: { token: localStorage.getItem('token') },
-        data: { detail }
-      })
-        .then(response => {
-          this.alert = 'Item successfully updated!'
-          console.log(response)
+      if (this.file) {
+        // Upload image first to get the url
+        let formData = new FormData()
+        formData.append('picture', this.file)
+        this.disableButton = true
+        axios({
+          url: 'http://localhost:3000/store/picture', 
+          method: 'post',
+          data: formData,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            token: localStorage.getItem('token')
+          }
         })
-        .catch(error => {
-          console.log(error)
+          .then(response => {
+            this.detail.image = response.data.url
+            axios({
+              url: `http://localhost:3000/store/item/${detail._id}`,
+              method: 'put',
+              headers: { token: localStorage.getItem('token') },
+              data: { detail }
+            })
+              .then(response => {
+                this.alert = 'Item successfully updated!'
+                this.file = ''
+                console.log(response)
+              })
+              .catch(error => {
+                console.log(error)
+              })
+          })
+          .catch(error => {
+            console.log(error)
+            this.alert = 'Error! cannot send image'
+          })
+      } else {
+        axios({
+          url: `http://localhost:3000/store/item/${detail._id}`,
+          method: 'put',
+          headers: { token: localStorage.getItem('token') },
+          data: { detail }
         })
+          .then(response => {
+            this.alert = 'Item successfully updated!'
+            console.log(response)
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      }
     },
     deleteItem(id) {
       if (confirm('Are you sure want to delete this item?')) {
@@ -276,6 +337,10 @@ new Vue({
       localStorage.removeItem('token')
       localStorage.removeItem('role')
       location.replace('/login.html')
+    },
+    getFile() {
+      this.file = this.$refs.file.files[0]
+      console.log(this.file)
     }
   },
   mounted() {
