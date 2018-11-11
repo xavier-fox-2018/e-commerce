@@ -115,9 +115,10 @@
     </div>
   </nav>
   <!-- Navbar -->
+  <admin-menu></admin-menu>
 
   <!--Carousel Wrapper-->
-  <carousel-template></carousel-template>
+  <!-- <carousel-template></carousel-template> -->
   <!--/.Carousel Wrapper-->
 
   <!--Main layout-->
@@ -463,8 +464,8 @@
     aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">My Transaction</h5>
+        <div class="modal-header mdb-color lighten-3">
+          <h5 class="modal-title text-white" id="exampleModalLabel">My Transaction</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -473,12 +474,12 @@
           <!--Accordion wrapper-->
           <div class="accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
             <!-- Accordion card -->
-            <div class="card" v-for="transaction in my_transaction">
+            <div class="card cloudy-knoxville-gradient" v-for="transaction in my_transaction">
               <!-- Card header -->
               <div class="card-header" role="tab" :id="'heading'+transaction._id">
                 <a class="collapsed" data-toggle="collapse" data-parent="#accordionEx" :href="'#collapse'+transaction._id" aria-expanded="false"
                   :aria-controls="'#collapse'+transaction._id">
-                  <h5 class="mb-0">
+                  <h5 class="mb-0 text-muted">
                     {{transaction.createdAt}} <i class="fa fa-angle-down rotate-icon"></i>
                   </h5>
                 </a>
@@ -488,7 +489,8 @@
                 <div class="card-body">
                   <strong>Item List :</strong>
                   <ul v-for="item in transaction.item_list">
-                    <li>{{item.qty}} {{item.item.name}} for ${{item.sub_total}} (${{item.item.price}}/each)</li>
+                    <li v-if="item.qty > 1">{{item.qty}} {{item.item.name}} for ${{item.sub_total}} ( ${{item.item.price}} each )</li>
+                    <li v-if="item.qty === 1">{{item.qty}} {{item.item.name}} for ${{item.sub_total}}</li>
                   </ul>
                   <strong>Total : ${{transaction.total_price}}</strong>
                 </div>
@@ -511,6 +513,7 @@
   <footer class="page-footer text-center font-small mt-4 wow fadeIn">
 
     <hr class="my-4">
+    
 
     <!--Copyright-->
     <div class="footer-copyright py-3">
@@ -525,6 +528,8 @@
   <!-- SCRIPTS -->
   <!-- Vue Components -->
   <script src="./components/carousel/carousel.js"></script>
+  <script src="./components/admin/main.js"></script>
+  <script src="./components/admin/test.js"></script>
   <!-- JQuery -->
   <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
   <!-- Bootstrap tooltips -->
@@ -719,7 +724,7 @@
           
           axios({
             method : 'POST',
-            url : `${this.config.port}/transactions`,
+            url : `${this.config.port}/transactions/my`,
             headers : {
               token : localStorage.getItem('token')
             },

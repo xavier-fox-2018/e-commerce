@@ -21,6 +21,10 @@ const itemSchema = new Schema ({
     stock : {
         type : Number,
         default : 10
+    },
+    deleted : {
+        type : Boolean,
+        default : false
     }
 },{
     timestamps : true
