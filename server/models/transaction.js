@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-mongoose.connect('mongodb://localhost:27017/e_commerce', { useNewUrlParser: true })
+mongoose.connect(process.env.MLAB, { useNewUrlParser: true })
 
 const TransactionSchema = new Schema({
   itemId: [{
