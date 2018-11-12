@@ -1,20 +1,20 @@
 //copas command on mongod cli 
 
-db.User.insertOne({
+db.users.insertOne({
+  email: 'user1@mail.com',
   firstName: 'theo',
   lastName: 'darmawan',
-  username: 'admin',
   role: 'admin',
-  password: 12345,
+  password: '12345',
   items: []
 })
 db.users.insertOne({
-  email:'dan',
+  email:'user2@mail.com',
   firstName: 'dan',
   lastName: 'darmawan',
   role:'admin',
-  password: 12345,
-  items: ['5be15f537fa7721a79080e75']
+  password: '12345',
+  items: []
 })
 
 
@@ -43,4 +43,78 @@ db.items.insertMany([{
   category: 'Room',
   ratings : [4,3,3,3],
   reviews : ['ok room','somewhat enjoyable stay']
-}])
+},
+
+{
+  name :'Indonesia',
+  price : 500,
+  category: 'Asia/Oceania',
+  ratings : [4,3,3,3],
+  reviews : ['ok room','somewhat enjoyable stay'],
+  imageUrl: 'assets/destinations/bali.jpg',
+   createdBy:'5be8877e37899199b056664e'
+},
+{
+  name :'China - Japan',
+  price : 500,
+  category: 'Asia/Oceania',
+  ratings : [4,3,3,3],
+  reviews : ['ok room','somewhat enjoyable stay'],
+  imageUrl:'assets/destinations/japan.jpg',
+   createdBy:'5be8877e37899199b056664e'
+},
+{
+  name :'West Coast USA',
+  price : 500,
+  category: 'Americas',
+  ratings : [4,3,3,3],
+  reviews : ['ok room','somewhat enjoyable stay'],
+  imageUrl:'assets/destinations/oceania-2.jpg',
+   createdBy:'5be8877e37899199b056664e'
+},
+{
+  name :'Latin-America',
+  price : 500,
+  category: 'Americas',
+  ratings : [4,3,3,3],
+  reviews : ['ok room','somewhat enjoyable stay'],
+  imageUrl:'assets/destinations/usa.jpg',
+   createdBy:'5be8877e37899199b056664e'
+},
+{
+  name :'Scandinavia',
+  price : 500,
+  category: 'Europe',
+  ratings : [4,3,3,3],
+  reviews : ['ok room','somewhat enjoyable stay'],
+  imageUrl:'assets/destinations/usa.jpg',
+   createdBy:'5be8877e37899199b056664e'
+},
+{
+  name :'Italy -Greece',
+  price : 500,
+  category: 'Europe',
+  ratings : [4,3,3,3],
+  reviews : ['ok room','somewhat enjoyable stay'],
+  imageUrl:'assets/destinations/washington.jpg',
+   createdBy:'5be8877e37899199b056664f'
+},
+{
+  name :'Carribean',
+  price : 500,
+  category: 'Other',
+  ratings : [4,3,3,3],
+  reviews : ['ok room','somewhat enjoyable stay'],
+  imageUrl:'assets/destinations/bahamas.jpg',
+   createdBy:'5be8877e37899199b056664f'
+},
+{
+  name :'South Africa -Madagascar',
+  price : 500,
+  category: 'Other',
+  ratings : [4,3,3,3],
+  reviews : ['ok room','somewhat enjoyable stay'],
+  imageUrl:'assets/destinations/bali.jpg',
+  createdBy:'5be8877e37899199b056664f'
+}]
+)

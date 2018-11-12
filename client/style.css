@@ -1,8 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,700');
 
 
-
-
 /*---Media Queries --*/
 @media (max-width: 992px) {
 
@@ -13,8 +11,38 @@
 @media (max-width: 576px) {
   
 }
+@-webkit-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@-moz-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@-webkit-keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
+@-moz-keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
+@keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
+.fade-in {
+  -webkit-animation:fadeIn ease-in 1;  /* call our keyframe named fadeIn, use animattion ease-in and repeat it only 1 time */
+  -moz-animation:fadeIn ease-in 1;
+  animation:fadeIn ease-in 1;
 
+  -webkit-animation-fill-mode:forwards;  /* this makes sure that after animation is done we remain at the last keyframe value (opacity: 1)*/
+  -moz-animation-fill-mode:forwards;
+  animation-fill-mode:forwards;
 
+  -webkit-animation-duration:0.5s;
+  -moz-animation-duration:0.5s;
+  animation-duration:0.5s;
+}
+.fadeOut {
+  -webkit-animation:fadeOut ease-in 1;  /* call our keyframe named fadeIn, use animattion ease-in and repeat it only 1 time */
+  -moz-animation:fadeOut ease-in 1;
+  animation:fadeOut ease-in 1;
+
+  -webkit-animation-fill-mode:forwards;  /* this makes sure that after animation is done we remain at the last keyframe value (opacity: 1)*/
+  -moz-animation-fill-mode:forwards;
+  animation-fill-mode:forwards;
+
+  -webkit-animation-duration:0.5s;
+  -moz-animation-duration:0.5s;
+  animation-duration:0.5s;
+}
 /*---Firefox Bug Fix --*/
 .carousel-item {
   transition: -webkit-transform 0.5s ease;
@@ -30,6 +58,7 @@ figure {
   height: 60%;
   margin: 0!important;
 }
+
 .fixed-wrap {
   clip: rect(0, auto, auto, 0);
   position: absolute;
@@ -57,22 +86,20 @@ figure {
     padding: 1rem;
 }
 
-input[type=text] {
-  width: 130px;
-  border-radius: 15px;
-  border: 1px #000 solid;
+.nav-bar-search {
+  width: 200px;
+  border-radius: 5px;
+  border: 1px rgb(255, 251, 251) solid;
   -webkit-transition: width 0.4s ease-in-out;
   transition: width 0.4s ease-in-out;
-  padding: 0px 10px;
-  margin-left: 20px;
-
+  padding: 13px 13px;
+  margin-left: -10px;
+  
 }
 
-/* When the input field gets focus, change its width to 100% */
-input[type=text]:focus {
-  width: 100%;
-  margin-left: 30px;
- 
+.nav-bar-search:focus {
+  width: 50%;
+  border-color: rgb(6, 9, 48)
 }
 
 .img-responsive {
@@ -82,7 +109,10 @@ input[type=text]:focus {
 
 .navbar {
   padding: .8rem;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(255, 251, 251, 0.8);
+  position: fixed;
+  width:100%;
+  z-index: 99;
 }
 
 .carousel-caption {
@@ -95,13 +125,58 @@ input[type=text]:focus {
   text-transform: uppercase;
   text-shadow: 1px 1px 10px #000;
 }
+.carousel-caption p {
+  font-size: 300%;
+  top: 80%;
+  text-shadow: 1px 1px 10px #000;
+}
 
 .items {
-  border: solid black 1px;
+  border: solid rgb(233, 229, 229) 1px;
   padding: 10px 5px;
+  width:290px !important;
+  height:370px !important;
+  padding: 0 30px;
+  margin: 3rem 3rem;
+  background-color: rgba(255, 251, 251);
+  opacity: 0.8;
+  text-align: justify
+}
+.items:hover {
+  opacity:1
+}
+.item-body {
+  margin-top:15px;
+  line-height: 1.2;
 }
 .checkout-table {
   background-color: #f1f1f1;
+  justify-items: right;
+}
+.checkout-table table{
+  width:100%;
+  justify-items: right;
+}
+.pointer {
+  cursor: pointer;
+}
+.chk-btn{
+  margin: 0 10px;
+}
+.pointer:hover {
+  color: white !important;
+}
+.pointerRed {
+  cursor: pointer;
+  color: rgb(236, 68, 68) !important;
+}
+#scrollUpButton {
+  display: block; /* Hidden by default */
+  position: fixed; /* Fixed/sticky position */
+  bottom: 30px; /* Place the button at the bottom of the page */
+  right: 40px; /* Place the button 30px from the right */
+  z-index: 99; /* Make sure it does not overlap */
+  font-size:30px;
 }
 /*
 Extra small (xs) devices (portrait phones, less than 576px)

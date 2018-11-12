@@ -11,132 +11,334 @@
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous">
   </script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
   <script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
-  <script src="https://apis.google.com/js/platform.js" async defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
-  <script src="header-footer-nav.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/vee-validate@2.0.0-rc.18/dist/vee-validate.js"></script>
 </head>
 
-<body>
+<body >
+  <div id="app">
+    <template v-if="signedIn" class="fade-in">
+        <a id="scrollUpButton" @click="scrollUp" style="cursor: pointer" v-if="showScroll"><i class="fas fa-angle-up"></i></a>
+        <!-- Navigation -->
+        <div class="container-fluid navbar navbar-expand-md navbar-light bg-light navbar-static-top">
+            <div class="row">
+              <div class="col-4">
+                <h1>King Cruises</h1>
+                <a class="pointer" @click="signOut" >Sign out <strong>{{user}}</strong></a>
+                <span v-show="isAdmin"> | </span>
+                <a id="admin" class="pointer" v-show="isAdmin" href="adminPage.html" > admin page</a>
+    
+              </div>
+              <div class="col-8">
+                <input type="text" class="nav-bar-search" name="search" placeholder="select a destination..." v-model="search">
+                <div class="float-right">
+                    <span><strong>{{cartSize}}</strong></span>
+                  <i class="fas fa-shopping-cart"></i>
+                  <button class="navbar-toggler pointer" type="button" data-toggle="collapse" data-target="#navbarResponsive">
+                      <span class="navbar-toggler-icon"></span>
+                  </button>
+                </div>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                  <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                      <a class="nav-link" href="index">Home</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#shop">Shop</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#checkout">Checkout</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>      
+            <!--- Image Slider -->
+            <div id="slides" class="carousel slide" data-ride="carousel">
+              <!--slider links -->
+              <ol class="carousel-indicators">
+                <li data-target="#slides" data-slide-to="0" class="active"></li>
+                <li data-target="#slides" data-slide-to="1"></li>
+                <li data-target="#slides" data-slide-to="2"></li>
+              </ol>
+              <div class="carousel-inner" role="listbox">
+                <div class="carousel-item active">
+                  <img src="assets/carousel/yacht_hummingbird.jpg">
+                  <div class="carousel-caption">
+                      <h1 class="display-2">The Hummingbird</h1>
+                  </div>
+                </div>
+                <div class="carousel-item">
+                  <img class="d-block w100" src="assets/carousel/yacht_life.jpg">
+                  <div class="carousel-caption">
+                    <p class="carousel-caption" >"Best time I ever had with my loved ones."</p>
+                  </div>
+                </div>
+                <div class="carousel-item">
+                  <img src="assets/carousel/Yacht_interior.jpg">
+                  <div class="carousel-caption">
+                    <p class="carousel-caption" >Live the romance and passion of the open oceans</p>
+                  </div>
+                  </p>
+                </div>
+                <a class="carousel-control-prev" href="#slides" role="button" data-slide="prev">
+                  <span class="carousel-control-prev-icon"></span>
+                </a>
+                <a class="carousel-control-next" href="#slides" role="button" data-slide="next">
+                  <span class="carousel-control-next-icon"></span>
+                </a>
+              </div>
+            </div>    
+        <!--- Featured Items -->
+        <!-- <div class="container-fluid">
+          <div class="row jumbotron">
+              <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 col-xl-10">
+                <p class="lead">
+                  "Testimonial : bla bla bla bla bla bla bla bla bla bla bla" - Customer 
+                </p>
+              </div>
+              <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-2">
+                  <p class="lead">
+                      "Testimonial : bla bla bla bla bla bla bla bla bla bla bla" - Customer 
+                    </p>
+              </div>
+          </div>
+        </div> -->
+        <!---Header -->
+        <a name="shop"></a>
 
-<!-- Navigation -->
-<div id="header"></div>
+        <div class="container-fluid padding">
+          <div class="row welcome text-center">
+            <div class="col-12">
+              <h1 class="display-4">Destinations</h1>
+            </div>
+          </div>
+        </div>
+        <!--- Shop Section -->
 
-<!--- Image Slider -->
-<div id="slides" class="carousel slide" data-ride="carousel">
-  <!--slider links -->
-  <ol class="carousel-indicators">
-    <li data-target="#slides" data-slide-to="0" class="active"></li>
-    <li data-target="#slides" data-slide-to="1"></li>
-    <li data-target="#slides" data-slide-to="2"></li>
-  </ol>
-  <div class="carousel-inner" role="listbox">
-    <div class="carousel-item active">
-      <img src="img/carousel/yacht_hummingbird.jpg">
-      <div class="carousel-caption">
-          <h1 class="display-2">The Hummingbird</h1>
-          <button type="button" class="btn btn-outline-light btn-lg">The Yacht</button>
-          <button type="button" class="btn btn-primary btn-lg">Pricing</button>
+        <shop v-bind:items="filteredItems" v-on:add-cart-item="addToCart($event)"></shop>
+        
+        <!--- Checkout Area -->
+        <a name="checkout"></a>
+        <div class="container-fluid padding">
+            <div class="row welcome text-center">
+              <div class="col-12">
+                <hr class="light">
+                <br>
+                <h1 class="display-4">Checkout</h1>
+              </div>
+            </div>
+        </div>
+        <checkout v-bind:cart="mycart" v-on:add-quantity="addToCart($event)" v-on:minus-quantity="removeFromCart($event)" v-on:delete-cart="deleteCart"></checkout>
+        <span>{{cartMessage}}</span>
+        <!--- Footer -->
+        <footer >
+            <div class="container-fluid padding">
+              <div class="row text-center">
+                <div class="col-md-6">
+                  <hr class="light">
+                  <p> 021-6666-8888</p>
+                  <p> starcruises@example.com</p>
+                  <p> Jakarta, Indonesia, 002200</p>
+                </div>
+                <div class="col-md-6">
+                    <hr class="light">
+                    <h5> Office Hours </h5>
+                    <hr class="light">
+                    <p>Monday-Friday: 9am -5pm</p>
+                    <p>Saturday: 8am - 2pm</p>
+                    <p>Sunday: Closed</p>
+                </div>
+              </div>
+            </div>
+        </footer>
       </div>
-    </div>
-    <div class="carousel-item">
-      <img class="d-block w100" src="img/carousel/yacht_life.jpg">
-    </div>
-    <div class="carousel-item">
-      <img src="img/carousel/Yacht_interior.jpg">
-    </div>
-    <a class="carousel-control-prev" href="#slides" role="button" data-slide="prev">
-      <span class="carousel-control-prev-icon"></span>
-    </a>
-    <a class="carousel-control-next" href="#slides" role="button" data-slide="next">
-      <span class="carousel-control-next-icon"></span>
-    </a>
+    </template>
+    <template v-else class="fade-in">
+      <h1>Sign In to King Cruises</h1>
+      <br>
+
+      <form id ="signIn" @submit.prevent="signIn">
+        <input type = "text" id = "email" placeholder = "enter email" required>
+        <br>
+        <br>
+        <input type = "password" id = "password" placeholder = "enter password" required>
+        <br>
+        <br>
+        <input type = "submit" value="Sign in">
+      </form>
+      <p id="msg">{{loginMsg}}</p>
+      <a href="registration.html">Register Here</a>
+    </template>
   </div>
-</div>
-<!--- Jumbotron -->
-<div class="container-fluid"></div>
-<div class="row jumbotron">
-  <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 col-xl-10">
-    <p class="lead">
-      "Testimonial : bla bla bla bla bla bla bla bla bla bla bla" - Customer 
-    </p>
-  </div>
-  <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-2">
-    <a href="#"><button type="button class = "btn btn-outline-secondary btn-lg">Web Hosting</button></a>
-  </div>
-</div>
+  <script src="checkout-area-component.vue"></script>
+  <script src="shop-component.vue"></script>
+  <script>
+      Vue.use(VeeValidate);
 
-<!--- Three Column Section -->
-<div class="container-fluid padding">
-<div class="row text-center padding">
-  <div class="col-xs-12 col-sm-6 col-md-4">
-    <i class="fas fa-code"></i>
-    <h3>Book a holiday</h3>
-    <a href="#" class="btn btn-outline-secondary"> Available Dates</a>
-  </div>
-  <div class="col-xs-12 col-sm-6 col-md-4">
-    <i class="fas fa-bold"></i>
-    <h3>Hire for a day</h3>
-    <a href="#" class="btn btn-outline-secondary"> Available Dates</a>
-  </div>
-  <div class="col-xs-12 col-sm-12 col-md-4">
-    <i class="fab fa-css3"></i>
-    <h3>Long - term leases</h3>
-    <a href="#" class="btn btn-outline-secondary"> Contact Us </a>
-
-  </div>
-</div>
-<hr class="my-4">
-</div>
-
-<!--- Two Column Section -->
-<div class="container-fluid padding">
-  <div class="row padding">
-    <div class="col-md-12 col-lg-6">
-      <h2> Header here...</h2>
-        <p>
-          blablblablablablablbalaaaaa
-        </p>
-        <p>
-          blablblablablablablbal
-        </p>
-        <p>
-          blablblablablablablbal
-        </p>
-    </div>
-    <div class="col-lg-6">
-      <img src="img/gif/Yacht_interior.jpg" class="img-fluid">
-    </div>
-  </div>
-</div>
-
-<!--- Fixed background -->
-<figure>
-  <div class="fixed-wrap">
-    <div id="fixed">
-
-    </div>
-  </div>
-</figure>
-  
-<!--- Meet the team -->
-<div class="container-fluid padding">
-<div class="row welcome text-center">
-  <div class="col-12">
-    <h1 class="display-4">Meet the Team</h1>
-  </div>
-</div>
-</div>
-
-
-
-<!--- Footer -->
-<div id="footer"></div>
-
-
+      let vr= new Vue ({
+        el:'#app',
+        data:{
+          showScroll:false,
+          signedIn: localStorage.getItem('token'),
+          msg:'',
+          user:'',
+          isAdmin:false,
+          items:[],
+          search:'',
+          mycart:[],
+          cartMessage:''
+        },
+        methods: {
+          signOut: function () {
+            this.signedIn=false;
+            console.log('User signed out');
+            localStorage.removeItem('token');
+          },
+          signIn: function() {
+            let options = {
+                method:'post',
+                url:'http://localhost:3000/signIn',
+                headers: {
+                  token:localStorage.getItem("token") || null,
+                },
+                data: {
+                email : $("#email").val(),
+                password : $("#password").val()
+                }
+            };
+            axios(options)
+            .then(res => {
+              localStorage.setItem ("token", res.data);
+              $("#msg").html("success! Redirecting ...");
+              let self=this;
+              window.setTimeout(function() {
+                self.signedIn=true;
+                },1000
+              )
+            })
+            .catch(err => {
+              this.msg=err.response.data
+            });
+            return false;
+          },
+          handleScroll() {
+            if($(document).scrollTop() > 100) this.showScroll=true;
+            else this.showScroll=false;
+          },
+          scrollUp() {
+            window.scrollTo(0,0)
+          },
+          getItems() {
+            let self=this;
+            let options = {
+             url:'http://localhost:3000/items/all',
+             method:'get',
+             headers: {
+               token:localStorage.getItem('token')
+             }
+            }
+            axios(options)
+            .then(items => {
+            items.data.items.forEach(item => self.items.push(item));
+           })
+           .catch(err => console.log(err))
+          },
+          addToCart: function (id) {
+            let token = localStorage.getItem('token');
+            let options={
+              url:'http://localhost:3000/cart/update',
+              method:'post',
+              headers: { token: token },
+              data: {
+                  itemId: id
+              }
+            }
+            axios(options)
+            .then(items => {
+              let [newItem]=items.data.sort((a,b)=> b._id-a._id).slice(-1);
+              this.mycart.push(newItem)
+            })
+          },
+      
+          removeFromCart: function (id) {
+              let token = localStorage.getItem('token');
+              let options={
+                url:'http://localhost:3000/cart/delete',
+                method:'post',
+                headers: { token: token },
+                data: {
+                    itemId: id
+                }
+              };
+              axios(options)
+              .then(() => {
+                this.mycart.pop();
+              })
+          },
+          deleteCart: function (){
+            let token = localStorage.getItem('token');
+              let options={
+                url:'http://localhost:3000/cart/deleteAll',
+                method:'get',
+                headers: { token: token },
+              };
+              axios(options)
+              .then(() => {
+                while(this.mycart.length>0) {
+                  this.mycart.pop();
+                }
+                return this.cartMessage='deleted cart.'
+              })
+              .catch(err => console.log(err))
+          }
+        },
+        beforeCreate() {
+          //adds items to cart and username to navbar
+            let token = localStorage.getItem('token');
+            let options={
+              url:'http://localhost:3000/main',
+              method:'get',
+              headers: { token: token },
+            }
+            axios(options)
+            .then(user => {
+              console.log(user.data)
+              user.data.items.forEach(item => this.mycart.push(item))
+              this.user= user.data.name;
+              this.isAdmin = user.data.role ==='admin'
+            })
+            .catch(err=>console.log(err))            
+        },
+        created() {
+          window.addEventListener('scroll', this.handleScroll);   
+          this.getItems();
+        },
+        destroyed () {
+          window.removeEventListener('scroll', this.handleScroll);
+        },
+        computed: {
+          loginMsg: function () {
+            return this.msg
+          },
+          filteredItems: function() {
+            return this.items.filter(item=> {
+              return (item.name.toLowerCase().indexOf(this.search.toLowerCase()) >-1  || item.category.toLowerCase().indexOf(this.search.toLowerCase()) >-1 ) 
+            })  
+          },
+          cartSize: function () {
+            if(this.mycart.length>0) return this.mycart.length;
+            else return 0
+          }
+        },
+    })
+      
+    </script>  
 </body>
 </html>
 

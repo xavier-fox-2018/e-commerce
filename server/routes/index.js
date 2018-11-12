@@ -1,12 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/user');
-const verifyToken = require('../middleware/verifyToken.js')
-const verifyGToken = require('../middleware/verifyGToken.js')
-const createToken = require('../helpers/createToken.js')
-module.exports =router
+const userController = require('../controllers/user');
+const existToken = require('../middleware/existToken.js');
+const verifyToken = require('../middleware/verifyToken');
+const cartController = require('../controllers/cart');
 
-router.post('/gSignIn', verifyGToken)
-router.post('/signIn', controller.signIn)
-router.post('/register', controller.register)
-// router.post('/delete', checkItemCreator, controller.delete)
+module.exports =router
+router.post('/signIn', existToken, userController.signIn)
+router.post('/register', userController.register)
+router.get('/main', verifyToken, userController.getUser)
+router.post('/cart/update', verifyToken, cartController.update)
+router.post('/cart/delete', verifyToken, cartController.deleteOne)
+router.get('/cart/deleteAll', verifyToken, cartController.deleteAll)

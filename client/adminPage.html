@@ -1,0 +1,243 @@
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <!-- <link href="style.css" rel="stylesheet"> -->
+    <script
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous">
+    </script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/vee-validate@2.0.0-rc.18/dist/vee-validate.js"></script>
+  <!-- Items-->
+  <div id="vue">
+    <div class="container-fluid">
+      <div class="col-12">
+        <h1>Admin Page</h1>
+        <hr>
+      </div>
+      <div class="row">
+        <div class="items col-4" >
+            <div class="item">
+              <h2>{{Heading1}}</h2>
+              <form @submit.prevent="createItem">
+                <label for="item-name"> Name:<br>
+                  <input v-model="form.name" type="text" name="item-name" required>
+                </label><br>
+                <label for="item-description"> description:<br>
+                  <input v-model="form.description" type="text" name="item-description" required>
+                </label><br>
+                <label for="item-price"> price:<br>
+                  $ <input v-model="form.price" type="text" name="item-price" required>
+                </label><br>
+                <label  for="item-category"> category:<br>
+                  <input v-model="form.category" type="text" name="item-category" required>
+                </label><br>
+                <label for="item-image"> image:<br>
+                  <input v-model="form.imgUrl" type="text" name="item-image" required>
+                </label><br>
+                <input type="submit" v-show="!isUpdate">
+                <input type="submit" value="Update" v-show="isUpdate">
+
+              </form>
+              
+            </div>
+        </div>
+        <div class=" col-4">
+          <h2>All Items</h2>
+          <hr>
+          <br>
+            <table>
+              <thead>
+                <th>Name</th>
+                <th>Admin Id</th>
+                <th>Modify</th>
+              </thead>
+              <tbody v-for="item in items">
+                <tr>
+                  <td>{{item.name}}</td>
+                  <td>{{item.createdBy}}</td>
+                  <td class="pointerRed" @click="deleteItem(item._id)">delete</td>
+                  <td class="pointerRed" @click="showItem(item._id)">edit</td>
+                </tr>
+              </tbody>
+            </table>
+        </div>
+        <div class="col-4">
+          <h2 style="color:red"> {{message}}</h2>
+        </div>
+      </div>
+      <div class="row">
+        <a href="index.html">
+          <h3 style="top:30px; left:30px; position:relative">back to main</h3>
+        </a>
+      </div>
+    </div>
+  </div>
+    <!-- <div class="row">
+        <div class="admin" >
+            <div class="admin">
+                <form @submit="update-admin">
+                  <label for="admin-name"> Name:<br>
+                    <input type="text" name="admin-name">
+                  </label><br>
+                  <label for="admin-description"> description:<br>
+                    <input type="text" name="admin-description">
+                  </label><br>
+                  <label for="admin-price"> price:<br>
+                    <input type="text" name="admin-price">
+                  </label><br>
+                  <label for="admin-category"> category:<br>
+                    <input type="text" name="admin-category">
+                  </label><br>
+                  <label for="admin-image"> image:<br>
+                    <input type="text" name="admin-image></label>
+                  <input type="submit">
+                </form>
+                
+              </div>
+        </div>
+    </div>
+  </div>        
+</div>         -->
+
+  <script>
+    Vue.use(VeeValidate);
+    var app = new Vue({
+      el: '#vue',
+      data: {
+        form: {
+          name:'',
+          description:'',
+          price:'',
+          category:'',
+          imgUrl:'',
+        },
+        items: [],
+        Heading1: 'Create New',
+        message: '',
+        adminId:'',
+        isUpdate:false
+      },
+      methods: {
+        isUpdates: function () {
+          this.Heading1='Edit Item';
+          this.isUpdate=!this.isUpdate;
+        },
+        getItems() {
+            let token = localStorage.getItem('token');
+            let options={
+              method:'get',
+              url:"http://localhost:3000/items/all",
+              headers: { token: token },
+            }
+            axios(options)
+            .then(results => {
+              this.adminId=results.data.adminId;
+              this.items.length=0;
+              results.data.items.forEach(item => this.items.push(item));
+            })
+            .catch(err=> this.message = err)
+        },
+        createItem() {
+          let token = localStorage.getItem('token');
+          let formData = {
+            name : this.form.name,
+            description: this.form.description,
+            price : this.form.price,
+            category: this.form.category,
+            imageUrl: this.form.imgUrl          
+          }  
+          let options={
+              method:'post',
+              url:"http://localhost:3000/items",
+              headers: { token: token },
+              data: formData,
+              
+            }
+            .then(results => {
+              this.getItems();
+              this.message = 'success created new item.';
+              setTimeout(()=> this.message='',2000);
+            }) 
+            .catch(err=> {
+              this.message = 'Server error, Try again'
+              setTimeout(()=> this.message='',2000);
+            })    
+        },
+        deleteItem (id) {
+          let token = localStorage.getItem('token');
+          let options={
+              method:'delete',
+              url:`http://localhost:3000/items/${id}`,
+              headers: { token: token },
+            }
+            axios(options)
+            .then(results => {
+              this.getItems();
+              this.message = 'success deleted new item.';
+              setTimeout(()=> this.message='',2000);
+            }) 
+            .catch(err=> {
+              this.message = 'Server error, Try again'
+              setTimeout(()=> this.message='',2000);
+            })         
+        },
+        showItem (id) {
+          this.isUpdates();
+          let token = localStorage.getItem('token');
+            let options={
+              method:'get',
+              url:`http://localhost:3000/items/${id}`,
+              headers: { token: token },
+            }
+            axios(options)
+            .then(results => {
+              this.form.name = results.data.name;
+              this.form.description= results.data.description;
+              this.form.price = results.data.price;
+              this.form.category= results.data.category;
+              this.form.imageUrl= results.data.imgUrl; 
+              console.log(this.form)
+            })
+            .catch(err=> this.message = err)
+        },
+        updateItem (){
+          let token = localStorage.getItem('token');
+          let formData = {
+            name : this.form.name,
+            description: this.form.description,
+            price : this.form.price,
+            category: this.form.category,
+            imageUrl: this.form.imgUrl          
+          }  
+          let options={
+            method:'post',
+            url:`http://localhost:3000/items/update`,
+            headers: { token: token },
+            data:formData
+          }
+          axios(options)
+          .then(results => {
+            this.form.name = '';
+            this.form.description= '';
+            this.form.price = '';
+            this.form.category= '';
+            this.form.imageUrl= ''; 
+          })
+          .catch(err=> this.message = err)
+        }
+      },
+      created() {
+        this.getItems()
+      },
+     
+    })
+      
+  </script>
+
+

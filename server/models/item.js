@@ -3,13 +3,16 @@ const Schema = mongoose.Schema;
 
 const itemSchema = new Schema ({
   name : String,
-  stock : Number,
+  description: String,
+  category: String,
   price : Number,
   ratings : [Number],
-  reviews : [String]
+  reviews : [String],
+  imageUrl: String,
+  createdBy: Schema.Types.ObjectId
 })
 
-const Item = mongoose.model('Item', itemSchema);
+const Item = mongoose.model('item', itemSchema);
 
 module.exports = Item;
 

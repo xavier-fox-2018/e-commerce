@@ -7,14 +7,15 @@ class Item {
       stock : req.body.stock,
       price : req.body.price,
       ratings : [],
-      reviews : []
+      reviews : [],
+      createdBy:res.locals.token._id
     })
     .then( item => res.status(200).json({
-      msg:'successfully created new item.',
-      data:item
+        msg:'successfully created new item.',
+        data:item
       })
     )
-    .catch( err => res.status(500).err(err))
+    .catch( err => console.log(err))
   }
 
   static update (req,res) {
@@ -36,16 +37,22 @@ class Item {
   }
   
   static getAll (req,res) {
+    let adminId=res.locals.token._id;
     item.find()
-    .then( items => {
-      res.status(200).json(items);
+    .then(items => {
+      res.status(200).json({
+        items:items,
+        adminId:adminId
+      });
     })
-    .catch (err => res.status(500).json(err))
+    .catch (err => {
+      res.status(500).json(err)
+    })
   }
 
   static getOne (req,res) {
     item.findOne({
-      _id: req.body.id
+      _id: req.params.id
     })
     .then( data => res.status(200).json(data))
     .catch (err => res.status(500).json(err))
@@ -53,8 +60,7 @@ class Item {
   
   static deleteOne (req,res) {
     item.findOneAndDelete({
-      _id: req.body.id,
-      user: req.token.user
+      _id: req.params.id,
     })
     .then( data => res.status(200).json(data))
     .catch (err => res.status(500).json(err))

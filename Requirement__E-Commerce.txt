@@ -1,0 +1,22 @@
+WEEK 2
+
+E-Commerce Server
+Dummy data User Admin & Category
+API login
+API Register untuk User Customer
+API CRUD User Admin (Admin only)
+API CRUD Items & Upload Image (Admin only)
+API Add to Cart & Checkout
+
+2. E-Commerce Client 
+Register & Login form
+Header
+Navigation bar
+Main Content (Customer)
+List of Categories
+List of Items
+Add to Cart & Checkout
+Main Content (Admin)
+CRUD Items & Upload Image 
+Footer (optional)
+3. Server & Client keduanya harus sudah di deploy dan design rapih
