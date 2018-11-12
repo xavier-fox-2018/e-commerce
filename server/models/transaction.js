@@ -29,15 +29,17 @@ const transactionSchema = new Schema({
 })
 
 
-const Transaction = mongoose.model('Transaction', transactionSchema)
 
-transactionSchema.post('save', function(doc) {
-  Transaction.find({user: req.user.id})
-  .then((result) => {
-    console.log('result post save transaction', result)
-  }).catch((err) => {
-    console.log('error when finde transaction post save', err)
-  });
-})
+// transactionSchema.post('save', function(doc) {
+//   console.log('hoook transaction')
+//   Transaction.find({user: req.user.id})
+//   .then((result) => {
+//     console.log('result post save transaction', result)
+//   }).catch((err) => {
+//     console.log('error when finde transaction post save', err)
+//   });
+// })
+
+const Transaction = mongoose.model('Transaction', transactionSchema)
 
 module.exports = Transaction

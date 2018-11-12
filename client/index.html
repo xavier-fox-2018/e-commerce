@@ -97,7 +97,7 @@
       <div id="top-admin"><a href="#adm-list-products">List of Products</a> </div>
       <h1>Transactions Report</h1>
       <div class="ui button orange" @click='transactionsReport'>See Transactions Report</div>
-      <div class="ui" v-if='showTransactionsReport'>
+      <div class="ui">
         <div class="ui row ">Date: <input type="date" v-model='begTransDate'> - <input type="date" v-model='endTransDate'>
           <div class="ui button" @click='filterTransReport'>Filter</div>
         </div>
@@ -859,6 +859,7 @@
   <script src="https://www.gstatic.com/firebasejs/5.5.7/firebase.js"></script>
   <script>
     var host = 'http://localhost:3000'
+    // var host = 'https://store-ree.agungatidhira.tech'
     var app = new Vue({
       el: '#app',
       data: {
@@ -1003,25 +1004,25 @@
           }
         },
         searchProduct() {
-          this.products = []
+          app.products = []
           if (this.query === "") {
             this.getAllProducts()
           } else {
             axios.get(`${host}/products`, {
-                headers: {
-                  authorization: `Bearer ${localStorage.getItem('token')}`
-                }
-              })
-              .then((result) => {
-                if (!result.data.isDelete) {
-                  result.data.forEach(item => {
+              headers: {
+                authorization: `Bearer ${localStorage.getItem('token')}`
+              }
+            })
+            .then((result) => {
+              app.products = []
+              result.data.forEach(item => {
+                  if (!item.isDelete) {
                     let name = item.name.toLowerCase()
-                    console.log(name.indexOf(app.query), name, app.query)
                     if (name.indexOf(app.query.toLowerCase()) !== -1) {
                       app.products.push(item)
                     }
-                  })
-                }
+                  }
+                })
               }).catch((err) => {
                 console.log(err)
               });
@@ -1276,6 +1277,7 @@
           if (this.showDetailsPage) this.showDetailsPage = false
           if (this.showCartPage) this.showCartPage = false
           if (this.showTransactionHistory) this.showTransactionHistory = false
+          this.confirmationPage =false, this.shippingPage=false
           app.products = []
           this.getAllProducts()
         },
@@ -1393,20 +1395,17 @@
         },
         transactionsReport() {
           app.allTransactions = []
-          this.showTransactionsReport ? this.showTransactionsReport = false : this.showTransactionsReport = true
-          if (this.showTransactionsReport) {
             axios.get(`${host}/transactions`, {
-                headers: {
-                  authorization: `Bearer ${localStorage.getItem('token')}`
-                }
-              })
-              .then((result) => {
-                app.allTransactions = result.data
-                app.getAllProductsSold()
+              headers: {
+                authorization: `Bearer ${localStorage.getItem('token')}`
+              }
+            })
+            .then((result) => {
+              app.allTransactions = result.data
+              app.getAllProductsSold()
               }).catch((err) => {
                 console.log('error get transac', err)
               });
-          }
         },
         getAllProductsSold() {
           app.productsSold = []
@@ -1467,18 +1466,30 @@
           app.showDetailTransaction = true
         },
         filterTransReport() {
+          console.log('date filter init', this.begTransDate, this.endTransDate)
           let beg = this.begTransDate,
             end = this.endTransDate
           let arr = []
-          this.allTransactions.forEach(trans => {
-            if (trans.createdAt <= end && trans.createdAt >= beg) {
-              arr.push(trans)
-            }
-          })
-          this.allTransactions = arr
+          app.allTransactions = []
+            axios.get(`${host}/transactions`, {
+              headers: {
+                authorization: `Bearer ${localStorage.getItem('token')}`
+              }
+            })
+            .then((result) => {
+              result.data.forEach(trans => {
+                if (trans.createdAt <= end && trans.createdAt >= beg) {
+                  arr.push(trans)
+                }
+              })
+              this.allTransactions = arr
+              }).catch((err) => {
+                console.log('error get transac', err)
+              });
+          
         },
         filterItemsDate() {
-          this.getAllProductsSold()
+          this.getAllProductsSold(pass)
           let year = this.filterYearItem,
             month = this.filterMonthItem
           let newArr = []
