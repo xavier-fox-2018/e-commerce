@@ -27,7 +27,7 @@
             <div class="page-wrapper chiller-theme toggled">
                 
                 <!-- start carousel -->
-                <main id="homePage" class="page-content">
+                <main v-if="at_main_page" id="homePage" class="page-content">
                     <div class="container-fluid">
                         <div class="row">
 
@@ -73,7 +73,7 @@
                             </div>
                         </li>
 
-                        <li  style="float:right; margin-left: 30px;" ><button class="btn btn-info" data-toggle="modal" data-target="#cartModal"><span class="fa fa-shopping-cart"></span></button></li>
+                        <li v-if="is_logged_in" style="float:right; margin-left: 30px;" ><button class="btn btn-info" data-toggle="modal" data-target="#cartModal"><span class="fa fa-shopping-cart"></span></button></li>
                         <li v-if="!is_logged_in" v-on:click="loginPressed('login')" style="float:right; margin-left: 30px;" ><button class="btn btn-info" data-toggle="modal" data-target="#loginModal"><span class="fa fa-shopping-cart"></span></button></li>
                         <li v-if="is_logged_in" v-on:click="loggingOut()" style="float:right; margin-left: 10px;" ><button class="btn btn-danger" >logout</button></li>
                         <li v-if="!is_logged_in" v-on:click="loginPressed('register')" style="float:right; margin-left: 10px;" ><button class="btn btn-primary" data-toggle="modal" data-target="#loginModal">Register</button></li>
@@ -84,7 +84,7 @@
                 <!-- end navbar -->
 
 
-                <div id="homePage" class="container-fluid">
+                <div v-if="at_main_page" id="homePage" class="container-fluid">
                     <!-- item list on main page -->
                     <div class="row rowy justify-content-around">
 
@@ -108,6 +108,36 @@
                     </div>
                     <!-- end item list on main page -->
                 </div>
+
+                <div v-if="at_shop_page"  class="container-fluid">
+                    <!-- item list on shop page -->
+                    <div>
+                            Shopee Name
+                        </div>
+                    <div class="row rowy justify-content-around">
+                        
+
+                        <div v-for="item in all_item_list" class="card cardy" style="width: 18rem;">
+                            <img class="card-img-top item-cover-thumbnail" v-bind:src="item.image" alt="Card image cap">
+                            <div class="card-body">
+                                
+                                    <h5 class="card-title">{{item.name}}</h5>
+                                    
+                                <!-- <hr> -->
+                                <!-- <p class="card-text">{{item.description}}</p> -->
+                                <h4 class="card-text" pattern="(d{3})([.])(d{2})">Rp {{item.price}}</h4>
+                                <!-- <br> -->
+                                <hr>
+                                <a v-on:click="itemDetailToModal(item)"  class="btn btn-success" data-toggle="modal" data-target="#itemModal" style="color:white;">Detail</a>
+                                <a v-on:click="addingToCart(item)"  class="btn btn-success"><span class="fa fa-cart-plus"></span></a>
+                                <a  class="btn btn-info"><span class="fa fa-check"></span></a>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- end item list on shop page -->
+                </div>
+    
 
 
 
@@ -213,7 +243,7 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                     <button v-on:click="removeCartDBCompletely()" type="button" class="btn btn-danger" >Remove Cart <span class="fa fa-trash"></span></button>
-                                    <a  class="btn btn-success">Pay <span class="fa fa-money-bill"></span></a>
+                                    <button v-on:click="createTransaction()"  class="btn btn-success">Pay <span class="fa fa-money-bill"></span></button>
                                 </div>
                             </div>
                         </div>
@@ -295,6 +325,9 @@
                 cart_item_list: [],
                 to_cart_list: [],
                 cart_total:0,
+                at_main_page: false,
+                at_shop_page: true,
+                at_profile_page: false,
                 is_logged_in: false,
                 login_pressed: false,
                 login_error: false,
@@ -346,8 +379,6 @@
                         }
                     })
                         .then(response => {
-                            this.user.first_name = '',
-                            this.user.last_name = ''
                             this.user.email = '',
                             this.user.password = ''
                             
@@ -372,10 +403,7 @@
                     })
                         .then(response => {
                             localStorage.setItem('token', response.data.token)
-                            this.is_logged_in = true
-                            this.user.email = '',
-                            this.user.password = ''
-                            
+                            this.is_logged_in = true                           
                         })
                         .catch(err => {
                             console.log('error di login', err);
@@ -387,6 +415,10 @@
                 loggingOut() {
                     this.is_logged_in = false
                     localStorage.removeItem('token')
+                    this.user.first_name = '',
+                    this.user.last_name = ''
+                    this.user.email = '',
+                    this.user.password = ''
                 },
                 showAllitems() {
 
@@ -481,7 +513,7 @@
                 createCartDB() {
                     axios({
                             method:'POST',
-                            url: 'http://localhost:3000/cart',
+                            url: 'http://localhost:3000/carts',
                             data: {
                                 item_list: this.cart_item_list,
                                 total: this.cart_total
@@ -501,7 +533,7 @@
                 getFromCartDB() {
                     axios({
                         method:'GET',
-                        url: 'http://localhost:3000/cart',
+                        url: 'http://localhost:3000/carts',
                         headers: {
                             token: localStorage.getItem('token')
                         }
@@ -522,7 +554,7 @@
                 removeCartDB() {
                     axios({
                         method:'DELETE',
-                        url: 'http://localhost:3000/cart',
+                        url: 'http://localhost:3000/carts',
                         headers: {
                             token: localStorage.getItem('token')
                         }
@@ -538,6 +570,28 @@
                 removeCartDBCompletely() {
                     this.removeCartDB()
                     this.cart_item_list = []
+                },
+                createTransaction() {
+                    axios({
+                        method:'POST',
+                        url: 'http://localhost:3000/transactions',
+                        data: {
+                            item_list: this.cart_item_list,
+                            total: this.cart_total
+                        },
+                        headers: {
+                            token: localStorage.getItem('token')
+                        }
+                    })
+                        .then(response => {
+                            this.removeCartDBCompletely()
+                            console.log('sukses buat transaksi');
+                        })
+                        .catch(err => {
+                            console.log('error buat transaksi', err);
+                            
+                        })
+                
                 }
             }
         });

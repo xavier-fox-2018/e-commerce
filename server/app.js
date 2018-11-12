@@ -20,7 +20,8 @@ const loginRouter = require('./routes/login'),
       userRouter = require('./routes/user'),
       shopRouter = require('./routes/shop'),
       categoryRouter = require('./routes/category'),
-      cartRouter = require('./routes/cart')
+      cartRouter = require('./routes/cart'),
+      transactionRouter = require('./routes/transaction')
 
 app
     .use(express.urlencoded({extended: false}))
@@ -30,8 +31,9 @@ app
     .use('/', loginRouter)
     .use('/users', userRouter)
     .use('/shops', shopRouter)
-    .use('/category', categoryRouter)
-    .use('/cart', cartRouter)
+    .use('/categories', categoryRouter)
+    .use('/carts', cartRouter)
+    .use('/transactions', transactionRouter)
 
     .listen(port, () => {
         console.log(`Listening on port ${port}`);   

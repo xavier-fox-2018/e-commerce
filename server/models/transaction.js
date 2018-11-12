@@ -11,10 +11,6 @@ const transactionSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'Item'
         },
-        shop_id: {
-            type: Schema.Types.ObjectId,
-            ref: 'Shop'
-        },
         quantity: {
             type: Number
         },
