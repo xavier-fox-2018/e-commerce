@@ -2,7 +2,7 @@ Vue.config.errorHandler = function (err, vm) {
     console.log(err);
 }
 
-const server = axios.create({ baseURL:'http://localhost:3000' })
+const server = axios.create({ baseURL:'https://h8ikestore-api.adishare.online' })
 Vue.prototype.$server = server
 
 let app = new Vue({
