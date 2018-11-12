@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>JUALBELI</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="script" href="./script.js">
+</head>
+<body id="body">
+    <div id="wrapper">
+           
+        <nav class="navbar fixed-top">
+            <div class="jualbeli">
+                JUALBELI 
+            </div>
+                <input style="border-radius:10px ; height: 40px; margin-right: 16px" type="search" placeholder="Search" v-model='filterMe' aria-label="Search" v-on:keyup="view('',filterMe)">
+                <!-- <input v-model="filterMe" placeholder="edit me"> -->
+                <!-- <button class="login" v-if="statusLogin === false" data-toggle="modal" data-target="#login-modal">Login</button> -->
+                <a href="#" data-toggle="modal" data-target="#login-modal">Login</a>
+                <button class="logout" v-if="statusLogin === true">Logout</button>
+            <button style="border:black" type="button" class="cart btn btn-outline-success" data-toggle="modal" data-target="#cartlist"><i class="fas fa-shopping-cart"></i> : {{carts.length}} </button>
+            
+        </nav>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-2 px-1 bg-dark" id="sticky-sidebar"></div>
+                <div class="position-fixed col-2 px-1 bg-dark" id="sticky-sidebar">
+                    <ul class="category">
+                        <li class="baju" v-on:click = "view('/baju','')"> Baju</li>
+                        <!-- <li class="baju" v-on:click = "view('','1')"> cari</li> -->
+                        <li class="celana" v-on:click = "view('/celana','')">Celana</li>
+                        <li class="sepatu" v-on:click = "view('/sepatu','')">Sepatu</li>
+                        <li class="aksesoris" v-on:click = "view('/aksesoris','')">Aksesoris</li>
+                        <li class="aksesoris" v-on:click = "view('','')">Semua Kategori</li>
+                    </ul>
+                </div>
+                <div class="col-lg-10">         
+                    <div class="row">        
+                        <div class="col-lg-4 col-md-6 mb-4" v-for= "stock in stocks">
+                            <div class="card h-100">
+                                <a href="#"><img class="gambar card-img-top" v-bind:src="stock.image" alt=""></a>
+                                <div class="card-body">
+                                    <h6>kategori: {{stock.category}} </h6>
+                                    <h4>Brand: {{stock.name}} </a></h4>
+                                    <h5>harga: Rp. {{ moneyConversion(stock.price) }} </h5>
+                                    <h6>Stock: {{stock.stock}} </h6>
+                                    <!-- <input type="number" name="qty" id="qty" v-model="stock.qty" > -->
+                                    <br>
+                                    <a href="#" v-on:click="addToCart(stock)" class="btn btn-primary">buy</a>
+                                </div>
+                            </div>
+                        </div>   
+                    </div>    
+                </div>           
+            </div>
+        </div>
+        <div class="modal fade" id="cartlist" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="card shopping-cart">
+                <div class="card-header bg-dark text-light">
+                    <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                    Shipping cart
+                    <button class="btn btn-outline-info btn-sm pull-right" data-dismiss="modal"> Continue shopping </button>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="card-body" v-for="cart in carts">
+                    <!-- PRODUCT -->
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-md-2 text-center">
+                            <img class="img-responsive" v-bind:src="cart.image" alt="prewiew" width="120" height="80">
+                        </div>
+                        <div class="col-12 text-sm-center col-sm-12 text-md-left col-md-6">
+                            <h4 class="product-name"><strong> {{ cart.name }} </strong></h4>
+                            <h4>
+                                <small> {{cart.category}} </small>
+                            </h4>
+                        </div>
+                        <div class="col-12 col-sm-12 text-sm-center col-md-4 text-md-right row">
+                            <div class="col-3 col-sm-3 col-md-6 text-md-right" style="padding-top: 5px">
+                                <h6><strong>Rp. {{ moneyConversion(cart.price) }} </strong></h6>
+                                <h6> stock: {{ cart.stock }} </h6>
+                            </div>
+                            <div class="col-4 col-sm-4 col-md-4">
+                                <h6>qty: {{cart.qty}} </h6>
+                            </div>
+                            <div class="col-2 col-sm-2 col-md-2 text-right">
+                                <button type="button" class="btn btn-outline-danger btn-xs">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <!-- END PRODUCT -->
+                </div>
+                <div class="card-footer">
+                    <div class="pull-right" style="margin: 10px">
+                        <a href="" class="btn btn-success pull-right">Checkout</a>
+                        <div class="pull-right" style="margin: 10px 10px">
+                            Total price: <b> Rp. {{ moneyConversion(totalPrice()) }} </b>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+            <div id="loginForm" class="container" v-if="registerForm === false">
+                <div class="row">
+                    <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                    <div class="pinggiran card-signin my-5">
+                        <div class="card-body">
+                        <h5 class="card-title text-center">Sign In</h5>
+                        <form class="form-signin">
+                            <div class="form-label-group">
+                            <input type="email" id="inputEmail" placeholder="Email address" required autofocus>
+                            <label for="inputEmail">Email address</label>
+                            </div>
+            
+                            <div class="form-label-group">
+                            <input type="password" id="inputPassword" placeholder="Password" required>
+                            <label for="inputPassword">Password</label>
+                            </div>
+                            <button class="btn btn-lg btn-primary btn-block text-uppercase">Sign in</button>
+                            <button type="submit" class="toregister">If you dont have account click <strong @click="loginOrRegister(register)" class="redText">Register</strong> </button>
+                        </form>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div> 
+            <!-- register -->
+            <div id="registerForm" class="container" v-if="registerForm === true">
+                <div class="row">
+                    <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                    <div class="pinggiran card-signin my-5">
+                        <form>
+                        <div class="card-body">
+                        <h5 class="card-title text-center">Register</h5>
+                            <div class="form-label-group">
+                                <input v-model="registerFirstName" type="text" id="inputLastName" placeholder="First Name">
+                                <label for="inputFirstName">First Name </label>
+                            </div>
+
+                            <div class="form-label-group">
+                                <input v-model="registerLastName" type="text" id="inputLastName" placeholder="Last Name">
+                                <label for="inputLastName">Last Names</label>
+                            </div>
+
+                            <div class="form-label-group">
+                                <input v-model="registerEmail" type="email" id="inputEmail" placeholder="Email address">
+                                <label for="inputEmail">Email address</label>
+                            </div>
+            
+                            <div class="form-label-group">
+                            <input v-model="registerPassword" type="password" id="inputPassword" placeholder="Password">
+                            <label for="inputPassword">Password</label>
+                            </div>
+                            <button type="submit" class="btn btn-lg btn-primary btn-block text-uppercase" style="background-color: red" @click="register()">Submit</button>
+                            <button class="toregister" @click="loginOrRegister(login)">If you already have account click <strong class="blueText" >Login</strong></button>
+                        
+                        </div>
+                    </form>
+                    </div>
+                    </div>
+                </div>
+            </div> 
+        </div>
+    </div>
+    <script src="https://use.fontawesome.com/c560c025cf.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="./script.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script defer src="https://use.fontawesome.com/releases/v5.5.0/js/all.js" integrity="sha384-GqVMZRt5Gn7tB9D9q7ONtcp4gtHIUEW/yG7h98J7IpE3kpi+srfFyyB/04OV6pG0" crossorigin="anonymous"></script>
+</body>
+</html>
