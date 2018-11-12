@@ -32,7 +32,7 @@
         <a class=" blue item" @click='goHome'>
           Home
         </a>
-        <a class="blue item" v-if='!isAdmin' @click='transactionHistory'>
+        <a class="blue item" v-if='!isAdmin' @click='showTransactionHistory = true'>
           Transactions History
         </a>
         <div class="center menu">
@@ -305,24 +305,27 @@
     <div class="see details" v-if='showDetailsPage' style="margin-top:70px;">
       <div class="ui container">
         <h1>{{productName}}</h1>
-        <p>{{productReviews.length}} customer reviews</p>
+        <p v-if='productReviews[0]'>{{productReviews.length}} customer reviews</p>
         <img :src="productImage" alt="">
         <h3>About the product:</h3><br>
         {{productDescription}}<br>
         Price: $ {{formatMoney(productPrice)}}<br>
         Avalible Stock: {{productQuantity}} units<br>
-        Rating: {{productReviews[0].rating}}
+        <div v-if='productReviews[0]'>
+          Rating: {{calculateRating(productReviews) }} / 5
+        </div>
         <hr>
         <br><br>
         <h1>Customer Review & Rating</h1>
         <h3>Add new Review & Rating</h3>
-        <h5>Rating:</h5><br>
-        <input type="number" min='1' max="5" placeholder="Give rating 1-5" name="" id="" v-model='rating'>
+        <h5>Give Rating:</h5><br>
+        <notif-msg :msg='msg' :show-err='showErr' :show-msg='showMsg'></notif-msg>
+        <input type="number" min='1' max="5" placeholder="Give rating 1-5" name="" id="" v-model='rating'><br>
         <textarea name="" id="" cols="50" rows="5" v-model='reviewMsg'></textarea><br>
         <div class="ui button" @click='addNewReview'>Add Review</div>
         <hr>
         <br>
-        <div class="ui ten wide segment" v-for='review in productReviews'>
+        <div class="ui ten wide segment" v-if='productReviews[0]' v-for='review in productReviews'>
           <h6>User: {{review.user.username}}</h6><br>
           <p>{{ review.message}}</p><br>
           <p>Rating: {{review.rating}}</p>
@@ -421,7 +424,8 @@
               </div>
             </div>
           </div>
-          <div class="ui  orange button" @click='paymentPage = true'>Shipping to this address</div>
+          <notif-msg :msg='msg' :show-msg='showMsg' :show-err='showErr'></notif-msg>
+          <div class="ui  orange button" @click='checkAddress'>Shipping to this address</div>
         </form>
       </div>
       <!-- Payment page -->
@@ -521,7 +525,8 @@
               <div class="ui four wide column">
                 <div><strong>Coupon Used</strong></div>
                 <div>{{coupon}}</div>
-                You are eligible to have {{discount}}% discount (exc. shipping fee)
+                <span v-if='coupon != 0'>You are eligible to have {{discount}}% discount (exc. shipping fee)</span>
+                <span v-else>You dont use any coupon for this transaction</span>
               </div>
             </div>
             <div class="ui row segment" v-for='item in uniqueCart'>
@@ -918,6 +923,22 @@
         rating: 0,
         reviewMsg: ''
       },
+      watch: {
+        showErr: function (newVal, oldVal) {
+          if (newVal == true) {
+            setTimeout(function () {
+              app.showErr = false
+            }, 2500)
+          }
+        },
+        showMsg: function (newVal, oldVal) {
+          if (newVal == true) {
+            setTimeout(function () {
+              app.showErr = false
+            }, 2500)
+          }
+        }
+      },
       created() {
         if (localStorage.getItem('token')) {
           this.isLogin = true
@@ -930,6 +951,13 @@
         }
         this.getAllProducts()
         this.getCategories()
+        this.checkCouponEligble()
+        this.transactionHistory()
+      },
+      computed: {
+        productToReviewed() {
+          return this.productReviews
+        }
       },
       methods: {
         register() {
@@ -1009,13 +1037,13 @@
             this.getAllProducts()
           } else {
             axios.get(`${host}/products`, {
-              headers: {
-                authorization: `Bearer ${localStorage.getItem('token')}`
-              }
-            })
-            .then((result) => {
-              app.products = []
-              result.data.forEach(item => {
+                headers: {
+                  authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+              })
+              .then((result) => {
+                app.products = []
+                result.data.forEach(item => {
                   if (!item.isDelete) {
                     let name = item.name.toLowerCase()
                     if (name.indexOf(app.query.toLowerCase()) !== -1) {
@@ -1080,18 +1108,20 @@
           this.productReviews = product.reviews
         },
         addNewCategory() {
-          let data={category: this.newCategory}
+          let data = {
+            category: this.newCategory
+          }
           axios.post(`${host}/categories`, data, {
-            headers: {
-              authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-          })
-          .then((result) => {
-            console.log(result)
-            app.getCategories()
-          }).catch((err) => {
-            console.log(err)
-          });
+              headers: {
+                authorization: `Bearer ${localStorage.getItem('token')}`
+              }
+            })
+            .then((result) => {
+              console.log(result)
+              app.getCategories()
+            }).catch((err) => {
+              console.log(err)
+            });
         },
         addProduct() {
           let data = this.getProductData()
@@ -1255,7 +1285,6 @@
               }
             })
             .then((result) => {
-              console.log('then, getusercart: ', result.data)
               if (result.data.length > 0) {
                 app.cart = result.data[0].products
                 app.getUniqueCart(app.cart)
@@ -1277,7 +1306,7 @@
           if (this.showDetailsPage) this.showDetailsPage = false
           if (this.showCartPage) this.showCartPage = false
           if (this.showTransactionHistory) this.showTransactionHistory = false
-          this.confirmationPage =false, this.shippingPage=false
+          this.confirmationPage = false, this.shippingPage = false
           app.products = []
           this.getAllProducts()
         },
@@ -1312,6 +1341,14 @@
             return total - (total * this.discount / 100)
           } else {
             return total
+          }
+        },
+        checkAddress() {
+          if(!this.address) {
+            this.msg = 'Please fill in the form correctly'
+            this.showErr = true
+          } else {
+            this.paymentPage = true
           }
         },
         checkCoupon() {
@@ -1395,7 +1432,7 @@
         },
         transactionsReport() {
           app.allTransactions = []
-            axios.get(`${host}/transactions`, {
+          axios.get(`${host}/transactions`, {
               headers: {
                 authorization: `Bearer ${localStorage.getItem('token')}`
               }
@@ -1403,9 +1440,9 @@
             .then((result) => {
               app.allTransactions = result.data
               app.getAllProductsSold()
-              }).catch((err) => {
-                console.log('error get transac', err)
-              });
+            }).catch((err) => {
+              console.log('error get transac', err)
+            });
         },
         getAllProductsSold() {
           app.productsSold = []
@@ -1422,7 +1459,6 @@
               array.push(obj)
             })
           })
-          console.log(array)
           arr2 = this.getUnique(array)
           for (let i = 0; i < arr2.length; i++) {
             let obj = {}
@@ -1448,7 +1484,6 @@
               }
             }
           }
-          console.log(arrNew)
           app.productsSold = arrNew
         },
         getUnique(arr1) {
@@ -1466,12 +1501,11 @@
           app.showDetailTransaction = true
         },
         filterTransReport() {
-          console.log('date filter init', this.begTransDate, this.endTransDate)
           let beg = this.begTransDate,
             end = this.endTransDate
           let arr = []
           app.allTransactions = []
-            axios.get(`${host}/transactions`, {
+          axios.get(`${host}/transactions`, {
               headers: {
                 authorization: `Bearer ${localStorage.getItem('token')}`
               }
@@ -1483,10 +1517,10 @@
                 }
               })
               this.allTransactions = arr
-              }).catch((err) => {
-                console.log('error get transac', err)
-              });
-          
+            }).catch((err) => {
+              console.log('error get transac', err)
+            });
+
         },
         filterItemsDate() {
           this.getAllProductsSold(pass)
@@ -1496,12 +1530,50 @@
           this.productsSold.forEach(item => {
             let itemMonth = new Date(item.date).getMonth() + 1
             let itemYear = new Date(item.date).getFullYear()
-            console.log('products sold date', itemMonth, itemYear, month, year)
             if (itemMonth == month && itemYear == year) {
               newArr.push(item)
             }
           })
           this.productsSold = newArr
+        },
+        generateCoupon() {
+          let alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+          let num = '1234567890'
+          let coupon = []
+          for (let i = 0; i < 5; i++) {
+            let idxA = Math.floor(Math.random() * alpha.length)
+            coupon.push(alpha[idxA])
+          }
+          for (let i = 0; i < 3; i++) {
+            let idxB = Math.floor(Math.random() * num.length)
+            coupon.push(num[idxB])
+          }
+          return coupon.join('')
+        },
+        checkCouponEligble() {
+          let coupon = this.generateCoupon()
+          let discount = Math.floor((Math.random()*30) + 10) 
+          axios.get(`${host}/transactions/${localStorage.getItem('userId')}`, {
+              headers: {
+                authorization: `Bearer ${localStorage.getItem('token')}`
+              }
+            })
+            .then((result) => {
+              if (result.data.length >= 3) {
+                axios.post(`${host}/coupons`,{code:coupon, discount:discount}, {
+                  headers: {
+                    authorization: `Bearer ${localStorage.getItem('token')}`
+                  }
+                }).then((result) => {
+                  // setTimeout(function() {
+                  //   alert(`Congratulation you got coupon ${discount}%, Coupon:"${coupon}"
+                  //   due to you have made 3 or more transactions`)
+                  // }, 3500)
+                }).catch((err) => {
+                });
+              }
+            }).catch((err) => {
+            });
         },
         transactionHistory() {
           axios.get(`${host}/transactions/${localStorage.getItem('userId')}`, {
@@ -1511,7 +1583,6 @@
             })
             .then((result) => {
               app.allTransactions = result.data
-              app.showTransactionHistory = true
             }).catch((err) => {
 
             });
@@ -1563,25 +1634,62 @@
             });
         },
         addNewReview() {
-          let review = this.reviewMsg, rating = Number(this.rating)
-          console.log(rating)
+          let review = this.reviewMsg,
+            rating = Number(this.rating)
+          let eligible = false,
+            hasReviwed = false
           let data = {
             product: this.productId,
             user: localStorage.getItem('userId'),
             message: review,
             rating: rating
           }
-          axios.post(`${host}/reviews`, data, {
-            headers: {
-                authorization: `Bearer ${localStorage.getItem('token')}`
-              }
+          let arrItem = []
+          this.allTransactions.forEach(trans => {
+            trans.itemList.forEach(item => {
+              arrItem.push(item.item._id)
+            })
           })
-          .then((result) => {
-            console.log(result)
-            app.getAllProducts()
-          }).catch((err) => {
-            console.log(err)
-          });
+          arrItem.forEach(id => {
+            if (id === data.product) {
+              eligible = true
+            }
+          })
+          this.productReviews.forEach(review => {
+            if (review.user === localStorage.getItem('userId')) {
+              eligible = false
+              hasReviwed = true
+            }
+          })
+          if (eligible) {
+            app.showErr = false
+            axios.post(`${host}/reviews`, data, {
+                headers: {
+                  authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+              })
+              .then((result) => {
+                app.getAllProducts()
+              }).catch((err) => {
+                console.log(err.response)
+              });
+          } else if (!hasReviwed) {
+            app.msg = 'You must buy this item to be able to give rating and review'
+            app.showErr = true
+          } else {
+            app.msg = 'You\'ve already give a rating and review'
+            app.showErr = true
+          }
+        },
+        calculateRating(product) {
+          console.log('calculat rating:', product)
+          if (product.length < 1) return 0;
+          let total = 0;
+          let len = product.length
+          product.forEach(user => {
+            total += user.rating
+          })
+          return (total / len).toFixed(1)
         },
         formatMoney(amount, decimalCount = 0, decimal = ".", thousands = ",") {
           try {
