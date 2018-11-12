@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Le Pepe Store</title>
+  <link rel="icon" href="https://discordemoji.com/assets/emoji/FeelsBadMan.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="google-signin-client_id" content="721016681972-upph5i6up3fke1jqpknl011of6nde2lo.apps.googleusercontent.com">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" media="screen" href="css/main.css" />
+</head>
+
+<body>
+
+  <div id="app">
+
+    <!-- HEADER -->
+
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/">
+          <img src="https://discordemoji.com/assets/emoji/FeelsBadMan.png" width="30" height="30" class="d-inline-block align-top"
+            alt=""> PepeStore
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+          aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+                Categories
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <p class="dropdown-item" v-on:click="filterByCategory('Men')">Men</p>
+                <p class="dropdown-item" v-on:click="filterByCategory('Women')">Women</p>
+                <div class="dropdown-divider"></div>
+                <p class="dropdown-item" v-on:click="allProducts">All Items</p>
+              </div>
+            </li>
+          </ul>
+          <div class="row align-middle d-flex align-items-center h-100">
+            <template v-if="!isLogin">
+              <div class="col-4">
+                <p class="pnav mb-0" id="registerLink" data-toggle="modal" data-target="#registerModal">Register</p>
+              </div>
+              <div class="col-4">
+                <button class="btn btn-outline-secondary" type="button" id="button-signin" data-toggle="modal" data-target="#signinModal">Sign
+                  In
+                </button>
+              </div>
+            </template>
+            <template v-else>
+              <div class="col">
+                <a v-if="isAdmin" href="/admin.html">Admin Page</a>
+              </div>
+              <div class="col">
+                <button v-if="invoice" data-toggle="modal" data-target="#invoiceModal" class="btn btn-secondary">Invoice</button>
+              </div>
+              <div class="col">
+                <button class="btn btn-outline-secondary" type="button" id="button-signout" v-on:click="signout">Sign Out</button>
+              </div>
+              <div class="col">
+                <div class="cartdiv" data-toggle="modal" data-target="#cart">
+                  <img src="assets/images/cart.png" alt="shoppingcart" width="20" height="20" class="d-inline-block align-top" data-toggle="tooltip"
+                    data-placement="bottom" title="Cart">
+                  <span class="badge" style="background-color:lightgray;">{{getCartCount}}</span>
+                </div>
+              </div>
+            </template>
+
+
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- CART MODAL  -->
+
+    <div class="modal fade" id="cart" tabindex="-1" role="dialog" aria-labelledby="cartLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="cartLabel">Cart</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="products">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Qty</th>
+                    <th scope="col">Subtotal</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="product in getSubTotal()">
+                    <td>{{product.name}}</td>
+                    <td>{{product.qty}}</td>
+                    <td>{{toCurrency(product.subtotal)}}</td>
+                    <td style="cursor:pointer;" v-on:click="removeCartItem(product.id)">Remove</td>
+                  </tr>
+                  <tr>
+                    <td colspan="2">Total:</td>
+                    <td>{{toCurrency(getGrandTotal)}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" v-on:click="checkout" data-dismiss="modal" >Checkout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- INVOICE MODAL  -->
+
+    <template v-if="invoice">
+        <div class="modal fade" id="invoiceModal" tabindex="-1" role="dialog" aria-labelledby="invoiceModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="invoiceModalLabel">INVOICE</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <div class="products">
+                      <p>Customer name: {{invoice.userId.name}}</p>
+                      <p>Date of Transaction: {{invoice.purchaseDate}}</p>
+                        <table class="table table-striped">
+                          <thead>
+                            <tr>
+                              <th scope="col">Name</th>
+                              <th scope="col">Qty</th>
+                              <th scope="col">Subtotal</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr v-for="product in getInvoiceSubTotal()">
+                              <td>{{product.name}}</td>
+                              <td>{{product.qty}}</td>
+                              <td>{{toCurrency(product.subtotal)}}</td>
+                            </tr>
+                            <tr>
+                              <td colspan="2">Total:</td>
+                              <td>{{toCurrency(invoice.totalPrice)}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                     </div>
+                </div>
+                <div class="modal-footer">
+                  <p>Thank you for shopping with us!</p>
+                </div>
+              </div>
+            </div>
+          </div>
+    </template>
+   
+
+    <!-- REGISTER MODAL  -->
+
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="registerModalLabel">Register</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="registerNameInput">Name</label>
+              <input type="email" class="form-control" id="registerNameInput" v-model="registerNameInput" aria-describedby="nameHelp" placeholder="Enter Your Name">
+            </div>
+            <div class="form-group">
+              <label for="registerEmailInput">Email address</label>
+              <input type="email" class="form-control" id="registerEmailInput" v-model="registerEmailInput" aria-describedby="emailHelp"
+                placeholder="Enter email">
+              <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+            </div>
+            <div class="form-group">
+              <label for="registerPasswordInput">Password</label>
+              <input type="password" class="form-control" id="registerPasswordInput" v-model="registerPasswordInput" placeholder="Password">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="register">Register</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIGNIN MODAL -->
+
+    <div class="modal fade" id="signinModal" tabindex="-1" role="dialog" aria-labelledby="signinModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="signinModalLabel">Sign In</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="loginEmailInput">Email address</label>
+              <input type="email" class="form-control" id="loginEmailInput" v-model="loginEmailInput" aria-describedby="emailHelp" placeholder="Enter email">
+            </div>
+            <div class="form-group">
+              <label for="registerPasswordInput">Password</label>
+              <input type="password" class="form-control" id="loginPasswordInput" v-model="loginPasswordInput" placeholder="Password">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="signin">Sign In</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTAINER MAIN CONTENT -->
+
+    <div class="container mt-3">
+
+      <!-- USER DIV -->
+      <div class="row ">
+        <div class="col my-3">
+          <h1 class="text-center">Start shopping</h1>
+        </div>
+      </div>
+      <div class="row mb-4">
+        <div class="col-8">
+          <div class="thumbcap text-center">
+            <img class="img-fluid" src="https://n.nordstrommedia.com/id/6d6f1103-e0a4-4420-a29e-6401736c6847.jpeg?w=1609&h=800" alt="">
+            <div class="capimg">
+              <p><strong>Gucci</strong></p>
+              <p>Become a part of the trend with this brand.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col d-flex flex-column justify-content-between">
+          <div class="thumbcap text-center">
+            <img class="img-fluid" src="https://n.nordstrommedia.com/id/71a0d415-811f-4460-ae93-49d9252544cf.jpeg?" alt="">
+            <div class="capimg">
+              <p><strong>Fendi</strong></p>
+              <p>Discover the latest from this iconic brand.</p>
+            </div>
+          </div>
+          <div class="thumbcap text-center">
+            <img class="img-fluid" src="https://n.nordstrommedia.com/id/1d8bc1ed-319b-4f2f-8b74-b584f05d8440.jpeg" alt="">
+            <div class="capimg">
+              <p><strong>Satisfaction guaranteed</strong> <br> we have clients all over the world</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ITEM CONTAINER  -->
+
+      <div class="row my-2">
+        <div class="col mx-2 my-2" v-for="element in products">
+          <div class="card" style="width: 18rem;">
+            <img class="card-img-top" v-bind:src="element.img" alt="Card image cap">
+            <div class="card-body">
+              <h5 class="card-title">{{element.name}}</h5>
+              <p class="card-text">{{toCurrency(element.price)}}</p>
+              <p class="card-text">{{element.description}}</p>
+              <button class="btn btn-primary" v-on:click="addProduct(element._id)" data-toggle="modal" data-target="#cart">Add
+                to Cart</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- / div app  -->
+  </div>
+
+
+  <!-- END OF VUE -->
+
+
+
+  <!-- FOOTER -->
+
+  <!-- <div class="row">
+      <div class="col my-3 border-bottom ">
+        <h4 class="text-center">Subscribe to our newsletter</h4>
+        <div class="input-group mb-3 w-50 mx-auto">
+          <input type="text" class="form-control" placeholder="Your Email here" aria-label="Your Email here" aria-describedby="button-addon2">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" id="button-sub">Subscribe</button>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+  <footer class="py-5 bg-dark">
+    <div class="container">
+      <p class="m-0 text-center text-white">Copyright &copy; PepeStore 2018</p>
+    </div>
+  </footer>
+
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="scripts/main.js"></script>
+  <script>
+
+
+    new Vue({
+      el: '#app',
+      data: {
+        filter: true,
+        products: [],
+        cart: [],
+        invoice: null,
+        registerEmailInput: '',
+        registerNameInput: '',
+        registerPasswordInput: '',
+        loginEmailInput: '',
+        loginPasswordInput: '',
+        isLogin: false,
+        isAdmin: false
+      },
+      computed: {
+        getGrandTotal: function () {
+          let sum = 0
+          this.cart.forEach((element, index) => {
+            sum += element.price
+          })
+          return sum
+        },
+        getCartCount: function () {
+          return this.cart.length
+        }
+      },
+      methods: {
+        addProduct: function (data) {
+          axios.patch('http://localhost:3000/users/cart', {
+            productId: data
+          }, {
+            headers: {
+              token: localStorage.getItem('token')
+            }
+          })
+          .then(response => {
+            this.cart = response.data.result.products
+          })
+          .catch(error => {
+            alert(error)
+          })
+        },
+        removeCartItem: function(id) {
+          axios.patch('http://localhost:3000/users/cart/remove', {
+            productId: id
+          }, {
+            headers: {
+              token: localStorage.getItem('token')
+            }
+          })
+          .then(response => {
+            this.cart = response.data.result.products
+          })
+          .catch(error => {
+            alert(error)
+          })
+        },
+        checkout: function(){
+          let sum = 0
+          this.cart.forEach((element, index) => {
+            sum += element.price
+          })
+          axios.post('http://localhost:3000/users/cart/checkout', {
+            products: this.cart,
+            totalPrice: sum
+          }, {
+            headers: {
+              token: localStorage.getItem('token')
+            }
+          })
+          .then(response => {
+            this.cart = response.data.result.products
+            return axios.get('http://localhost:3000/users/cart/invoice', {
+              headers: {
+                token: localStorage.getItem('token')
+              }
+            })
+          })
+          .then(response => {
+            this.invoice = response.data.result
+          })
+          .catch(error => {
+            alert(error)
+          })
+        },
+        allProducts: function (event) {
+          axios.get('http://localhost:3000/products')
+            .then(response => {
+              this.products = response.data.result
+            })
+            .catch(error => {
+              alert(error)
+            })
+        },
+        filterByCategory: function (data) {
+          axios.get('http://localhost:3000/products')
+            .then(response => {
+              this.products = response.data.result.filter(value => {
+                return value.categoryId.name === data
+              })
+            })
+            .catch(error => {
+              alert(error)
+            })
+        },
+        toCurrency: function (number) {
+          return number.toLocaleString('en-ID', { style: 'currency', currency: 'IDR' })
+        },
+        getSubTotal: function () {
+          output = []
+          this.cart.forEach((element, index) => {
+            if (!output.filter(data => { return data.name == element.name }).length) {
+              output.push({
+                id: element._id,
+                name: element.name,
+                price: element.price,
+                qty: 1,
+                get subtotal() {
+                  return this.qty * this.price
+                }
+              })
+            } else {
+              let j = output.findIndex(data => {
+                return data.name === element.name
+              })
+              output[j].qty += 1
+            }
+          })
+          return output
+        },
+        getInvoiceSubTotal: function () {
+          output = []
+          this.invoice.products.forEach((element, index) => {
+            if (!output.filter(data => { return data.name == element.name }).length) {
+              output.push({
+                id: element._id,
+                name: element.name,
+                price: element.price,
+                qty: 1,
+                get subtotal() {
+                  return this.qty * this.price
+                }
+              })
+            } else {
+              let j = output.findIndex(data => {
+                return data.name === element.name
+              })
+              output[j].qty += 1
+            }
+          })
+          return output
+        },
+        register: function () {
+          axios.post('http://localhost:3000/users', {
+            name: this.registerNameInput,
+            email: this.registerEmailInput,
+            password: this.registerPasswordInput
+          })
+            .then(result => {
+              this.registerEmailInput = '',
+                this.registerNameInput = '',
+                this.registerPasswordInput = ''
+            })
+            .catch(error => {
+              alert(error)
+            })
+        },
+        signin: function () {
+          axios.post('http://localhost:3000/users/login', {
+            email: this.loginEmailInput,
+            password: this.loginPasswordInput
+          })
+            .then(data => {
+              localStorage.setItem('token', data.data.result.token)
+              localStorage.setItem('role', data.data.result.role)
+              this.isLogin = true
+              if (localStorage.getItem('role') === 'admin') {
+                this.isAdmin = true
+              }
+              return axios.get('http://localhost:3000/users/cart', {
+                headers: {
+                  token: localStorage.getItem('token')
+                }
+              })
+            })
+            .then(data => {
+              this.cart = data.data.result.products
+            })
+            .catch(error => {
+              alert(error)
+            })
+        },
+        signout: function () {
+          localStorage.removeItem('token')
+          localStorage.removeItem('role')
+          this.loginEmailInput = ''
+          this.loginPasswordInput = ''
+          this.isLogin = false
+          this.isAdmin = false
+          this.cart = []
+          this.invoice = null
+        }
+      },
+      mounted: function () {
+        if (localStorage.getItem('token')) {
+          this.isLogin = true
+          axios.get('http://localhost:3000/users/cart', {
+            headers: {
+              token: localStorage.getItem('token')
+            }
+          })
+          .then(data => {
+            this.cart = data.data.result.products
+          })
+          .catch(error => {
+          alert(error)
+          })
+        } else {
+          this.isLogin = false
+        }
+        if (localStorage.getItem('role') === 'admin') {
+          this.isAdmin = true
+        }
+        axios.get('http://localhost:3000/products')
+          .then(response => {
+            this.products = response.data.result
+          })
+          .catch(error => {
+            alert(error)
+          })
+      }
+    })  
+  </script>
+</body>
+
+</html>
