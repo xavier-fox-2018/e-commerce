@@ -3,7 +3,12 @@ const Cart = require('../models/cartModel')
 
 class Controller {
     static create(req,res){
-        console.log('masuk ke checkout (create transaction)')
+
+        if(req.body.item_list.length < 1){
+            res.status(500).json({
+                message : "Cart Is Empty"
+            })
+        }
 
         Transaction.create({
             user : req.userId,

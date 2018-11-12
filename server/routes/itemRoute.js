@@ -1,14 +1,15 @@
 const router = require('express').Router()
 const controller = require('../controllers/itemController')
 const images = require('../helpers/images')
+const middleware = require('../middlewares/index')
 
 router.get('/',controller.read)
 router.get('/category/:id',controller.readByCategory)
 router.get('/:id',controller.readOne)
-router.post('/',controller.create)
-router.put('/:id',controller.update)
-router.put('/delete/:id',controller.changeToDeleted)
-router.delete('/:id',controller.delete)
+router.post('/',middleware.authenticate,middleware.isAdmin,controller.create)
+router.put('/:id',middleware.authenticate,middleware.isAdmin,controller.update)
+router.put('/delete/:id',middleware.authenticate,middleware.isAdmin,controller.changeToDeleted)
+router.delete('/:id',middleware.authenticate,middleware.isAdmin,controller.delete)
 
 router.post('/upload',
     images.multer.single('image'), 

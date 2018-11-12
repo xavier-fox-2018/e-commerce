@@ -151,49 +151,7 @@ Vue.component('admin-menu', {
                 </div>
                 <!-- Modal -->
 
-                <!--Grid column-->
-                <div class="col-md-6 mb-4">
 
-                    <!--Card-->
-                    <div class="card">
-                        <button class="btn btn-danger" @click="getAllUsers">Get All Users</button>
-
-                        <!--Card content-->
-                        <div class="card-body">
-
-                            <!-- Table  -->
-                            <table class="table table-hover">
-                                <!-- Table head -->
-                                <thead class="blue lighten-4">
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Admin</th>
-                                    </tr>
-                                </thead>
-                                <!-- Table head -->
-
-                                <!-- Table body -->
-                                <tbody style="cursor:pointer">
-                                    <tr v-for="user in users" data-toggle="modal" data-target="#editUserModal" @click="editUser(user)">
-                                        <th scope="row">1</th>
-                                        <td>{{user.name}}</td>
-                                        <td>{{user.email}}</td>
-                                        <td>{{user.is_admin}}</td>
-                                    </tr>
-                                </tbody>
-                                <!-- Table body -->
-                            </table>
-                            <!-- Table  -->
-
-                        </div>
-
-                    </div>
-                    <!--/.Card-->
-
-                </div>
-                <!--Grid column-->
 
                 <!--Grid column-->
                 <div class="col-md-6 mb-4">
@@ -204,6 +162,9 @@ Vue.component('admin-menu', {
 
                         <!--Card content-->
                         <div class="card-body">
+                            Filter By Month And Year
+                            <input type="month" v-model="filterItems">
+                            <button @click="filterItemsByDate">Filter</button>
 
                             <!-- Table  -->
                             <table class="table table-hover">
@@ -219,10 +180,10 @@ Vue.component('admin-menu', {
 
                                 <!-- Table body -->
                                 <tbody>
-                                    <tr v-for="item in items">
+                                    <tr v-for="item in itemsSold">
                                         <th scope="row" >1</th>
                                         <td>{{item.name}}</td>
-                                        <td>0</td>
+                                        <td>{{item.sold}}</td>
                                     </tr>
                                 </tbody>
                                 <!-- Table body -->
@@ -268,13 +229,19 @@ Vue.component('admin-menu', {
             editUserName : '',
             editUserEmail : '',
             editUserIsAdmin : '',
+
+            filterItems : '',
+            itemsSold : '' 
         }
     },
     methods : {
         getAllTransactions : function(){
             axios({
                 method : 'GET',
-                url : `${this.config.port}/transactions`
+                url : `${this.config.port}/transactions`,
+                headers : {
+                    token : localStorage.getItem('token')
+                }
             })
             .then(response=>{
                 // console.log(response.data)
@@ -294,7 +261,7 @@ Vue.component('admin-menu', {
                 url : `${this.config.port}/items`
             })
             .then(response=>{
-                console.log(response.data)
+                // console.log(response.data)
                 this.items = response.data
             })
             .catch(err=>{
@@ -310,7 +277,7 @@ Vue.component('admin-menu', {
                 }
             })
             .then(response=>{
-                console.log(response.data)
+                // console.log(response.data)
                 this.users = response.data
             })
             .catch(err=>{
@@ -320,7 +287,10 @@ Vue.component('admin-menu', {
         getTransactionDetail : function(transaction){
             axios({
                 method : 'GET',
-                url : `${this.config.port}/transactions/${transaction._id}`
+                url : `${this.config.port}/transactions/${transaction._id}`,
+                headers : {
+                    token : localStorage.getItem('token')
+                }
             })
             .then(response=>{
                 this.transactiondetail = response.data
@@ -343,6 +313,75 @@ Vue.component('admin-menu', {
         },
         deleteUser : function(){
 
+        },
+        filterItemsByDate : function(){
+            axios({
+                method : 'GET',
+                url : `${this.config.port}/transactions`,
+                headers : {
+                    token : localStorage.getItem('token')
+                }
+            })
+            .then(response=>{
+                // console.log(response.data)
+                let target = this.filterItems
+                let list = response.data
+
+                let output = []
+
+                for(let i = 0 ; i < list.length ; i ++){
+                    // console.log(list[i].createdAt)
+                    let date = list[i].createdAt.slice(0,7)
+                    if(date === target){
+                        output.push(list[i])
+                    }
+                }
+
+                // console.log('output',output)
+
+                let group = []
+
+                let result = []
+
+                for(let i = 0 ; i < output.length ; i ++){
+
+                    let item_list = output[i].item_list
+                    
+
+                    for(let j = 0 ; j < item_list.length ; j ++){
+                        let item = item_list[j].item
+                        let quantity = item_list[j].qty
+
+                        let grouped = false
+                        
+                        for(let k = 0 ; k < group.length ; k ++ ){
+                            
+                            if(group[k].name === item.name){
+                                grouped = true
+                            }
+                        }
+
+                        if(grouped === false){
+                            let obj = {
+                                name : item.name,
+                                sold : 0
+                            }
+                            group.push(obj)
+                        }
+
+                        for(let k = 0 ; k < group.length ; k ++ ){
+                            if(group[k].name === item.name){
+                                group[k].sold = group[k].sold + quantity
+                            }
+                        }
+                    }
+                }
+
+                this.itemsSold = group
+            })
+            .catch(error=>{
+                console.log(error)
+            })
         }
     },
     computed : {
