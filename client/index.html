@@ -152,21 +152,19 @@
                                 password: app.loginUser.password
                             }
                         })
-                            .then(function(token) {
-                                localStorage.setItem('token', token.data.token);
+                            .then(function(result) {
+                                localStorage.setItem('token', result.data.token);
 
-                                if (token.data.role == 'user') {
-                                    location.replace("/home.html");
-                                } else if (token.data.role == 'admin') {
-                                    location.replace("/admin.html");
+                                if (result.data.role == 'user') {
+                                    window.location.replace("/home.html");
+                                } else if (result.data.role == 'admin') {
+                                    window.location.replace("/admin.html");
                                 }
-
-                                app.isError = false;
                             })
                             .catch(function(err) {
                                 app.errorMsg = err.response.data.message;
                                 app.isError = true;
-                                console.log('Login Error: ', err);
+                                console.log('Login Error: ', err.response.data.message);
                             });
                     }
                 }
