@@ -3,6 +3,7 @@ const express  = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
 const app = express()
+// const Twitter = require('twitter-node-client').Twitter
 const indexRouter   = require('./routers/index')
 const userRouter = require('./routers/user')
 const productRouter = require('./routers/product')

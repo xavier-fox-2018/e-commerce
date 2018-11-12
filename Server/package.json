@@ -18,6 +18,8 @@
     "express": "^4.16.4",
     "google-auth-library": "^2.0.1",
     "jsonwebtoken": "^8.3.0",
-    "mongoose": "^5.3.9"
+    "mongoose": "^5.3.9",
+    "multer": "^1.4.1",
+    "twitter-node-client": "0.0.6"
   }
 }

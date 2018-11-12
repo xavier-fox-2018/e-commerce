@@ -1,4 +1,4 @@
-const {gSignin, isLogin} = require('../helper/gSignIn')
+const { isLogin} = require('../helper/gSignIn')
 const Product = require('../models/product')
 
 module.exports = {
@@ -27,15 +27,23 @@ module.exports = {
     },
     findAll: (req,res) => {
         Product.find({})
-        .then((product) => {
+        .then((products) => {
+            let count = 0
+            let productShown = []
+            products.forEach(product => {
+                if ( count < 8 ) {
+                    productShown.push(product)
+                }
+                count++
+            })
             res.status(200).json({
-                product,
-                message: `product has been found`
+                product: productShown,
+                message: `products has been found`
             })
         })
         .catch((err) => {
             res.status(500).json({
-                message: `product can't be found`
+                message: `products can't be found`
             })
         })
     },
@@ -124,26 +132,7 @@ module.exports = {
             })
         })
     },
-    gSignin,
-    
-    isLogin,
 
-    // findBy_name: function(req,res) {
-
-    //     Product.find({name: new RegExp(req.query.product, 'i')})
-    //     .populate('category', 'name')
-    //       .then((products) => {
-    //         res.status(200).json({
-    //           products
-    //         })
-    //       })
-    //       .catch((err) => {
-    //         res.status(404).json({
-    //           err,
-    //           message: `product not found`
-    //         })
-    //     })
-    // },
     findBy_name: function(req,res) {
         Product.find({
             name: req.params.name,

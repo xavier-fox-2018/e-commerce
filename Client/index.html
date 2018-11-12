@@ -11,6 +11,8 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- <link rel="me" href="https://twitter.com/twitterdev" >
+    <link rel="stylesheet" href="https://api.twitter.com/1.1/statuses/update.json"> -->
 </head>
 <body>
 
@@ -34,7 +36,7 @@
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a v-on:click="getAllItems()">Product</a></li>
+                        <li class="active"><a href="" v-on:click="getAllproducts()">Product</a></li>
                         <li><a href="#">Link</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
@@ -54,15 +56,18 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#">Action</a></li>
-                                <li><a href="#">Another action</a></li>
-                                <li><a href="#">Something else here</a></li>
+                                <li><a href="#" v-if="isUser === true">Cart</a></li>
+                                <li><a href="#" v-if="isUser === true">Profile</a></li>
+                                <li><a href="#" v-if="isUser === true">Transaction History</a></li>
+                                <li><a href="#" v-if="isAdmin === true" data-toggle="modal" data-target="#modal_addProduct">Add Product Listing</a></li>
+                                <li><a href="#" v-if="isAdmin === true">Product Listing</a></li>
+                                <li><a href="#" v-if="isAdmin === true">Profile</a></li>
+
                                 <li class="divider"></li>
-                                <li><a href="#">Separated link</a></li>
                                 <li><a href="#" v-on:click="getSignOut()">Logout</a></li>
                             </ul>
                         </li>
-                        <li><a href="#" role="button" data-toggle="modal" data-target="#login-modal" v-if="isLogin === false">Login/Register</a></li>
+                        <li><a href="#" role="button" data-toggle="modal" data-target="#login_access" v-if="isLogin === false" >Login/Register</a></li>
                         <li><a href="#" data-toggle="modal" data-target="#modalCart"></a></li>
                     </ul>
 
@@ -88,14 +93,13 @@
         </nav>
 
 
-
         <!-- Modal: Login -->
-        <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal fade" id="login_access" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header" align="center">
                         <img class="img-circle" id="img_logo" src="https://gameguardian.net/forum/uploads/monthly_2016_12/logo.png.d062a4b9c2722d00633da84c1c60d492.png">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close" id="close_form" data-dismiss="modal" aria-label="Close">
                             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                         </button>
                     </div>
@@ -104,13 +108,13 @@
                     <div id="div-forms">
                     
                         <!-- Begin # Login Form -->
-                        <form id="login-form">
+                        <form id="login-form" >
                             <div class="modal-body">
                                 <div id="div-login-msg">
                                     <div id="icon-login-msg" class="glyphicon glyphicon-chevron-right"></div>
                                     <span id="text-login-msg">Type your username and password.</span>
                                 </div>
-                                <input v-model="email" id="login_username" class="form-control" type="text" placeholder="Username (type ERROR for error effect)" required>
+                                <input v-model="email" id="login_email" class="form-control" type="text" placeholder="Email" required>
                                 <input v-model="password" id="login_password" class="form-control" type="password" placeholder="Password" required>
                                 <div class="checkbox">
                                     <label>
@@ -120,19 +124,20 @@
                             </div>
                             <div class="modal-footer">
                                 <div>
-                                    <button v-on:click="getUser()" type="submit" class="btn btn-primary btn-lg btn-block">Login</button>
+                                    <button v-on:click="getSignIn()" type="submit" class="btn btn-primary btn-lg btn-block">Login</button>
                                 </div>
                                 <div>
-                                    <button id="login_lost_btn" type="button" class="btn btn-link">Lost Password?</button>
-                                    <button id="login_register_btn" type="button" class="btn btn-link">Register</button>
+                                    <!-- <button id="login_lost_btn" type="button" class="btn btn-link" data-toggle="modal" data-target="#lost-form">Lost Password?</button> -->
+                                    <button id="login_register_btn" type="button" class="btn btn-link" data-toggle="modal" data-target="#regis_access">Register</button>
                                 </div>
                             </div>
                         </form>
                         <!-- End # Login Form -->
                         
                         <!-- Begin | Lost Password Form -->
-                        <form id="lost-form" style="display:none;">
+                        <!-- <form id="lost-form" style="display:none;">
                             <div class="modal-body">
+                                <a href="">ini lost password</a>
                                 <div id="div-lost-msg">
                                     <div id="icon-lost-msg" class="glyphicon glyphicon-chevron-right"></div>
                                     <span id="text-lost-msg">Type your e-mail.</span>
@@ -148,27 +153,50 @@
                                     <button id="lost_register_btn" type="button" class="btn btn-link">Register</button>
                                 </div>
                             </div>
-                        </form>
+                        </form> -->
                         <!-- End | Lost Password Form -->
                         
+                    </div>
+                    <!-- End # DIV Form -->
+                    
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal: Login -->
+        <div class="modal fade" id="regis_access" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" align="center">
+                        <img class="img-circle" id="img_logo" src="https://gameguardian.net/forum/uploads/monthly_2016_12/logo.png.d062a4b9c2722d00633da84c1c60d492.png">
+                        <button type="button" class="close" id="close_regis" data-dismiss="modal" aria-label="Close">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                    
+                    <!-- Begin # DIV Form -->
+                    <div id="div-forms">            
                         <!-- Begin | Register Form -->
-                        <form id="register-form" style="display:none;">
+                        <form id="register-form" >
                             <div class="modal-body">
                                 <div id="div-register-msg">
                                     <div id="icon-register-msg" class="glyphicon glyphicon-chevron-right"></div>
                                     <span id="text-register-msg">Register an account.</span>
                                 </div>
-                                <input id="register_username" class="form-control" type="text" placeholder="Username (type ERROR for error effect)" required>
-                                <input id="register_email" class="form-control" type="text" placeholder="E-Mail" required>
-                                <input id="register_password" class="form-control" type="password" placeholder="Password" required>
+                                <input v-model="name" id="regis_name" class="form-control" type="text" placeholder="Name" required>
+                                <input v-model="username" id="regis_username" class="form-control" type="text" placeholder="Username" required>
+                                <input v-model="email" id="regis_email" class="form-control" type="text" placeholder="Email" required>
+                                <input v-model="password" id="regis_password" class="form-control" type="password" placeholder="Password" required>
+                                <input v-model="role" id="regis_role" class="form-control" type="text" placeholder="User or Merchant" required>
                             </div>
                             <div class="modal-footer">
                                 <div>
-                                    <button type="submit" class="btn btn-primary btn-lg btn-block">Register</button>
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block" v-on:click="getSignUp()">Register</button>
                                 </div>
                                 <div>
                                     <button id="register_login_btn" type="button" class="btn btn-link">Log In</button>
-                                    <button id="register_lost_btn" type="button" class="btn btn-link">Lost Password?</button>
+                                    <!-- <button id="register_lost_btn" type="button" class="btn btn-link">Lost Password?</button> -->
                                 </div>
                             </div>
                         </form>
@@ -180,225 +208,288 @@
                 </div>
             </div>
         </div>
-    
 
-    <!-- category  -->
 
-    <div class="container">
-        <div class="row">
+        <!-- Modal Add Product -->
 
-        <div class="btn-group btn-group-justified">
-            <a href="#" class="btn btn-info cat"><h4><i class="fa fa-bars" aria-hidden="true"></i> CATEGORIES</h4></a>
-            <a href="#" class="btn btn-default"><h4>ABOUT</h4></a>
-            <a href="#" class="btn btn-default"><h4>RETURNS</h4></a>
-            <a href="#" class="btn btn-default"><h4>DELIVERY</h4></a>
-        </div>
+
+        <!-- line modal -->
+        <div class="modal fade" id="modal_addProduct" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <h3 class="modal-title" id="lineModalLabel">My Modal</h3>
+                </div>
+                <div class="modal-body">
+                    
+                    <!-- content goes here -->
+                    <form>
+                        <div class="form-group">
+                        <label for="exampleInputEmail1">Name</label>
+                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                        </div>
+                        <div class="form-group">
+                        <label for="exampleInputPassword1">Category</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                        </div>
+                        <div class="form-group">
+                        <label for="exampleInputPassword1">Detail</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                        </div>
+                        <div class="form-group">
+                        <label for="exampleInputFile">Upload Image</label>
+                        <input type="file" id="exampleInputFile">
+                        <p class="help-block">Example block-level help text here.</p>
+                        </div>
+                        <!-- <div class="checkbox">
+                        <label>
+                            <input type="checkbox"> Check me out
+                        </label>
+                        </div> -->
+                        <button type="submit" class="btn btn-default">Submit</button>
+                    </form>
         
-        <!-- CATEGORY -->
-        <div class="col-md-12 shop-tab-container">
-            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 shop-tab-menu">
-                <div class="list-group">
-                    <div v-for="category in categories" >
-                        <a href="#" class="list-group-item">
-                        <h4><i class="fa fa-chevron-right" aria-hidden="true"></i>{{ category.name }}</h4>
-                        </a>
-                    </div>
-                        <a href="#" class="list-group-item">
-                        <h4><i class="fa fa-chevron-right" aria-hidden="true"></i> All Categories</h4>
-                        </a>
                 </div>
-            </div>
-            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 shop-tab">
-            
-            <div class="shop-tab-content active">
-                
-                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-            
-                <ol class="carousel-indicators">
-                    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-                    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
-                    <li data-target="#carousel-example-generic" data-slide-to="2"></li>
-                </ol>
-    
-                <div class="carousel-inner">
-                    <div class="item active">
-                    <img src="http://placehold.it/800x400" alt="...">
-                    <div class="carousel-caption">
-                        <h2>Heading</h2>
-                    </div>
-                    </div>
-                    <div class="item">
-                    <img src="http://placehold.it/800x400" alt="...">
-                    <div class="carousel-caption">
-                        <h2>Heading</h2>
-                    </div>
-                    </div>
-                    <div class="item">
-                    <img src="http://placehold.it/800x400" alt="...">
-                    <div class="carousel-caption">
-                        <h2>Heading</h2>
-                    </div>
-                    </div>
-                </div>
-    
-                <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
-                    <span class="glyphicon glyphicon-chevron-left"></span>
-                </a>
-                <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
-                    <span class="glyphicon glyphicon-chevron-right"></span>
-                </a>
-                </div>
-    
-            </div>
-                
-        </div>
-    </div>
-
-
-    <!-- ========================== -->
-    <!-- product  -->
-    <div class="space-medium">
-        <div class="container" >
-            <div class="row">
-                <div v-for="product in items">
-                    <div v-on:click="getItem(product._id)">
-                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12" >
-                            <div class="showcase-block">
-                                <div>{{ product.name }}</div>
-                                <div class="display-logo ">
-                                    <a href="#"> <img src="https://easetemplate.com/free-website-templates/mobistore/images/nexus.png" alt=""></a>
-                                </div>
-                                <div class="showcase-img">
-                                    <a href="#"> <img src="https://easetemplate.com/free-website-templates/mobistore/images/display_img_1.png" alt=""></a>
-                                </div>
-                                <div>Rp {{ product.price }}</div>
-                                <p>{{ product.description }}</p>
-                                    <div class="space-ten"></div>
-                                    <div class="btn-ground text-center">
-                                        <button type="button" class="btn btn-primary" href="#" role="button" data-toggle="modal" data-target="#modalCart"><i class="fa fa-shopping-cart"></i> Add To Cart</button>
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#product_view"><i class="fa fa-search"></i> Quick View</button>
-                                    </div>
-                                <div class="space-ten"></div>
-                            </div>
+                <div class="modal-footer">
+                    <div class="btn-group btn-group-justified" role="group" aria-label="group button">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-default" data-dismiss="modal"  role="button">Close</button>
+                        </div>
+                        <div class="btn-group btn-delete hidden" role="group">
+                            <button type="button" id="delImage" class="btn btn-default btn-hover-red" data-dismiss="modal"  role="button">Delete</button>
+                        </div>
+                        <div class="btn-group" role="group">
+                            <button type="button" id="saveImage" class="btn btn-default btn-hover-green" data-action="save" role="button">Save</button>
                         </div>
                     </div>
                 </div>
             </div>
+            </div>
         </div>
-    </div> 
 
-    <!-- ========================== -->
-        <!-- Modal: modalCart -->
+
+
+        <!-- category  -->
+
+        <div class="container">
+            <div class="row">
+
+                <div class="btn-group btn-group-justified">
+                    <a href="#" class="btn btn-info cat"><h4><i class="fa fa-bars" aria-hidden="true"></i> CATEGORIES</h4></a>
+                    <a href="#" class="btn btn-default" v-on:click="aboutClick()"><h4>ABOUT</h4></a>
+                    <a href="#" class="btn btn-default"><h4>RETURNS</h4></a>
+                    <a href="#" class="btn btn-default"><h4>DELIVERY</h4></a>
+                </div>
+                
+                <!-- CATEGORY -->
+                <div class="col-md-12 shop-tab-container">
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 shop-tab-menu">
+                        <div class="list-group">
+                            <div v-for="category in categories" >
+                                <a href="#" class="list-group-item">
+                                <h4><i class="fa fa-chevron-right" aria-hidden="true"></i>{{ category.name }}</h4>
+                                </a>
+                            </div>
+                                <a href="#" class="list-group-item">
+                                <h4><i class="fa fa-chevron-right" aria-hidden="true"></i> All Categories</h4>
+                                </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 shop-tab">
+                    
+                    <div class="shop-tab-content active">
+                        
+                        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                    
+                        <ol class="carousel-indicators">
+                            <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                            <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                            <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+                        </ol>
+
+                        <div class="carousel-inner">
+                            <div class="item active">
+                            <img src="http://placehold.it/800x400" alt="...">
+                            <div class="carousel-caption">
+                                <h2>Heading</h2>
+                            </div>
+                            </div>
+                            <div class="item">
+                            <img src="http://placehold.it/800x400" alt="...">
+                            <div class="carousel-caption">
+                                <h2>Heading</h2>
+                            </div>
+                            </div>
+                            <div class="item">
+                            <img src="http://placehold.it/800x400" alt="...">
+                            <div class="carousel-caption">
+                                <h2>Heading</h2>
+                            </div>
+                            </div>
+                        </div>
+
+                        <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
+                            <span class="glyphicon glyphicon-chevron-left"></span>
+                        </a>
+                        <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                        </a>
+                        </div>
+
+                    </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+
+        <!-- ========================== -->
+        <!-- product  -->
+        <div class="space-medium">
+            <div class="container" >
+                <div class="row">
+                    <div v-for="product in products">
+                        <!-- <div v-on:click="getItem(product._id)"> -->
+                            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12" >
+                                <div class="showcase-block">
+                                    <div>{{ product.name }}</div>
+                                    <div class="display-logo ">
+                                        <a href="#"> <img src="https://easetemplate.com/free-website-templates/mobistore/images/nexus.png" alt=""></a>
+                                    </div>
+                                    <div class="showcase-img">
+                                        <a href="#"> <img src="https://easetemplate.com/free-website-templates/mobistore/images/display_img_1.png" alt=""></a>
+                                    </div>
+                                    <div>Rp {{ product.price }}</div>
+                                    <p>{{ product.description }}</p>
+                                        <div class="space-ten"></div>
+                                        <div class="btn-ground text-center">
+                                            <button type="button" class="btn btn-primary" href="#" role="button" data-toggle="modal" data-target="#modalCart" v-on:click="addToCart(product)" ><i class="fa fa-shopping-cart"></i> Add To Cart</button>
+                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#product_view"><i class="fa fa-search"></i> Quick View</button>
+                                        </div>
+                                    <div class="space-ten"></div>
+                                </div>
+                            </div>
+                        <!-- </div> -->
+                    </div>
+                </div>
+            </div>
+        </div> 
+
+        <!-- ========================== -->
+            <!-- Modal: modalCart -->
         <div class="modal fade" id="modalCart" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-            <!--Header-->
-            <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel">Your cart</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <!--Body-->
-            <div class="modal-body">
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <!--Header-->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Your cart</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <!--Body-->
+                <div class="modal-body">
 
-                <table class="table table-hover">
-                <thead>
-                    <tr>
-                    <th>#</th>
-                    <th>Product name</th>
-                    <th>Price</th>
-                    <th>Remove</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                    <th scope="row">1</th>
-                    <td>Product 1</td>
-                    <td>100$</td>
-                    <td><a><i class="fa fa-remove"></i></a></td>
-                    </tr>
-                    <tr>
-                    <th scope="row">2</th>
-                    <td>Product 2</td>
-                    <td>100$</td>
-                    <td><a><i class="fa fa-remove"></i></a></td>
-                    </tr>
-                </tbody>
-                </table>
+                    <table class="table table-hover">
+                    <thead>
+                        <tr>
+                        <th>#</th>
+                        <th>Product name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <tr v-for="item in cartItems">
+                            <th scope="row" id="cartItems_length">1</th>
+                            <td></td>
+                            <td v-if="item">{{ item.name }}</td>
+                            <!-- <td><input type="text" name="" id=""> Quantity</td> -->
+                            <td v-if="item">{{ item.totalPrice }}</td>
+                            <td v-if="item">{{ item.quantity }}</td>
+                            <td><a href="#"><i class="fa fa-remove"></i>Delete</a></td>
+                        </tr>
+                        
+                    </tbody>
+                    </table>
 
-            </div>
-            <!--Footer-->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-                <button class="btn btn-primary">Checkout</button>
-            </div>
+                </div>
+                <!--Footer-->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                    <button class="btn btn-primary">Checkout</button>
+                </div>
+                </div>
             </div>
         </div>
-        </div>
 
 
 
-    
-    <!-- ========================== -->
-    <!-- Footer -->
-    <div class="footer">
+        
+        <!-- ========================== -->
+        <!-- Footer -->
+        <div class="footer">
             <div class="container">
-               <div class="row">
-                   <div class="col-md-2">
+                <div class="row">
+                    <div class="col-md-2">
                         <ul class="clear">
-                           <li><a target="_self" href="" data-i18n="media" module-id="common">Media</a></li>
-                           <li><a target="_self" href="" data-i18n="careers" module-id="common">Careers</a></li>
-                           <li><a target="_self" href="" data-i18n="about_airtel" module-id="common">About Airtel</a></li>
-                           <li><a target="_self" href="" data-i18n="brand" module-id="common">Brand</a></li>
-                           <li><a target="_self" href="">Press Release</a></li>
-                           <li><a target="_self" href="">Investor Support</a></li>
-                           <li><a target="_blank" href="">All Plans</a></li>
-                       </ul>
-                   </div>
-                   <div class="col-md-2">
-                       <ul class="clear">
-                           <li><a target="_self" href="" data-i18n="media" module-id="common">Media</a></li>
-                           <li><a target="_self" href="" data-i18n="careers" module-id="common">Careers</a></li>
-                           <li><a target="_self" href="" data-i18n="about_airtel" module-id="common">About Airtel</a></li>
-                           <li><a target="_self" href="" data-i18n="brand" module-id="common">Brand</a></li>
-                           <li><a target="_self" href="">Press Release</a></li>
-                           <li><a target="_self" href="">Investor Support</a></li>
-                           <li><a target="_blank" href="">All Plans</a></li>
-                       </ul>
-                   </div>
-                   <div class="col-md-2">
-                       <ul class="clear">
-                           <li><a target="_self" href="" data-i18n="media" module-id="common">Media</a></li>
-                           <li><a target="_self" href="" data-i18n="careers" module-id="common">Careers</a></li>
-                           <li><a target="_self" href="" data-i18n="about_airtel" module-id="common">About Airtel</a></li>
-                           <li><a target="_self" href="" data-i18n="brand" module-id="common">Brand</a></li>
-                           <li><a target="_self" href="">Press Release</a></li>
-                           <li><a target="_self" href="">Investor Support</a></li>
-                           <li><a target="_blank" href="">All Plans</a></li>
-                       </ul>
-                   </div>
-                   <div class="col-md-2">
-                       <ul class="clear">
-                           <li><a target="_self" href="" data-i18n="media" module-id="common">Media</a></li>
-                           <li><a target="_self" href="" data-i18n="careers" module-id="common">Careers</a></li>
-                           <li><a target="_self" href="" data-i18n="about_airtel" module-id="common">About Airtel</a></li>
-                           <li><a target="_self" href="" data-i18n="brand" module-id="common">Brand</a></li>
-                           <li><a target="_self" href="">Press Release</a></li>
-                           <li><a target="_self" href="">Investor Support</a></li>
-                           <li><a target="_blank" href="">All Plans</a></li>
-                       </ul>
-                   </div>
-                   <div class="col-md-4">
-                       <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
+                            <li><a target="_self" href="" data-i18n="media" module-id="common">Media</a></li>
+                            <li><a target="_self" href="" data-i18n="careers" module-id="common">Careers</a></li>
+                            <li><a target="_self" href="" data-i18n="about_airtel" module-id="common">About Airtel</a></li>
+                            <li><a target="_self" href="" data-i18n="brand" module-id="common">Brand</a></li>
+                            <li><a target="_self" href="">Press Release</a></li>
+                            <li><a target="_self" href="">Investor Support</a></li>
+                            <li><a target="_blank" href="">All Plans</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-2">
+                        <ul class="clear">
+                            <li><a target="_self" href="" data-i18n="media" module-id="common">Media</a></li>
+                            <li><a target="_self" href="" data-i18n="careers" module-id="common">Careers</a></li>
+                            <li><a target="_self" href="" data-i18n="about_airtel" module-id="common">About Airtel</a></li>
+                            <li><a target="_self" href="" data-i18n="brand" module-id="common">Brand</a></li>
+                            <li><a target="_self" href="">Press Release</a></li>
+                            <li><a target="_self" href="">Investor Support</a></li>
+                            <li><a target="_blank" href="">All Plans</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-2">
+                        <ul class="clear">
+                            <li><a target="_self" href="" data-i18n="media" module-id="common">Media</a></li>
+                            <li><a target="_self" href="" data-i18n="careers" module-id="common">Careers</a></li>
+                            <li><a target="_self" href="" data-i18n="about_airtel" module-id="common">About Airtel</a></li>
+                            <li><a target="_self" href="" data-i18n="brand" module-id="common">Brand</a></li>
+                            <li><a target="_self" href="">Press Release</a></li>
+                            <li><a target="_self" href="">Investor Support</a></li>
+                            <li><a target="_blank" href="">All Plans</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-2">
+                        <ul class="clear">
+                            <li><a target="_self" href="" data-i18n="media" module-id="common">Media</a></li>
+                            <li><a target="_self" href="" data-i18n="careers" module-id="common">Careers</a></li>
+                            <li><a target="_self" href="" data-i18n="about_airtel" module-id="common">About Airtel</a></li>
+                            <li><a target="_self" href="" data-i18n="brand" module-id="common">Brand</a></li>
+                            <li><a target="_self" href="">Press Release</a></li>
+                            <li><a target="_self" href="">Investor Support</a></li>
+                            <li><a target="_blank" href="">All Plans</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
                         industry's standard dummy text ever since the 1500s,</p>
                         <p> when an unknown printer took a galley of type and scrambled
-                         it to make a type specimen book.</p>
-                         
-                   </div>
-               </div>
-           </div>
+                            it to make a type specimen book.</p>
+                            
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -409,46 +500,52 @@
         var app = new Vue ({
             el: '#app',
             data: {
+                id: '',
                 name: '',
-                items: [],
+                username: '',
+                email: '',
+                password: '',
+                role: '',
+                products: [],
                 selected_product: '',
                 categories: [],
                 dummyCategories: [],
                 selected_product: '',
                 search: '',
+                quantity: '',
+                subTotal: '',
+                ptice: '',
+                cartItems: [],
+                cartItems_length,
 
-                email: '',
-                password: '',
+                isProdList: '',
+                
 
-                isLogin: false,
+
+                isLogin: '',
                 isProductPage: false,
                 isAdmin: false,
-                isUser: false
+                isUser: '',
+                isAdmin: '',
             },
             methods: {
-                getAllItems: function() {
+
+                getAllproducts: function() {
                     axios({
                             method: 'GET',
                             url: 'http://localhost:3000/product'
                         })
                         .then(products => {
-                            let result = products.data.product
-                            this.dummyCategories = result
-                            let count = 0
-                            
-                            result.forEach( indexResult => {
-                                if ( count < 12 ) {
-                                    this.items.push(indexResult)
-                                }
-                                count++
-                            })   
+                            this.dummyCategories = products.data.product
+                            this.products = products.data.product
                         })
                         .catch(err => {
                             console.log(err)
-                            console.log('ini error get all items');
+                            console.log('ini error get all products');
                             
                     })
                 },
+
                 getItem: function(id) {
                     axios({
                             method: 'GET',
@@ -465,6 +562,7 @@
                             
                     })
                 },
+
                 getCategory: function() {
                     axios({
                             method: 'GET',
@@ -487,7 +585,8 @@
                             
                     })
                 },
-                getUser: function() {
+
+                getSignIn: function() {
                     axios({
                         method: 'POST',
                         url: `http://localhost:3000/user/signIn`,
@@ -500,7 +599,17 @@
                         console.log(response);
                         localStorage.setItem('email', response.data.email)
                         localStorage.setItem('token', response.data.token)
+                        localStorage.setItem('role', response.data.role)
+                        this.isToken = response.data.token
                         this.isLogin = true
+                        $('#login_access').modal('toggle');
+                        if ( response.data.role === 'user' ) {
+                            this.isUser = true
+                            this.isAdmin = false
+                        } else {
+                            this.isUser = false
+                            this.isAdmin = true
+                        }
                     })
                     .catch(err => {
                         console.log(err)
@@ -508,25 +617,41 @@
                             
                     })
                 },
+
                 getSignUp: function() {
                     axios({
                         method: 'POST',
-                        url: `http://localhost:3000/user`,
+                        url: `http://localhost:3000/user/signUp`,
                         data: {
+                            name: this.name,
+                            username: this.username,
                             email: this.email,
-                            password: this.password
+                            password: this.password,
+                            role: this.role,
                         }
                     })
                     .then(response => {
                         console.log(response);
                         localStorage.setItem('email', response.data.email)
                         localStorage.setItem('token', response.data.token)
+                        localStorage.setItem('role', response.data.role)
+                        this.isLogin = true
+                        $('#regis_access').modal('toggle');
+                        $('#login_access').modal('toggle');
+                        if ( response.data.role === 'user' ) {
+                            this.isUser = true
+                            this.isAdmin = false
+                        } else {
+                            this.isUser = false
+                            this.isAdmin = true
+                        }
                     })
                     .catch(err => {
                         console.log(err)
                         console.log('ini error get signUp');
                     })
                 },
+
                 getSignOut: function() {
                     axios({
                         method: 'POST',
@@ -537,50 +662,147 @@
                         }
                     })
                     .then(response => {
-                        console.log(response);
+                        console.log('ini response email', response);
                         localStorage.removeItem('email', response.data.email)
                         localStorage.removeItem('token', response.data.token)
+                        localStorage.removeItem('role', response.data.role)
                         this.isLogin = false
                     })
                     .catch(err => {
                         console.log(err)
                         console.log('ini error get signout');
                     })
-                }
+                },
+
+                statusLogin: function() {
+                    if ( localStorage.getItem('token') ) {
+                        this.isLogin = true
+                    } else {
+                        this.isLogin = false
+                    }
+                },
+
+                addToCart: function(product) {
+                    // console.log(this.cartItems.length);
+                    if(this.cartItems.length > 0){
+                        for(i in this.cartItems){
+                            if (this.cartItems[i].id === product._id) {
+                                // console.log('ini cartItems id', this.cartItems[i]);
+                                console.log('ini product id', product._id);
+                                this.cartItems[i].name = product.name
+                                this.cartItems[i].price = product.price
+                                this.cartItems[i].totalPrice += product.price
+                                this.cartItems[i].quantity++
+                            } else if (this.cartItems[i].id !== product._id ){
+                                // console.log('ini cartItems id 2', this.cartItems[i].id);
+                                console.log('ini product id 2', product._id);
+                                let dataCart = {
+                                    id: product._id,
+                                    name: product.name,
+                                    price: product.price,
+                                    totalPrice: product.price,
+                                    quantity: 1
+                                }
+                                // console.log(product);
+                                console.log('ini datacart',dataCart);
+                                this.cartItems.push(dataCart)
+                                // console.log(this.cartItems);
+                            }
+                        }
+                    } else {
+                        let dataCart = {
+                            id: product._id,
+                            name: product.name,
+                            price: product.price,
+                            totalPrice: product.price,
+                            quantity: 1
+                        }
+                        this.cartItems.push(dataCart)
+                    }
+                    this.product
+                    let checkEmail = localStorage.getItem("email")
+                    // console.log('ini checkemail',checkEmail);
+                    axios({
+                        method: 'PUT',
+                        url: `http://localhost:3000/user/email/${checkEmail}`,
+                        headers: {
+                            email: checkEmail,
+                            carts: JSON.stringify(this.cartItems)
+                        }
+                    })
+                    .then((response) => {
+                        // this.cartItems = []
+                        console.log('ini response axios', response);
+                        console.log("ini local storage email", checkEmail)
+                        this.cartItems = response.data.carts
+                    })
+                    .catch((err) => {
+                        console.log('ini error add to cart axios',err);
+                    })
+                },
+
+                isLoginForm: function() {
+                    console.log(this.isLoginForm);
+                    this.isLoginForm = true
+                    console.log(this.isLoginForm);
+                    
+                },
+
+                addProductListing: function() {
+                    
+                },
+
+                getProductListing: function() {
+                    
+                },
+
+                getAdminPage: function() {
+
+                },
+                
+                checkOut: function() {
+                    
+                },
+
+                roleLogger: function() {
+                    if ( localStorage.role === 'user') {
+                        this.isUser = true
+                        this.isAdmin = false
+                        this.isProdList = false
+                    } else if ( localStorage.role === 'merchant') {
+                        this.isUser = false
+                        this.isAdmin = true
+                        this.isProdList = true
+                    } else if ( this.getSignOut() ) {
+                        this.isUser = ''
+                        this.isAdmin = ''
+                        this.isProdList = ''
+                    }
+                },
             },
             computed: {
 
             },
             created: function() {
-                this.getAllItems()
+                this.getAllproducts()
                 // this.getItem()
                 this.getCategory()
-                // this.getUser()
+                // this.getSignIn()
+                this.statusLogin()
+                this.roleLogger()
             },
             watch: {
                 search: function(searchValue) {
                     if ( searchValue === '') {
-                        this.items = this.dummyCategories
+                        this.products = this.dummyCategories
                     } else {
-                        this.items = this.dummyCategories.filter(product => product.name.includes(searchValue))
+                        this.products = this.dummyCategories.filter(product => product.name.includes(searchValue))
                     }
                 }
-                // searchbyname: function (value) {
-                // axios({
-                //     method: 'GET',
-                //     url: `http://localhost:3000/product/findByName?product=${value}`,
-                // })
-                // .then((response) => {
-                //     this.boxProduct = true
-                //     this.myMarket = false
-                //     this.products = response.data.products
-                // }).catch((err) => {
-                //     console.log(err.response)
-                // })
-                // }
             }
         })
         
     </script>
+    
 </body>
 </html>

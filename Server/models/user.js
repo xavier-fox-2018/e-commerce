@@ -2,6 +2,12 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const userSchema = new Schema({
+    name: {
+        type: String
+    },
+    username: {
+        type: String
+    },
     email: {
         type: String
     },
@@ -10,8 +16,22 @@ const userSchema = new Schema({
     },
     role: {
         type: String,
-        default: 'User'
-    }
+    },
+    carts: {
+        type: String,
+        default: []
+    },
+    transacions: {
+        type: String
+    },
+    profile: {
+        type: String,
+        default: []
+    },
+    products: {
+        type: String,
+        default: []
+    },
 }, {
     timestamps : true
 })
