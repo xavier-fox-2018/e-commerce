@@ -233,7 +233,7 @@ Vue.component('admin-menu', {
     data : function(){
         return {
             config : {
-                port : `http://localhost:3000`
+                port : `https://dealdaddy-server.fmurtadho.com`
             },
             transactions : '',
             transactiondetail : '',
