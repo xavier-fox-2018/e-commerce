@@ -18,7 +18,10 @@ class CategoryController {
     }
 
     static getAll(req, res) {
-        Category.find({isDeleted: false}).populate('itemList')
+        Category.find({isDeleted: false}).populate({
+            path: 'itemList',
+            match: {isDeleted: false}
+        })
             .then(function(categories) {
                 res.status(200).json(categories);
             })
@@ -29,7 +32,10 @@ class CategoryController {
     }
 
     static getOne(req, res) {
-        Category.findById(req.params.id).populate('itemList')
+        Category.findById(req.params.id).populate({
+            path: 'itemList',
+            match: {isDeleted: false}
+        })
             .then(function(category) {
                 res.status(200).json(category);
             })
