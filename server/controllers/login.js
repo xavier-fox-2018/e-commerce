@@ -48,7 +48,13 @@ module.exports = {
                         _id: user._id,
                         first_name: user.first_name,
                         last_name: user.last_name,
-                        email: user.email
+                        email: user.email,
+                        shop_list: user.shop_list,
+                        phone: user.phone,
+                        address: user.address,
+                        image: user.image,
+                        money: user.money,
+                        transactions: user.transactions
                     })
                     res.status(200).json({
                         message: 'Logging in successfully',

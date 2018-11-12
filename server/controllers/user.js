@@ -72,6 +72,20 @@ class Controller {
             })
     }
 
+    static getUserData(req, res) {
+        User.findOne({
+            _id: req.data._id
+        })
+            .populate('transactions')
+            .populate('shop_list')
+            .then(user => {
+                res.status(200).json({
+                    message: 'User data',
+                    data: user
+                })
+            })
+    }
+
     // static remove(req,res) {
     //     User.deleteOne({_id: req.params.id})
     //     .then(() => {

@@ -63,12 +63,19 @@
                         <li style="margin-left:10%;">
                             <div class="dropdown mr-1" >
                                 <button type="button" class="btn btn-primary dropdown-toggle" id="dropdownMenuOffset" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-offset="10,20">
-                                  User
+                                  menu
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuOffset">
-                                  <a class="dropdown-item" href="">Shop</a>
-                                  <a class="dropdown-item" href="">Transaction History</a>
-                                  <a class="dropdown-item" href="#">Profile</a>
+                                    
+                                    <h5 class="dropdown-item" href="" data-toggle="modal" data-target="#transactionModal">Home</h5>
+                                    <h5 class="dropdown-item" href="" data-toggle="modal" data-target="#transactionModal">Transaction History</h5>
+                                    
+
+                                    <h5 class="dropdown-item" href="">Profile</h5>
+                                    <div class="dropdown-divider"></div>
+                                    <h5 class="dropdown-item " href="" >Shop</h5>
+                                    <h6 v-on:click="getShopData(shop)" v-for="shop in user_data.shop_list" class="dropdown-item">{{shop.name}}</p>
+                                  
                                 </div>
                             </div>
                         </li>
@@ -92,9 +99,9 @@
                             <img class="card-img-top item-cover-thumbnail" v-bind:src="item.image" alt="Card image cap">
                             <div class="card-body">
                                 
-                                    <h5 class="card-title">{{item.name}}</h5>
+                                <h5 class="card-title">{{item.name}}</h5>
                                     
-                               <!-- <hr> -->
+                                <!-- <hr> -->
                                 <!-- <p class="card-text">{{item.description}}</p> -->
                                 <h4 class="card-text" pattern="(d{3})([.])(d{2})">Rp {{item.price}}</h4>
                                 <!-- <br> -->
@@ -111,9 +118,15 @@
 
                 <div v-if="at_shop_page"  class="container-fluid">
                     <!-- item list on shop page -->
-                    <div>
-                            Shopee Name
+                    <div class="row">
+                        <div class="card transparent-bg">
+                            <div class="card-body">
+                                <h1>
+                                    {{shop_data.name}}
+                                </h1>
+                            </div>
                         </div>
+                    </div>
                     <div class="row rowy justify-content-around">
                         
 
@@ -207,48 +220,117 @@
 
                 <!-- cart modal -->
                 <div class="modal fade" id="cartModal" tabindex="-1" role="dialog" aria-labelledby="cartModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                            <div class="modal-content">
-                                <div class="modal-body item-card-margin">
-                                    <div class="row item-card-margin justify-content-between">
-                                        
-                                        <h2 ><span class="fa fa-cart-plus" style="color: rgb(61, 99, 61);"></span> item list</h2>
-                                        
-                                    </div>
-                                    <hr>
-                                    <div v-if="cart_item_list.length == 0">
-                                        <h3 style="color:rgb(150, 165, 148); text-align: center; margin: 90px;">You haven't added any item</h3>
-                                    </div>
-                                    <div v-for="item_single in cart_item_list">
-                                        <div class="card">
-                                            <div class="card-body row justify-content-between">
-                                                
-                                                <p style="font-size: 20px; padding-left: 20px;" class="align-self-start">{{item_single._id.name}}</p>
-                                                <div class="align-self-end">
-                                                    <span style="font-size:20px; color: black">&nbsp;Rp {{item_single._id.price}}&nbsp;</span>
-                                                    <button v-on:click="minusToCart(item_single)" class="btn btn-info"><span class="fa fa-minus"></span></button>
-                                                    <span style="font-size:20px; color: black;">&nbsp;{{item_single.quantity}}&nbsp;</span>
-                                                    <button v-on:click="plusToCart(item_single)" class="btn btn-info"><span class="fa fa-plus "></span></button>
-                                                    <button v-on:click="removingFromCart(item_single)" class="btn btn-danger" style="border-radius: 50%;"><span class="fa fa-times "></span></button>
-                                                     
-                                                </div>
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-body item-card-margin">
+                                <div class="row item-card-margin justify-content-between">
+                                    
+                                    <h2 ><span class="fa fa-cart-plus" style="color: rgb(61, 99, 61);"></span> item list</h2>
+                                    
+                                </div>
+                                <hr>
+                                <div v-if="cart_item_list.length == 0">
+                                    <h3 style="color:rgb(150, 165, 148); text-align: center; margin: 90px;">You haven't added any item</h3>
+                                </div>
+                                <div v-for="item_single in cart_item_list">
+                                    <div class="card">
+                                        <div class="card-body row justify-content-between">
                                             
+                                            <p style="font-size: 20px; padding-left: 20px;" class="align-self-start">{{item_single._id.name}}</p>
+                                            <div class="align-self-end">
+                                                <span style="font-size:20px; color: black">&nbsp;Rp {{item_single._id.price}}&nbsp;</span>
+                                                <button v-on:click="minusToCart(item_single)" class="btn btn-info"><span class="fa fa-minus"></span></button>
+                                                <span style="font-size:20px; color: black;">&nbsp;{{item_single.quantity}}&nbsp;</span>
+                                                <button v-on:click="plusToCart(item_single)" class="btn btn-info"><span class="fa fa-plus "></span></button>
+                                                <button v-on:click="removingFromCart(item_single)" class="btn btn-danger" style="border-radius: 50%;"><span class="fa fa-times "></span></button>
+                                                    
                                             </div>
+                                        
                                         </div>
                                     </div>
-                                    
-                                    <hr>
-                                    <h3 style="float:right;">total: Rp {{cart_total}}</h3>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button v-on:click="removeCartDBCompletely()" type="button" class="btn btn-danger" >Remove Cart <span class="fa fa-trash"></span></button>
-                                    <button v-on:click="createTransaction()"  class="btn btn-success">Pay <span class="fa fa-money-bill"></span></button>
-                                </div>
+                                
+                                <hr>
+                                <h3 style="float:right;">total: Rp {{cart_total}}</h3>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button v-on:click="removeCartDBCompletely()" type="button" class="btn btn-danger" >Remove Cart <span class="fa fa-trash"></span></button>
+                                <button v-on:click="createTransaction()"  class="btn btn-success">Pay <span class="fa fa-money-bill"></span></button>
                             </div>
                         </div>
                     </div>
-                    <!-- end cart modal -->
+                </div>
+                <!-- end cart modal -->
+
+                <!-- transaction modal -->
+                <div class="modal fade" id="transactionModal" tabindex="-1" role="dialog" aria-labelledby="transactionModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-body item-card-margin">
+
+                                <div class="row item-card-margin justify-content-between">
+                                    
+                                    <h2 ><span class="fa fa-file" style="color: rgb(61, 99, 61);"></span> Transaction history</h2>
+                                    
+                                </div>
+                                <hr>
+                                <div v-if="user_data.transactions.length == 0">
+                                    <h3 style="color:rgb(150, 165, 148); text-align: center; margin: 90px;">You don't have any transaction yet</h3>
+                                </div>
+                                <div >
+                                    
+                                    <div class="align-self-end">
+                                        <table class="table">
+                                            <thead>
+                                                <tr >
+                                                    <th scope="col">#id</th>
+                                                    <th scope="col">date</th>
+                                                    <th scope="col">total</th>
+                                                    <th scope="col">detail</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody v-for="transaction in user_data.transactions">
+                                                <tr >
+                                                    <th scope="row"> {{transaction._id}} </th>
+                                                    <td> {{transaction.createdAt}} </td>
+                                                    <td>Rp {{transaction.total}} </td>
+                                                    <td>                                                
+                                                        <button v-on:click="getTransactionDetail(transaction)" class="btn btn-info" data-toggle="collapse" data-target="#collapseDetail" aria-expanded="false" aria-controls="collapseDetail"><span class="fa fa-search"></span></button>
+                                                    </td>
+                                                    
+                                                </tr>
+                                                
+                                            </tbody>
+                                            <div class="collapse" id="collapseDetail">
+                                                <div class="card card-body">
+                                                    <p>id :{{single_transaction_detail._id}}</p>
+                                                    <p>date:{{single_transaction_detail.createdAt}}</p>
+                                                    <p>date:{{single_transaction_detail}}</p>
+                                                    <p>item:</p>
+                                                    <div v-for="transaction_item in single_transaction_detail.item_list">
+                                                        <p >{{transaction_item.name}}</p>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </table>
+                                        
+                                            
+                                    </div>
+                                        
+                                   
+                                </div>
+                                
+                                <hr>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end transaction modal -->
 
             </div>
             <!-- page-wrapper -->
@@ -257,11 +339,6 @@
     </div>
     
     <script>
-
-        // $('.carousel').carousel({
-        //     interval: 2000
-        // })
-            
 
         Vue.component('my-modal', {
             data: function () {
@@ -298,7 +375,7 @@
             
             
             
-                `
+            `
         })
 
         // Vue.component()
@@ -312,6 +389,18 @@
                     email: '',
                     password: ''
                 },
+                user_data: {
+                    _id: '',
+                    first_name: '',
+                    last_name: '',
+                    email: '',
+                    shop_list: '',
+                    phone: '',
+                    address: '',
+                    image: '',
+                    money: '',
+                    transactions: ''
+                },
                 item: {
                     name: '',
                     image: '',
@@ -321,6 +410,19 @@
                     shop_id: '',
                     user_id: '',
                     stock: 0
+                },
+                single_transaction_detail: {
+                    name: '',
+                    item_list: [],
+                    total: 0
+                },
+                shop_data: {
+                    name: '',
+                    image: '',
+                    description: '',
+                    user_id: '',
+                    address: '',
+                    item_list: []
                 },
                 cart_item_list: [],
                 to_cart_list: [],
@@ -340,7 +442,7 @@
                 }
                 this.showAllitems()
                 this.getFromCartDB()
-                
+                this.getUserData()
             },
             watch: {
                 input_search: function(val) {
@@ -408,8 +510,6 @@
                         .catch(err => {
                             console.log('error di login', err);
                         })
-
-                    
                     
                 },
                 loggingOut() {
@@ -419,6 +519,20 @@
                     this.user.last_name = ''
                     this.user.email = '',
                     this.user.password = ''
+                },
+                getUserData() {
+                    axios({
+                        method: 'GET',
+                        url: 'http://localhost:3000/users/data',
+                        headers: {
+                            token: localStorage.getItem('token')
+                        }
+                    })
+                        .then(response => {
+                            this.user_data = response.data.data
+                            console.log('YOYOYOY', this.user_data);
+                            
+                        })
                 },
                 showAllitems() {
 
@@ -592,7 +706,23 @@
                             
                         })
                 
-                }
+                },
+                getTransactionDetail(transaction) {
+                    this.single_transaction_detail = transaction
+                },
+                getShopData(shop) {
+                    console.log('ini shop', shop);
+                    
+                    axios({
+                        method: 'GET',
+                        url: `http://localhost:3000/shops/one/${shop._id}`
+                    })
+                        .then(response => {
+                            console.log('hey you!', response.data.data);
+                            
+                            this.shop_data = response.data.data
+                        })
+                },
             }
         });
     

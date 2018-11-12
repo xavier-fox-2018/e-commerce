@@ -116,6 +116,27 @@ class Controller {
 
     }
 
+    static showSingleShop(req,res) {
+
+        Shop.findOne({
+            _id: req.params.id
+        })
+            .then(shop => {
+                console.log('Berhasil find shop', shop);
+                res.status(200).json({
+                    message: `Successfully retrieve all of user's shop`,
+                    data: shop
+                })
+            })
+            .catch(err => {
+                console.log('Gagal find shop', err);
+                res.status(500).json({
+                    message: `Failed to retrieve shop`
+                })
+            })
+
+    }
+
     static search(req, res) {
         Shop.find({$or: [
             {name: new RegExp(req.query.search, 'i')},

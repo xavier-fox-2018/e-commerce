@@ -7,6 +7,7 @@ router
     .post('/', authenticate, authorize, ShopCont.create)
     .get('/', ShopCont.showAllShops)
     .get('/search?', ShopCont.search)
+    .get('/one/:id', ShopCont.showSingleShop)
     .put('/:id', authenticate, authorize, ShopCont.update)
     .get('/mine', authenticate, authorize, ShopCont.showAllShops)
 
