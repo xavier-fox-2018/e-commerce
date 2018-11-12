@@ -4,9 +4,13 @@ let app = new Vue ({
     el: '#app',
     mounted(){
         this.cekLogin()
-        this.getAllProduct()
         this.getCategory()
         this.cekAdmin()
+        if(this.isAdmin == true ){
+            this.getAllProduct()
+        }else {
+            this.getAllProduct()
+        }
         
     },
     created(){
@@ -36,7 +40,8 @@ let app = new Vue ({
         isUser: false,
         isAdmin: false,
         addPicture: '',
-        totalItem: 0
+        totalItem: 0, 
+        img: ''
         
 
     },
@@ -151,6 +156,7 @@ let app = new Vue ({
 
         logout: function (){
             localStorage.removeItem('token')
+            localStorage.removeItem('role')
             window.location ='/'
         },
 
@@ -163,6 +169,7 @@ let app = new Vue ({
                 data: {
                     name: this.productName,
                     price: this.price,
+                    img: this.img,
                     stock: this.stock,
                     category: this.selected,
                     description: this.description, 
@@ -176,6 +183,7 @@ let app = new Vue ({
                 this.getAllProduct()
                 this.productName = ''
                 this.price = ''
+                this.img = ''
                 this.stock = ''
                 this.description = ''
             })
@@ -206,6 +214,9 @@ let app = new Vue ({
             axios({
                 method: 'DELETE',
                 url: url+ `/product/${id}`,
+                headers: {
+                    token: localStorage.getItem('token')
+                }
             })
             .then(response =>{
                 this.getAllProduct()
@@ -261,17 +272,11 @@ let app = new Vue ({
             })
         },
 
-        // getImageAdd(link) {
-        //     this.addPicture = link.target.files[0];
-        // },
 
         uploadImage : function () {
-            console.log('masukk upload')
             let formdata = new FormData()
             formdata.append('image', this.addPicture);
-            
-                axios.post(`http://localhost:3000/upload`, formdata, {
-                    
+                axios.post(`http://localhost:3000/upload`, formdata, {  
             })
             .then(response=>{
                 console.log(response.data)
@@ -281,6 +286,71 @@ let app = new Vue ({
                 console.log(`ini errr`,err)
             })
         }, 
+
+        toEdit: function(id){
+            axios({
+                method: 'GET',
+                url: url+ `/product/${id}`,
+            })
+            .then(response =>{
+                if(response){
+                    this.productName = response.data.result.name
+                    this.price = response.data.result.price
+                    this.stock = response.data.result.stock
+                    this.selected = response.data.result.category._id
+                    this.description = response.data.result.description
+                    this.idcat = response.data.result._id
+                }
+            })
+            .catch(err=>{
+                console.log(`ini errr`,err)
+            })
+        },
+
+        updateData: function(id){
+            axios({
+                method: 'PUT',
+                url: url+ `/product/${id}/editProduct`,
+                data: {
+                    name: this.productName,
+                    price: this.price,
+                    stock: this.stock,
+                    category: this.selected,
+                    description: this.description, 
+                },
+                headers: {
+                    token: localStorage.getItem('token')
+                }
+            })
+            .then(response =>{
+                this.getAllProduct()
+                this.productName = ''
+                this.price = ''
+                this.stock = ''
+                this.selected = ''
+                this.description = ''
+            })
+            .catch(err=>{
+                console.log(`ini errr`,err)
+            })
+        },
+
+
+        // addToCart(product) {
+        //     axios({
+        //         url: url+`/cart`,
+        //         method: 'POST',
+        //         data: {
+        //             orderid: product
+        //         }, 
+        //         headers: {
+        //             token: localStorage.getItem('token')
+        //         }
+        //     })
+        //     .then( found => {
+        //         console.log(found)
+        //     })
+        // }
     },
 
 

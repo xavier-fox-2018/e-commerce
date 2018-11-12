@@ -5,10 +5,10 @@ const {addProduct, filterByCategory, editProduct, allProduct, deletePro, findOne
 const upload = require('../helpers/multer')
 
 router.post('/', isLogin, isAdmin, upload.multer.single('image'), upload.sendUploadToGCS ,addProduct)
-// router.put('/:id/editProduct', isLogin, isAdmin, editProduct)
-router.delete('/:id', isLogin, isAdmin,deletePro)
+router.put('/:id/editProduct',  editProduct)
+router.delete('/:id', isLogin, isAdmin, deletePro)
 router.get('/', allProduct)
 router.get('/:category/products', filterByCategory)
-router.get('/:id', findOne)
+router.get('/:id', isLogin, isAdmin, findOne)
 
 module.exports = router;

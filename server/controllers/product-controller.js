@@ -7,7 +7,8 @@ module.exports = {
             name: req.body.name,
             price: req.body.price,
             stock: req.body.stock,
-            img: req.file.cloudStoragePublicUrl,
+            // img: req.file.cloudStoragePublicUrl,
+            img: req.body.img,
             description: req.body.description,
             category: req.body.category
         })
@@ -45,7 +46,8 @@ module.exports = {
     },
 
     editProduct: (req, res) =>{
-        Product.update({
+        console.log(`....`);
+        Product.updateOne({
             name: req.body.name,
             price: req.body.price,
             stock: req.body.stock,
@@ -53,6 +55,7 @@ module.exports = {
             description: req.body.description,
             category: req.body.category
         })
+        .populate('category')
         .then(result=>{
             res.status(201).json({result})
         })

@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const sgMail = require('@sendgrid/mail')
 
 let userSchema = new Schema({
     name: String,

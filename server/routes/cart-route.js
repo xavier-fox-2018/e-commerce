@@ -4,7 +4,7 @@ const {isLogin} =require('../middlewares/isLogin')
 const {addToCart} = require('../controllers/product-controller')
 
 
-// router.post('/', isLogin, addToCart)
+// router.post('/', addToCart)
 
 
 

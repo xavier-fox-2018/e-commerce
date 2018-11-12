@@ -4,8 +4,6 @@ const User = require('../models/user')
 module.exports = {
     isLogin: (req, res, next) =>{
         let token = req.headers.token
-        console.log(`ini tokeennnn`,req.headers);
-        
         if(token){
             let verify = hash.jwtDecode(token)
             console.log(verify);
