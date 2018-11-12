@@ -18,7 +18,7 @@ class CategoryController {
     }
 
     static getAll(req, res) {
-        Category.find().populate('itemList')
+        Category.find({isDeleted: false}).populate('itemList')
             .then(function(categories) {
                 res.status(200).json(categories);
             })
@@ -56,7 +56,9 @@ class CategoryController {
     }
 
     static delete(req, res) {
-        Category.deleteOne({_id: req.params.id})
+        Category.updateOne({_id: req.params.id}, {
+            isDeleted: true
+        })
             .then(function(result) {
                 res.status(200).json({
                     result: result,

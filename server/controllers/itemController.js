@@ -46,7 +46,7 @@ class ItemController {
     }
 
     static getAll(req, res) {
-        Item.find().populate('category')
+        Item.find({isDeleted: false}).populate('category')
             .then(function(items) {
                 res.status(200).json(items);
             })
@@ -154,7 +154,9 @@ class ItemController {
     }
 
     static delete(req, res) {
-        Item.findByIdAndDelete(req.params.id)
+        Item.findByIdAndUpdate(req.params.id,  {
+            isDeleted: true
+        })
             .then(function(result) {
                 res.status(200).json(result);
             })
