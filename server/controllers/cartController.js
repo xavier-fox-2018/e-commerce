@@ -1,10 +1,14 @@
 const Cart = require('../models/cart.js')
+const jwt = require('jsonwebtoken')
+require('dotenv').config()
+const mongoose = require('mongoose')
+const Item = require('../models/item.js')
 
 class CartController {
     static create(req, res) {
         Cart.create({
             cartItems: [], 
-            user: req.body.user, 
+            userID: req.userID, 
             totalPrice: 0
         })
         .then( newCart => {
@@ -15,8 +19,76 @@ class CartController {
         })
     }
 
-    static read(req, res) {
+    static addToCart(req, res) { 
+        let itemID = mongoose.Types.ObjectId(req.body.itemID)
+        Cart.findOne({userID: req.userID})
+        .then( cart => {
+            console.log('ini cart', cart);
+            
+            if (cart) { 
+                let filtered = cart.cartItems.filter(function(el){
+                    return el.itemID == req.body.itemID 
+                })
+                console.log('ini filtered', filtered);
+                
+
+                if (filtered.length == 0) { 
+                    Cart.findOneAndUpdate({userID: req.userID}, 
+                        { $push: 
+                            { cartItems: {
+                                itemID: itemID,
+                                quantity: 1,
+                                subTotal: req.body.itemPrice
+                            }} })
+                    .then(response => {
+                        res.status(200).json({message: 'apa ya', response})
+                    })
+                    .catch(err => {
+                        res.status(500).json({err})
+                    })
+                    
+                }
+                else { // klo udah ada itemID di cart -> qty + 1
+                console.log('itemID nihh', mongoose.Types.ObjectId(req.body.itemID))
+                
+                    Item.findOne({ _id: req.body.itemID } )
+                    .then( result => {
+                        result.stock = result.stock - 1
+                        result.save()
+
+                        let currentItem = filtered[0].itemID;
+                        console.log(currentItem, 'hehehe');
+                        Cart.findOneAndUpdate({
+                            userID: req.userID,
+                            cartItems: { $elemMatch: { itemID: req.body.itemID } }
+                            },{
+                                $set: {
+                                    'cartItems.$.quantity': filtered[0].quantity + 1,
+                                    'cartItems.$.subTotal': filtered[0].subTotal + result.price
+                                }
+                            })
+                        .then( response => {
+                            res.status(200).json({response, currentItem})
+                        })
+                        .catch( err => {
+                            res.status(500).json({err})
+                        })
+                    })
+                }
+            }
+            else { // klo belum ada cart -> create Cart -> push newItem to cartItems
+                res.status(200).json({cart, message: 'cart not yet created'})
+
+            }
+        })
+        .catch( err => {
+            res.status(500).json({err, msg: 'awal'})
+        })
+    }
+
+    static readAll(req, res) {
         Cart.find()
+        // .populate('cartItems.itemID')
         .then(allCarts => {
             res.status(200).json(allCarts)
         })
@@ -25,27 +97,33 @@ class CartController {
         })
     }
 
-    static update(req, res) { 
-        Cart.updateOne({ _id: req.params.cartID},
-        {
-            name: req.body.name,
-            description: req.body.description,
-            price: req.body.price,
-            stock: req.body.stock,
-            imageUrl: req.body.imageUrl
-        })
-        .then(response => {
-            res.status(200).json(response)
+    static readCurrentCart(req, res) {
+        console.log(req.userID);
+        Cart.findOne({userID: req.userID})
+        .populate('cartItems.itemID')
+        .then( cart => {
+            res.status(200).json(cart)
         })
         .catch(err => {
-            res.status(500).json(err)
+            res.status(500).json({err})
         })
+        
     }
 
-    static delete(req, res) {
-        Cart.deleteOne({ _id: req.params.cartID })
+    static checkout(req, res) { 
+        Cart.deleteOne({ userID: req.userID }) 
         .then( response => {
-            res.status(200).json(response)
+            Cart.create({
+                cartItems: [], 
+                userID: req.userID, 
+                totalPrice: 0
+            })
+            .then( newCart => {
+                res.status(200).json(newCart)
+            })
+            .catch(err => {
+                res.status(500).json(err)
+            })
         })
         .catch(err => {
             res.status(500).json(err)

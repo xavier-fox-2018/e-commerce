@@ -8,7 +8,7 @@ const itemSchema = new Schema({
     stock: {type: Number, default: 0},
     imageUrl: String,
     categoryID: String
-}, {timestamps: true}) 
+}, {timestamps: true}) // check dulu
 
 const Item = mongoose.model('Item', itemSchema)
 

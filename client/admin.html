@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>E-Commerce</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div id="app">
+
+        <!-- NAVBAR -->
+        <div class="mainNavbar mb-5">
+            <nav id="navbarBGColor" class="navbar navbar-expand-lg navbar-light bg-light">
+                <a class="navbar-brand navbarTextColor clickFrontPage" >E-commerce-admin</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item active">
+                            <a class="nav-link navbarTextColor" v-on:click='currentDisplay("frontPage")' v-if="role == 'admin'" >Home </a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link navbarTextColor" v-on:click='currentDisplay("allUsers")' v-if="role == 'admin'" >Users</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link navbarTextColor" v-on:click='currentDisplay("productList")' v-if="role == 'admin'" >Items</a>
+                        </li>
+                    </ul>
+
+                </div>
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link navbarTextColor" v-if="!loggedInUser" v-on:click='currentDisplay("adminLogin")' >Login</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link navbarTextColor" v-if="loggedInUser" v-on:click='logout'>Logout</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        
+
+
+        <!-- Page content -->
+        <div class="mainBody container">
+
+
+            <!-- FRONT PAGE -->
+            <div class="frontPage" v-if='currentPage == "frontPage"'>
+                <h1>This is Admin Page</h1>
+            </div>
+
+
+
+            <!-- LOGIN -->
+            <div class="adminLogin container" v-if='currentPage == "adminLogin"'> 
+                <!-- if role: admin -->
+                <div class="row">
+                    <div class="col-6">
+                        <h3>Admin Login</h3>
+                        <form>
+                            <div class="form-group">
+                                <label>Email address</label>
+                                <input type="email" class="form-control" placeholder="Enter email" v-model="login.email"> 
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" class="form-control" placeholder="Password" v-model="login.password"> 
+                            </div> 
+                            <p> <button type="submit" class="btn btn-primary mr-4" v-on:click="postAdminLogin"> Login </button> </p>
+                        </form>
+                           
+                    </div>
+                    <div class="col-6">
+                    </div>
+                </div>   
+            </div>
+
+
+            <!-- CRUD ITEMS -->
+            <div class="row" v-if="role === 'admin' && currentPage == 'productList' " >
+                <div class="col-3">
+                    <h3>Categories</h3>
+                    <div class="list-group">
+                        <button type="button" class="list-group-item list-group-item-action" v-for="category in categories" v-on:click="clickCategoryDetails(category._id)"> {{ category.name }}  </button>
+                    </div>
+                </div>
+
+                <div class="col-9 border">
+                    <div class="row border" v-for="item in items">
+                        <div class="col-3">
+                            <img src="book.jpg" alt="image not found" class="img-thumbnail rounded">
+                            <button class="btn btn-light btn-sm btn-block">Upload Picture</button>
+                        </div>
+                        <div class="col-7">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">ID: {{ item._id }} </li>
+                                <li class="list-group-item">Name: {{ item.name }} </li>
+                                <li class="list-group-item">Description: {{ item.description }} </li>
+                                <li class="list-group-item">Stock: {{ item.stock }} </li>
+                                <li class="list-group-item">Price: {{ item.price }} </li>
+                            </ul>
+                        </div>
+                        <div class="col-2 align-self-center">
+                            <button class="btn btn-dark btn-block" data-toggle="modal" data-target=".editItem"> Edit </button>
+                            <button class="btn btn-danger btn-block" v-on:click="deleteItem(item._id)"> Delete </button>
+                        </div>
+
+
+
+                        <!-- MODAL - ITEMS -->
+                        <div class="modal fade editItem" tabindex="-1" role="dialog">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editItemLabel">Edit Item </h5>
+                                    </div>
+                                    <div class="modal-body">
+
+                                        <form>
+                                            <div class="form-group">
+                                                <label> Name </label>
+                                                <input type="text" class="form-control" placeholder="Enter name" v-bind:value="item.name">
+                                            </div>
+                                            <div class="form-group">
+                                                <label> Description </label>
+                                                <textarea class="form-control" rows="3" placeholder="Enter description" v-bind:value="item.description"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label> Stock </label>
+                                                <input type="number" class="form-control" placeholder="Enter stock" v-bind:value="item.stock">
+                                            </div>
+                                            <div class="form-group">
+                                                <label> Price </label>
+                                                <input type="number" class="form-control" placeholder="Enter price" v-bind:value="item.price">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+            
+
+
+            <!-- CRUD USERS -->
+            <div class="row" v-if='currentPage == "allUsers" && role == "admin" '>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">ID</th>
+                        <th scope="col">Phone Number</th>
+                        <th>Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="user in allUsers">
+                            <td> {{ user.name }} </td>
+                            <td> {{ user.email }} </td>
+                            <td> {{ user.role }} </td>
+                            <td> {{ user._id }} </td>
+                            <td> {{ user.phoneNumber }} </td>
+                            <td> <button class="btn btn-dark"> Edit </button> <button class="btn btn-dark"> Delete </button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+
+        </div>
+
+         
+    </div>  <!-- app -->
+
+
+
+
+
+    <script>
+
+
+    </script>
+
+    <script src="vue.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
+

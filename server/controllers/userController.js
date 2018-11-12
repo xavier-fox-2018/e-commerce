@@ -1,4 +1,5 @@
 const User = require('../models/user.js')
+const Cart = require('../models/cart.js')
 const crypto = require('crypto')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
@@ -16,14 +17,28 @@ class UserController {
             password: hash
         })
         .then(data => {
-            res.status(200).json(data)
+            console.log(data);
+            
+            Cart.create({
+                cartItems: [], 
+                userID: data._id, 
+                totalPrice: 0
+            })
+            .then( newCart => {
+                res.status(200).json({data, newCart})
+            })
+            .catch(err => {
+                res.status(500).json(err)
+            })
         })
         .catch(err => {
-            res.status(500).json(err)
+            res.status(500).json(err) 
         })
     }
 
     static login(req, res) {
+        let accesstoken = req.headers.accesstoken
+        console.log('accesstoken', accesstoken);
         const hash = crypto.createHmac('sha256', process.env.HASH_SECRET) 
         .update(req.body.password)
         .digest('hex')
@@ -34,12 +49,13 @@ class UserController {
                 res.status(400).json({ message: 'wrong username or password'}) 
             }
             else { 
-                const accessToken = jwt.sign({ 
+                const accesstoken = jwt.sign({ 
                     id: user._id,
                     name: user.name, 
-                    email: user.email
+                    email: user.email,
+                    role: user.role
                 }, process.env.JWT_SECRET)
-                res.status(200).json({ message: 'user exist', accessToken })
+                res.status(200).json({ message: 'user exist', accesstoken, userID: user._id, role: user.role }) 
             }
 
         })
@@ -101,6 +117,10 @@ class UserController {
             res.status(500).json(err)
         })
     }
+
+
 }
 
 module.exports = UserController
+
+                
