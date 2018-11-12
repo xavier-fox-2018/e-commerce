@@ -67,6 +67,17 @@ class ItemController {
             });
     }
 
+    static getSold(req, res) {
+        Item.find({sold: {$gt: 0}}).populate('category')
+            .then(function(items) {
+                res.status(200).json(items);
+            })
+            .catch(function(err) {
+                console.log('Find Sold Items Error: ', err);
+                res.status(500).json(err);
+            });
+    }
+
     static update(req, res) {
         Category.findOne({name: req.body.category})
             .then(function(category) {

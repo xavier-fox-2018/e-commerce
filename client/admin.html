@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-        <title>New-Commerce Admin</title>
+        <title>E-Kits Admin</title>
     </head>
     <body>
 
@@ -21,9 +21,29 @@
                     <div class="display-4">Admin Page</div>
                     <button @click="logout" class="btn btn-outline-danger ml-auto">Log out</button>
                 </div>
-                <div class="row d-flex justify-content-center">
+
+                <!-- ERROR ALERT -->
+                <div v-if="isError" class="alert alert-danger alert-dismissable col-5 mb-4">
+                    <button class="close" type="button" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                    <strong>Error: {{ errorMsg }}</strong>
+                </div>  
+
+                <div class="row d-flex justify-content-between">
                     <div class="col-md-3">
-                        <button class="btn btn-primary mb-2 btn-block" data-toggle="modal" data-target="#addItemModal">Add New Item</button>
+                        <button class="btn btn-primary btn-block" data-toggle="modal" data-target="#addItemModal">Add New Item</button>
+                    </div>
+                    <div class="form-inline col-md-5 d-flex justify-content-end">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                            </div>
+                            <input type="text" v-model="keyword_for_all" class="form-control mr-3" placeholder="Search All Items">
+                        </div>
+                        <button class="btn btn-outline-dark" @click="searchItem">Search</button>
                     </div>
                 </div>
                 <div class="row mt-4 mb-4">
@@ -233,17 +253,24 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row mb-5">
                     <div class="col-lg-12 mt-4 d-flex flex-column justify-content-start mx-auto">
                         <div class="d-flex justify-content-start align-items-center">
                             <div class="display-4">List Items Sold</div>
-                            <button class="btn btn-outline-danger ml-auto">Sort</button>
+                            <div class="d-flex flex-column justify-content-center align-items-center ml-auto">
+                                <button class="btn btn-outline-danger mb-2" @click="sortSoldDesc">Sort By Highest Sold Times</button>
+                                <button class="btn btn-outline-warning" @click="sortSoldAsc">Sort By Lowest Sold Times</button>
+                            </div>
                         </div>
-                        <div class="d-flex flex-column mt-4">
-                            <!-- <h3 class="lead mb-3">Username: {{ user.username }}</h3>
-                            <h3 class="lead mb-3">Email: {{ user.email }}</h3>
-                            <h3 class="lead mb-3">Total Transactions: {{ user.purchaseCount }}</h3>
-                            <h3 class="lead mb-4">Transaction List:</h3> -->
+                        <div class="d-flex justify-content-between mt-5 sold-header mb-4">
+                            <div class="d-flex align-items-center"><div class="lead text-center">Item</div></div>
+                            <div class="d-flex align-items-center"><div class="lead text-center">Sold (qty)</div></div>
+                            <div class="d-flex align-items-center"><div class="lead text-center">Category</div></div>
+                        </div>
+                        <div class="d-flex justify-content-between sold-body mb-3" v-for="item in soldItems">
+                            <div class="d-flex align-items-center"><div class="lead text-center">{{ item.name }}</div></div>
+                            <div class="d-flex align-items-center"><div class="lead text-center">{{ item.sold }}</div></div>
+                            <div class="d-flex align-items-center"><div class="lead text-center">{{ item.category.name }}</div></div>
                         </div>
                     </div>
                 </div>
@@ -268,7 +295,7 @@
                 el: '#app',
                 data: {
                     categories: [],
-                    items: [],
+                    soldItems: [],
                     activeCategory: '',
                     activeCategoryId: '',
                     currentItems: [],
@@ -293,7 +320,10 @@
                         imgURL: '',
                         category: ''
                     },
-                    deleteItemId: ''
+                    deleteItemId: '',
+                    isError: false,
+                    errorMsg: '',
+                    keyword_for_all: ''
                 },
                 methods: {
                     logout: function() {
@@ -307,10 +337,41 @@
                         })
                             .then(function(items) {
                                 app.currentItems = items.data;
+                                app.isError = false;
                             })
                             .catch(function(err) {
+                                app.errorMsg = err.response.data.message;
+                                app.isError = true;
                                 console.log('Get All Items Error: ', err);
                             });
+                    },
+                    getSoldItems: function() {
+                        axios({
+                            method: 'GET',
+                            url: `http://localhost:3000/items/sold`,
+                            headers: {
+                                'access-token': localStorage.getItem('token')
+                            }
+                        })
+                            .then(function(items) {
+                                app.soldItems = items.data;
+                                app.isError = false;
+                            })
+                            .catch(function(err) {
+                                app.errorMsg = err.response.data.message;
+                                app.isError = true;
+                                console.log('Get All Sold Items Error: ', err);
+                            })
+                    },
+                    sortSoldDesc: function() {
+                        this.soldItems.sort(function(a, b) {
+                            return b.sold - a.sold;
+                        });
+                    },
+                    sortSoldAsc: function() {
+                        this.soldItems.sort(function(a, b) {
+                            return a.sold - b.sold;
+                        });
                     },
                     getCategories: function() {
                         axios({
@@ -326,8 +387,11 @@
                                 app.activeCategory = categories.data[0].name;
                                 app.activeCategoryId = categories.data[0]._id;
                                 app.createItem.category = categories.data[0].name;
+                                app.isError = false;
                             })
                             .catch(function(err) {
+                                app.errorMsg = err.response.data.message;
+                                app.isError = true;
                                 console.log('Get All Categories Error: ', err);
                             });
                     }, 
@@ -343,8 +407,11 @@
                                 app.activeCategory = category.data.name;
                                 app.activeCategoryId = category.data._id;
                                 app.currentItems = category.data.itemList;
+                                app.isError = false;
                             })
                             .catch(function(err) {
+                                app.errorMsg = err.response.data.message;
+                                app.isError = true;
                                 console.log('Get One Category Error: ', err);
                             });
                     },
@@ -362,8 +429,11 @@
                             .then(function(result) {
                                 app.categoryName = '';
                                 app.getCategories();
+                                app.isError = false;
                             })
                             .catch(function(err) {
+                                app.errorMsg = err.response.data.message;
+                                app.isError = true;
                                 console.log('Create Category Error: ', err);
                             });
                     },
@@ -384,8 +454,11 @@
                         })
                             .then(function(result) {
                                 app.getCategories();
+                                app.isError = false;
                             })
                             .catch(function(err) {
+                                app.errorMsg = err.response.data.message;
+                                app.isError = true;
                                 console.log('Update Category Error: ', err);
                             });
                     },
@@ -402,8 +475,11 @@
                         })
                             .then(function(result) {
                                 app.getCategories();
+                                app.isError = false;
                             })
                             .catch(function(err) {
+                                app.errorMsg = err.response.data.message;
+                                app.isError = true;
                                 console.log('Delete Category Error: ', err);
                             });
                     },
@@ -437,8 +513,11 @@
                                     app.activeCategoryId = result.data.category;
                                     app.getOneCategory(app.activeCategoryId);
                                     app.editItem.imgURL = '';
+                                    app.isError = false;
                                 })
                                 .catch(function(err) {
+                                    app.errorMsg = err.response.data.message;
+                                    app.isError = true;
                                     console.log('Update Item With No New Image Error: ', err);
                                 });
                         } else {
@@ -469,12 +548,17 @@
                                             app.activeCategoryId = result.data.category;
                                             app.getOneCategory(app.activeCategoryId);
                                             app.editItem.imgURL = '';
+                                            app.isError = false;
                                         })
                                         .catch(function(err) {
+                                            app.errorMsg = err.response.data.message;
+                                            app.isError = true;
                                             console.log('Update Item With New Image Error: ', err);
                                         });
                                 })
                                 .catch(function(err) {
+                                    app.errorMsg = err.response.data.message;
+                                    app.isError = true;
                                     console.log('Upload Image While Updating Error: ', err);
                                 });
                         }
@@ -506,8 +590,11 @@
                                     app.createItem.stock = 0;
                                     app.createItem.imgURL = '';
                                     app.createItem.category = app.activeCategory;
+                                    app.isError = false;
                                 })
                                 .catch(function(err) {
+                                    app.errorMsg = err.response.data.message;
+                                    app.isError = true;
                                     console.log('Add Item With No Image Error: ', err);
                                 });
                         } else {
@@ -542,12 +629,17 @@
                                             app.createItem.stock = 0;
                                             app.createItem.imgURL = '';
                                             app.createItem.category = app.activeCategory;
+                                            app.isError = false;
                                         })
                                         .catch(function(err) {
+                                            app.errorMsg = err.response.data.message;
+                                            app.isError = true;
                                             console.log('Add Item With Image Error: ', err);
                                         });
                                 })
                                 .catch(function(err) {
+                                    app.errorMsg = err.response.data.message;
+                                    app.isError = true;
                                     console.log('Upload Image Error While Adding: ', err);
                                 });
                         }
@@ -569,14 +661,45 @@
                         })
                             .then(function(result) {
                                 app.getOneCategory(app.activeCategoryId);
+                                app.isError = false;
                             })
                             .catch(function(err) {
+                                app.errorMsg = err.response.data.message;
+                                app.isError = true;
                                 console.log('Delete Item Error: ', err);
                             });
-                    }
+                    },
+                    searchItem: function() {
+                        axios({
+                            method: 'GET',
+                            url: `http://localhost:3000/items/search/${this.keyword_for_all}`,
+                            headers: {
+                                'access-token': localStorage.getItem('token')
+                            }
+                        })
+                            .then(function(items) {
+                                app.currentItems = items.data;
+                                app.isError = false;
+                            })
+                            .catch(function(err) {
+                                app.errorMsg = err.response.data.message;
+                                app.isError = true;
+                                console.log('Search Items Error: ', err);
+                            });
+                    },
                 }, 
                 created: function() {
                     this.getCategories();
+                    this.getSoldItems();
+                },
+                watch: {
+                    keyword_for_all() {
+                        if (this.keyword_for_all.length === 0) {
+                            this.getAllItems();
+                        } else {
+                            this.searchItem();
+                        }
+                    }
                 }
             })
         </script>

@@ -108,14 +108,17 @@
     font-family: 'Titillium Web', sans-serif;
 }
 
-.itemList-h3 {
+.itemList-h3, .totalPrice-h3, .sold-header {
     font-family: 'Oswald', sans-serif;
     font-size: 25px !important;
 }
 
-.totalPrice-h3 {
-    font-family: 'Oswald', sans-serif;
-    font-size: 25px !important;
+.sold-header div {
+    width: 300px;
+}
+
+.sold-body div {
+    width: 300px;
 }
 
 .trans-detail {

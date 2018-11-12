@@ -4,8 +4,9 @@ const isLogin = require('../middlewares/isLogin.js');
 const isAdmin = require('../middlewares/isAdmin.js');
 const imageUploader = require('../helpers/imageUploader.js');
 
-itemRouter.get('/', ItemController.getAll);
+itemRouter.get('/sold', isLogin, isAdmin, ItemController.getSold);
 itemRouter.get('/:id', ItemController.getOne);
+itemRouter.get('/', ItemController.getAll);
 itemRouter.post('/uploadimage', isLogin, isAdmin, 
     imageUploader.multer.single('image'), 
     imageUploader.sendUploadToGCS,
