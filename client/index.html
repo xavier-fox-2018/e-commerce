@@ -212,6 +212,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button v-on:click="removeCartDBCompletely()" type="button" class="btn btn-danger" >Remove Cart <span class="fa fa-trash"></span></button>
                                     <a  class="btn btn-success">Pay <span class="fa fa-money-bill"></span></a>
                                 </div>
                             </div>
@@ -319,7 +320,7 @@
                 },
                 is_logged_in: function(val) {
                     this.getFromCartDB()
-                }
+                },
             },
             methods: {
                 loginPressed(val) {
@@ -424,7 +425,7 @@
                 addingToCart(item) {
                     let added = false
                     for (let i = 0; i < this.cart_item_list.length; i++) {
-                        if (item._id === this.cart_item_list[i].item._id) {
+                        if (item._id === this.cart_item_list[i]._id._id) {
                             console.log('item sudah ke add');  
                             added = true                         
                         }
@@ -432,18 +433,57 @@
                     }
                     console.log('masukkkk');
                     if (added === false) {
+                        console.log('coba');
                         
                         this.cart_item_list.push({_id:item, quantity: 1})
                         this.cart_total += item.price
-
-                        this.to_cart_list.push({_id: item._id, quantity: 1})
                         console.log(this.cart_item_list, 'yeyey');
                         
-                        axios({
+                        this.removeCartDB()
+                        this.createCartDB()
+                       
+                    }
+                    
+                },
+                removingFromCart(data) {
+                    for(let i = 0; i < this.cart_item_list.length; i++) {
+                        if(data._id._id === this.cart_item_list[i]._id._id) {
+                            this.cart_item_list.splice(i, 1)
+                            this.cart_total -= (data._id.price * data.quantity)
+                            i--
+
+                            this.removeCartDB()
+                            this.createCartDB()
+                            console.log(data._id)
+                        }
+                    }
+                },
+                plusToCart(data) {
+                    if(data._id.stock > data.quantity) {
+                        data.quantity += 1
+                        this.cart_total += data._id.price
+
+                        this.removeCartDB()
+                        this.createCartDB()
+                    }
+                },
+                minusToCart(data) {
+                    if(0 < data.quantity) {
+                        data.quantity -= 1
+                        this.cart_total -= data._id.price
+                        this.removeCartDB()
+                        this.createCartDB()
+                    }
+                    if (data.quantity === 0) {
+                        this.removingFromCart(data)
+                    }
+                },
+                createCartDB() {
+                    axios({
                             method:'POST',
                             url: 'http://localhost:3000/cart',
                             data: {
-                                item_list: this.to_cart_list,
+                                item_list: this.cart_item_list,
                                 total: this.cart_total
                             },
                             headers: {
@@ -451,40 +491,12 @@
                             }
                         })
                             .then(response => {
-                                console.log('sukses add');
+                                console.log('sukses add yeyeeyye');
                             })
                             .catch(err => {
                                 console.log('error add cart', err);
                                 
                             })
-                       
-                    }
-                    
-                },
-                removingFromCart(data) {
-                    for(let i = 0; i < this.cart_item_list.length; i++) {
-                        if(data.item._id === this.cart_item_list[i].item._id) {
-                            this.cart_item_list.splice(i, 1)
-                            this.cart_total -= (data.item.price * data.quantity)
-                            i--
-                            console.log(data.item)
-                        }
-                    }
-                },
-                plusToCart(data) {
-                    if(data.item.stock > data.quantity) {
-                        data.quantity += 1
-                        this.cart_total += data.item.price
-                    }
-                },
-                minusToCart(data) {
-                    if(0 < data.quantity) {
-                        data.quantity -= 1
-                        this.cart_total -= data.item.price
-                    }
-                    if (data.quantity === 0) {
-                        this.removingFromCart(data)
-                    }
                 },
                 getFromCartDB() {
                     axios({
@@ -506,6 +518,26 @@
                             console.log('error add cart', err);
                             
                         })
+                },
+                removeCartDB() {
+                    axios({
+                        method:'DELETE',
+                        url: 'http://localhost:3000/cart',
+                        headers: {
+                            token: localStorage.getItem('token')
+                        }
+                    })
+                        .then(response => {
+                            console.log('sukses delet cart');
+                        })
+                        .catch(err => {
+                            console.log('error remove cart', err);
+                            
+                        })
+                },
+                removeCartDBCompletely() {
+                    this.removeCartDB()
+                    this.cart_item_list = []
                 }
             }
         });
