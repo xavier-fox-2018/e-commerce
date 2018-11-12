@@ -41,10 +41,7 @@ class UserController {
         User.findOne({
             email: decryptJwt.email
         })
-            .populate({
-                path: 'cart',
-                name: 'Item'
-            })
+            .populate('cart.Item')
             .then(function(resolve) {
                 let dataUser = {
                     UserId: resolve._id,
@@ -93,7 +90,7 @@ class UserController {
 
     static cart(req, res) {
         let dataCart = {
-            item: req.body.UserId,
+            Item: req.body.ItemId,
             qty: 1
         }
         User.updateOne(

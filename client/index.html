@@ -109,11 +109,13 @@
                         <td>No</td>
                         <td>Name</td>
                         <td>Qty</td>
+                        <td>Price</td>
                     </tr>
                     <tr v-for="data in user.cart">
                         <td></td>
-                        <td>{{ data.name }}</td>
+                        <td>{{ data.Item.name }}</td>
                         <td>{{ data.qty }}</td>
+                        <td>{{ data.Item.price }}</td>
                     </tr>
                 </table>
                 <hr>
@@ -269,7 +271,6 @@
                     })
                         .then(function(response) {
                             app.user = response.data;
-                            console.log(JSON.stringify(app.user.cart))
                         })
                         .catch(function(error) {
                             console.log(error)
