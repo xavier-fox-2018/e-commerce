@@ -1,5 +1,5 @@
 Vue.component('search-item', {
-    props: ['keyword', 'searchitem', 'getitems'],
+    props: ['keyword', 'getitems', 'getonecategory', 'activecategoryid'],
     data() {
         return {
             searchKeyword: ''
@@ -14,7 +14,7 @@ Vue.component('search-item', {
     watch: {
         searchKeyword() {
             if (this.searchKeyword.length === 0) {
-                this.getitems();
+                this.getonecategory(this.activecategoryid);
             } else {
                 this.$emit('send-keyword', this.searchKeyword);
             }

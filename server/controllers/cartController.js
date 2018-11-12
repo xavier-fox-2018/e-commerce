@@ -17,6 +17,7 @@ class CartController {
                     Item.findById(req.params.id)
                         .then(function(item) {
                             item.stock = item.stock - 1;
+                            item.sold = item.sold + 1;
                             item.save()
                                 .then(function(resultUpdate) {
                                     Cart.updateOne({user: req.user._id}, {
@@ -52,6 +53,7 @@ class CartController {
                     Item.findById(result[0].item)
                         .then(function(item) {
                             item.stock = item.stock - 1;
+                            item.sold = item.sold + 1;
                             item.save()
                                 .then(function(resultUpdate) {
                                     Cart.update({
@@ -115,6 +117,7 @@ class CartController {
                     Item.findById(itemId)
                         .then(function(item) {
                             item.stock = item.stock + 1;
+                            item.sold = item.sold - 1;
                             item.save()
                                 .then(function(resultUpdate) {
                                     Cart.update({
@@ -154,6 +157,7 @@ class CartController {
                             Item.findById(itemId)
                                 .then(function(item) {
                                     item.stock = item.stock + 1;
+                                    item.sold = item.sold - 1;
                                     item.save()
                                         .then(function(resultUpdate) {
                                             res.status(200).json({

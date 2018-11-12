@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-        <title>New-Commerce</title>
+        <title>E-Kits</title>
     </head>
     <body>
 
@@ -20,30 +20,30 @@
             <!-- NAVBAR -->
             <nav class="navbar navbar-expand-sm navbar-dark mb-2" id="top-nav">
                 <div class="container">
-                    <a href="home.html" id="home-nav" class="navbar-brand font-weight-bold">New-Commerce</a>
+                    <a href="home.html" id="home-nav" class="navbar-brand font-weight-bold">E<i class="fas fa-signature"></i>Kits</a>
                     <button class="navbar-toggler" data-toggle="collapse" data-target="#div-main-nav">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="div-main-nav">
                         <ul class="navbar-nav font-weight-bold ml-auto" id="main-nav">
                             <li class="nav-item dropdown mr-2">
-                                <a class="nav-link dropdown-toggle" data-toggle="dropdown">Category</a>
+                                <a class="nav-link dropdown-toggle" data-toggle="dropdown">Categories</a>
                                 <div class="dropdown-menu">
-                                    <a @click="showListItem" v-for="category in categories" class="dropdown-item">{{ category.name }}</a>
+                                    <a @click="showListItem(category._id)" v-for="category in categories" class="dropdown-item">{{ category.name }}</a>
                                 </div>
                             </li>
                             <li class="nav-item">
-                                <form class="form-inline mr-2">
+                                <div class="form-inline mr-2">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">
                                                 <i class="fas fa-search"></i>
                                             </span>
                                         </div>
-                                        <input type="text" class="form-control mr-3" placeholder="Search Products">
+                                        <input type="text" v-model="keyword_for_all" class="form-control mr-3" placeholder="Search All Products">
                                     </div>
-                                    <button class="btn btn-outline-light">Search</button>
-                                </form>
+                                    <button class="btn btn-outline-light" @click="searchItem">Search</button>
+                                </div>
                             </li>
                             <li v-on:click="showCart" class="nav-item mr-2">
                                 <a role="button" class="nav-link">
@@ -67,38 +67,42 @@
             </nav>
 
             <!--CATEGORY AND ITEM LIST-->
-            <div v-if="categoryListShow" class="container">
+            <div v-if="categoryListShow" class="container mt-4">
                 <div class="d-flex justify-content-center align-items-center bg-light rounded mt-3" id="category-path-link">
                     <button class="btn btn-link">Home</button>
                     <i class="fas fa-angle-right"></i>
-                    <button class="btn btn-link">Category</button>
+                    <button class="btn btn-link">Categories</button>
                     <i class="fas fa-angle-right"></i>
-                    <button class="btn btn-link">Hobby Toys</button>
+                    <button class="btn btn-link">{{ activeCategory }}</button>
                 </div>
                 <div class="row mt-4">
 
                     <!-- LEFT BAR MENU -->
-                    <div class="col-lg-3">
+                    <div class="col-lg-3 mb-3">
                         <div class="card">
                             <div class="card-body">
                                 <div class="d-flex flex-column justify-content-start">
-                                    <p>Category</p>
-                                    <ul class="list-group">
-                                        <li class="d-flex justify-content-between align-items-center list-group-item category-list" :class="{active: activeCategory === category.name}"  v-for="category in categories" @click="getOneCategory(category._id)">
+                                    <p class="lead text-center">Category List</p>
+                                    <ul class="list-group mb-3">
+                                        <li class="d-flex justify-content-between align-items-center list-group-item category-list-home" :class="{active: activeCategory === category.name}"  v-for="category in categories" @click="getOneCategory(category._id)">
                                             <div class="d-flex justify-content-center align-items-center">{{ category.name }}</div>
                                         </li>
                                     </ul>
+                                    <div class="d-flex justify-content-center">
+                                        <button class="btn btn-danger btn-block mb-3 text-center" @click="getItems">Show All Products</button>
+                                    </div>
                                 </div>
                                 <hr>
                                 <div class="mb-3">Search in this category</div>
-                                <search-item :keyword="keyword" :searchitem="searchItem" @send-keyword="receiveKeyword($event)" :getitems="getItems"></search-item>
-                                <hr>                                
+
+                                <!-- SEARCH ITEM -->
+                                <search-item :keyword="keyword" @send-keyword="receiveKeyword($event)" :getitems="getItems" :getonecategory="getOneCategory" :activecategoryid="activeCategoryId"></search-item>   
                             </div>
                         </div>
                     </div>
 
                     <!-- ITEM LIST -->
-                    <div class="col-lg-9">
+                    <div class="col-lg-9 mb-3">
                         <div class="card-columns">
                             <div v-for="item in items" class="card">
                                 <img class="card-img-top img-fluid" v-bind:src="item.imgURL" alt="">
@@ -134,6 +138,7 @@
                         <div class="d-flex flex-column mt-4">
                             <h3 class="lead mb-3">Username: {{ user.username }}</h3>
                             <h3 class="lead mb-3">Email: {{ user.email }}</h3>
+                            <h3 class="lead mb-3">Total Transactions: {{ user.purchaseCount }}</h3>
                             <h3 class="lead mb-4">Transaction List:</h3>
                             <div v-for="trans in transactions" class="lead mb-4 card">
                                 <div class="card-head d-flex justify-content-between align-items-center mt-3 mb-3">
@@ -230,7 +235,8 @@
                     trans_detail: {
                         itemList: [],
                         totalPrice: 0
-                    }
+                    },
+                    keyword_for_all: ''
                 },
                 methods: {
                     showCart: function() {
@@ -240,10 +246,12 @@
                         this.categoryListShow = false;
                         this.profileShow = false;
                     },
-                    showListItem: function() {
+                    showListItem: function(categoryId) {
                         this.categoryListShow = true;
                         this.cartShow = false;
                         this.profileShow = false;
+                        this.activeCategoryId = categoryId;
+                        this.getOneCategory(this.activeCategoryId);
                     },
                     showProfile: function() {
                         this.profileShow = true;
@@ -353,12 +361,19 @@
                     },
                     receiveKeyword: function(value) {
                         app.keyword = value;
-                        app.searchItem();
+
+                        let current =  this.items.filter(function(item) {
+                            const testCase = new RegExp(value, 'i');
+                            const regexTest = testCase.test(item.name);
+                            return regexTest;
+                        });
+
+                        this.changeItems(current);
                     },
                     searchItem: function() {
                         axios({
                             method: 'GET',
-                            url: `http://localhost:3000/items/search/${this.keyword}`,
+                            url: `http://localhost:3000/items/search/${this.keyword_for_all}`,
                             headers: {
                                 'access-token': localStorage.getItem('token')
                             }
@@ -436,10 +451,12 @@
                     populateTransDetailModal: function(itemList, totalPrice) {
                         this.trans_detail.itemList = itemList;
                         this.trans_detail.totalPrice = totalPrice;
+                    },
+                    changeItems: function(itemList) {
+                        this.items = itemList;
                     }
                 }, 
                 created: function() {
-                    // this.getItems();
                     this.getCartBadge();
                     this.getUserCart();
                     this.getUserProfile();
@@ -449,9 +466,22 @@
                 watch: {
                     keyword() {
                         if (this.keyword.length === 0) {
-                            this.getItems();
+                            this.getOneCategory(this.activeCategoryId);
                         } else {
-                            this.searchItem(this.keyword);
+                            let current =  this.items.filter(function(item) {
+                                const testCase = new RegExp(this.keyword, 'i');
+                                const regexTest = testCase.test(item.name);
+                                return regexTest;
+                            });
+
+                            this.changeItems(current);
+                        }
+                    },
+                    keyword_for_all() {
+                        if (this.keyword_for_all.length !== 0) {
+                            this.searchItem();
+                        } else {
+                            this.getItems();
                         }
                     },
                     cartBadge() {

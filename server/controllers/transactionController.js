@@ -1,5 +1,6 @@
 const Transaction = require('../models/transactionModel.js');
 const Cart = require('../models/cartModel.js');
+const User = require('../models/userModel.js');
 
 class TransactionController {
     static create(req, res) {
@@ -23,7 +24,22 @@ class TransactionController {
                             }
                         }, {safe: true, multi: true})
                             .then(function(result) {
-                                res.status(200).json(transaction);
+                                User.findById(req.user._id)
+                                    .then(function(user) {
+                                        user.purchaseCount = user.purchaseCount + 1;
+                                        user.save()
+                                            .then(function(saveResult) {
+                                                res.status(200).json(transaction);
+                                            })
+                                            .catch(function(err) {
+                                                console.log('Update Purchase Count Error: ', err);
+                                                res.status(500).json(err);
+                                            });
+                                    })
+                                    .catch(function(err) {
+                                        console.log('Find User While Creating Transaction Error: ', err);
+                                        res.status(500).json(err);
+                                    });
                             })
                             .catch(function(err) {
                                 console.log('Update To Empty Cart After Checkout Error: ', err);
