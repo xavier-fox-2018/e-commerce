@@ -2,10 +2,12 @@
 <html lang="en">
 
 <head>
+    <link rel="icon" href="http://bonavide.hafrizresa.pro//assets/icon.ico" type="image/x-icon" />
+
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="google-signin-client_id" content="613470435267-99bl1j4d6eiscaptdjjsfb3s4v1qfk44.apps.googleusercontent.com">
+    <meta name="google-signin-client_id" content="613470435267-fettiih79rdbotnm660f5jnhrer7rdi3.apps.googleusercontent.com">
 
 
 
@@ -16,7 +18,7 @@
     <script src="https://apis.google.com/js/platform.js" async defer></script>
 
 
-    <title>Bonanza 2.0</title>
+    <title>Bonafide</title>
 </head>
 
 <body>
@@ -24,12 +26,11 @@
 
         <header>
             <div class="container">
-
                 <div class="row">
                     <div class="col">
                         <ul class="nav nav-pills">
                             <li class="nav-item dropdown">
-                                <a class="nav-link" href="" role="button" aria-haspopup="true" aria-expanded="false">Sell on Bonanza</a>
+
                             </li>
                         </ul>
                     </div>
@@ -47,7 +48,10 @@
                                 <a class="nav-link" data-toggle="modal" v-on:click="logout" href="">Logout</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" data-toggle="modal" data-target="#cartModal" href="" id="cart">cart</a>
+                                <a class="nav-link" data-toggle="modal" data-target="#cartModal" href="" id="cart">Cart</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="modal" data-target="#TransactionHistory" href="" id="cart">Transaction History</a>
                             </li>
                         </ul>
                     </div>
@@ -57,13 +61,14 @@
             <div class="container-fluid" style="background: url(https://assets.bonanzastatic.com/images/home/bg_thatch.png?1539127379) ">
                 <div class="container">
                     <nav class="navbar navbar-expand-lg navbar-light">
-                        <!-- <a class="navbar-brand" href="#">BONANZA 2.0</a> -->
-                        <img alt="Bonanza" id="Bonanza" data-retina="true" src="https://assets.bonanzastatic.com/images/header/bonanza_logo@2x.png"
-                            style="max-width: 200px; max-height: 49px;">
+                        <div class="pointer">
+
+                            <img src="./assets/Untitled-1.png" v-on:click="reload" alt="">
+                        </div>
                         <div class="collapse navbar-collapse justify-content-end">
                             <form class="form-inline my-2 my-lg-0">
                                 <input class="form-control mr-sm-2" type="search" v-model="valueSearch" placeholder="Search" aria-label="Search">
-                                <button v-on:click= "itemsOnsearch" class="btn btn-outline-success my-2 my-sm-0" >Search</button>
+                                <button v-on:click="itemsOnsearch" class="btn btn-outline-success my-2 my-sm-0">Search</button>
                             </form>
                         </div>
                     </nav>
@@ -85,9 +90,7 @@
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">More Categories</a>
                                     <div class="dropdown-menu">
-
                                         <a class="dropdown-item pointer" v-for="value in categories" v-on:click="onClickCategory(value)"> {{value.name}} </a>
-
 
                                     </div>
                                 </li>
@@ -107,21 +110,23 @@
                         <h1 class="text-center" style="color: white">Find everything but the ordinary</h1>
                         <form class="form-inline my-2 my-lg-0  justify-content-center">
                             <input class="form-control mr-sm-2" v-model="valueSearch" type="search" placeholder="Search" aria-label="Search">
-                            <button class="btn btn-outline-success my-2 my-sm-0" v-on:click="itemsOnsearch" >Search</button>
+                            <button class="btn btn-outline-success my-2 my-sm-0" v-on:click="itemsOnsearch">Search</button>
                         </form>
                     </div>
                 </div>
 
                 <div class="container" style="position: relative; top: -50px; margin-bottom: -79px">
                     <div class="jumbotron text-center p-2 mb-0" style="background-color: #3e4f59; color: white">
-                        <p> 12,000+ sellers voted Bonanza the best place to sell online. </p>
-                        <p>Entrepreneur Magazine named Bonanza one of the "Best Entrepreneurial Companies in America</p>
+                        <p> Sellers who’ve embraced social media are creating new opportunities that totally bypass traditional
+                            sales channels.
+                        </p>
+                        <p> It’s about good selling – using all the tools that are available to you today</p>
                     </div>
                     <div class="jumbotron text-center p-2">
                         <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">
                             <div class="carousel-inner">
                                 <div class="carousel-item active">
-                                    <img class="d-block w-100" src="./assets//pexels-photo-264554.jpeg" alt="First slide">
+                                    <img class="d-block w-100" src="./assets/1.jpeg" alt="First slide">
                                 </div>
                                 <div class="carousel-item">
                                     <img class="d-block w-100" src="./assets/pexels-photo-793012.jpeg" alt="Second slide">
@@ -134,7 +139,7 @@
                     </div>
                 </div>
             </div>
-            <div class="container-fluid" style="margin-top:80px" >
+            <div class="container-fluid" style="margin-top:80px">
 
                 <hr style="height: 6px;
                 background: url(http://ibrahimjabbari.com/english/images/hr-11.png) repeat-x 0 0;
@@ -146,11 +151,11 @@
                     <div class="col-md-3">
                         <p v-if="state.onSearch === true">home >>{{items[0].category.name}}</p>
                         <div class="jumbotron p-2 text-center">
-                            <p  v-if="!searchOnPage">Narrow your results {{items.length}} items found</p>
-                            <p  v-if="searchOnPage">Narrow your results {{searchResponsive.length}} items found</p>
+                            <p v-if="!searchOnPage">Narrow your results {{items.length}} items found</p>
+                            <p v-if="searchOnPage">Narrow your results {{searchResponsive.length}} items found</p>
                             <form class="">
-                                    <input class="form-control mr-sm-2" type="search" v-model="searchOnPage" placeholder="Search" aria-label="Search">
-                                </form>
+                                <input class="form-control mr-sm-2" type="search" v-model="searchOnPage" placeholder="Search" aria-label="Search">
+                            </form>
                         </div>
                     </div>
 
@@ -167,24 +172,37 @@
                         <div class="row">
                             <div class="col pt-2 mb-2" v-for="value in items" v-if="!searchOnPage">
                                 <div class="card" style="width: 15rem; min-height: 25rem;">
-                                    <img class="card-img-top" style="max-height: 200px" v-bind:src="value.picture" alt="Card image cap">
-                                    <div class="card-body ">
-                                        <p class="card-text">{{filterTextLength(value.name)}}</p>
-                                        <p>${{value.price}}</p>
+
+                                    <div class="pointer" data-toggle="modal" data-target="#detailModal" v-on:click="itemDetail(value)">
+                                        <img class="card-img-top" style="max-height: 200px" v-bind:src="value.picture" alt="Card image cap">
+                                        <div class="card-body ">
+                                            <p class="card-text">{{filterTextLength(value.name)}}</p>
+                                            <p>${{value.price}}</p>
+
+                                        </div>
+
+                                    </div>
+                                    <div class="card-footer">
+
                                         <button data-toggle="modal" v-bind:data-target="cartAuth" class="btn btn-primary" v-on:click="addProductToCart(value)"> addtocart</button>
                                     </div>
                                 </div>
                             </div>
 
-                            
+
                             <div class="col pt-2 mb-2" v-for="value in searchResponsive" v-if="searchOnPage">
                                 <div class="card" style="width: 15rem; min-height: 25rem;">
-                                    <img class="card-img-top" style="max-height: 200px" v-bind:src="value.picture" alt="Card image cap">
+
+                                    <div class="pointer" data-toggle="modal" data-target="#detailModal" v-on:click="itemDetail(value)">
+                                        <img class="card-img-top" style="max-height: 200px" v-bind:src="value.picture" alt="Card image cap">
+                                    </div>
                                     <div class="card-body ">
                                         <p class="card-text">{{filterTextLength(value.name)}}</p>
                                         <p>${{value.price}}</p>
-                                        <button data-toggle="modal" data-target="#cartModal" class="btn btn-primary" v-on:click="addProductToCart(value)"> addtocart</button>
                                     </div>
+                                    <div class="card-footer">
+                                            <button data-toggle="modal" v-bind:data-target="cartAuth" class="btn btn-primary" v-on:click="addProductToCart(value)"> addtocart</button>
+                                        </div>
                                 </div>
                             </div>
                         </div>
@@ -209,14 +227,14 @@
                                         <th scope="col">Name</th>
                                         <th scope="col">QTY</th>
                                         <th scope="col">Sub Total</th>
-                                        <th scope="col">Sub Total</th>
+                                        <th scope="col">Option</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="value in cart">
                                         <td>{{value.name}}</td>
                                         <td>{{value.qty}}</td>
-                                        <td>${{value.price}}</td>
+                                        <td>${{value.price * value.qty}}</td>
                                         <td>
                                             <a v-on:click="onclickDeleteCart(value)"> delete</a>
                                         </td>
@@ -231,6 +249,41 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="button" class="btn btn-primary" v-on:click="onClickCheckOut">Checkout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TRANSACTION HISTORY MODAL -->
+            <div class="modal fade" id="TransactionHistory" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Your Transaction History</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table table-bordered" v-for="value in paidItems">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">QTY</th>
+                                        <th scope="col">Sub Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="item in value.items">
+                                        <td>{{item.name}}</td>
+                                        <td>{{item.qty}}</td>
+                                        <td style="color: red">${{item.price * item.qty}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
@@ -260,9 +313,14 @@
                                 <button v-on:click="loginUser" type="submit" class="btn btn-primary">Signin</button>
                                 <template>
                                     <div id="google-signin-button">
-
                                     </div>
                                 </template>
+                                <div v-if="state.successAlert === true" class="alert alert-success">
+                                    <strong>Loged in</strong>
+                                </div>
+                                <div v-if="state.failAlert === true" class="alert alert-danger">
+                                    <strong>Wrong username / password</strong>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -306,9 +364,29 @@
                     </div>
                 </div>
             </div>
+            <!-- DETAIL MODAL -->
+            <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel" style="text-align: center">{{detailItem.name}}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <img v-bind:src="detailItem.picture" alt="">
+                        <div class="modal-body">
+                            <p style="text-align: center">
+                                {{detailItem.description}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
             <footer>
+
                 <div class="container-fluid justify-content-center text-center" style="color: white; background-image: url(https://assets.bonanzastatic.com/images/home/bg_testimonials.jpg?1536090296); height: 100px">
                     <div style="position: relative; top: 50%">
                         <div class="col text-center">
@@ -319,6 +397,7 @@
 
             </footer>
     </div>
+    <script type='text/javascript' data-cfasync='false'>window.purechatApi = { l: [], t: [], on: function () { this.l.push(arguments); } }; (function () { var done = false; var script = document.createElement('script'); script.async = true; script.type = 'text/javascript'; script.src = 'https://app.purechat.com/VisitorWidget/WidgetScript'; document.getElementsByTagName('HEAD').item(0).appendChild(script); script.onreadystatechange = script.onload = function (e) { if (!done && (!this.readyState || this.readyState == 'loaded' || this.readyState == 'complete')) { var w = new PCWidget({c: 'e974e918-00ee-464f-b0c6-28ba99a0a5bf', f: true }); done = true; } }; })();</script>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
@@ -335,7 +414,7 @@
         function onSignIn(googleUser) {
             var id_token = googleUser.getAuthResponse().id_token;
             // console.log(id_token)
-            axios.post('http://localhost:3000/users/login-google', { token: id_token })
+            axios.post('http://35.200.243.58:3000/users/login-google', { token: id_token })
                 .then(data => {
                     console.log(data)
                     localStorage.setItem('token', data.data.token)
@@ -344,6 +423,13 @@
                 })
         }
 
+        //component
+
+
+        Vue.component('success-alert', {
+
+        })
+
         // VUE JS
         new Vue({
             el: '#app',
@@ -351,6 +437,8 @@
                 categories: [],
                 cartAuth: '#loginCart',
                 items: [],
+                detailItem: '',
+                paidItems: [],
                 valueSearch: '',
                 cart: [],
                 idCart: '',
@@ -369,37 +457,47 @@
                     registerStatus: '',
                     onSearch: false,
                     manualSearch: false,
-                    isLogin: null
+                    isLogin: null,
+                    successAlert: null,
+                    failAlert: null
                 }
             },
             methods: {
-                itemsOnsearch: function(e){
+                reload: function () {
+                    location.reload()
+                },
+                itemDetail: function (input) {
+                    this.detailItem = input
+
+                },
+                itemsOnsearch: function (e) {
                     e.preventDefault()
-                    axios.post('http://localhost:3000/users/search-items', {
+                    axios.post('http://35.200.243.58:3000/users/search-items', {
                         data: this.valueSearch
                     })
-                    .then(data => {
-                        console.log(data.data)
-                        this.items = data.data
-                        this.state.manualSearch = true
-                    })
+                        .then(data => {
+                            console.log(data.data)
+                            this.items = data.data
+                            this.state.manualSearch = true
+                        })
                 },
                 onSignIn(user) {
                     const id_token = user.getAuthResponse().id_token
 
-                    axios.post('http://localhost:3000/users/login-google', { token: id_token })
+                    axios.post('http://35.200.243.58:3000/users/login-google', { token: id_token })
                         .then(data => {
                             console.log(data)
                             localStorage.setItem('token', data.data.token)
                             this.state.isLogin = true
                             this.cartAuth = '#cartModal'
+                            this.state.successAlert = true
                         })
                         .catch(err => {
                         })
                 },
 
                 onClickCategory: function (input) {
-                    axios.post('http://localhost:3000/item-by-category', {
+                    axios.post('http://35.200.243.58:3000/item-by-category', {
                         category: input._id
                     })
                         .then(data => {
@@ -422,23 +520,30 @@
 
                     this.state.isLogin = false
                     this.cartAuth = '#loginModal'
+                    this.state.failAlert = null
+                    this.state.successAlert = null
                 },
 
                 loginUser(event) {
                     event.preventDefault()
-                    axios.post('http://localhost:3000/users/login', this.login)
+                    axios.post('http://35.200.243.58:3000/users/login', this.login)
                         .then(data => {
+                            // console.log(data)
                             if (data.data.role == 'Admin') {
                                 localStorage.setItem('token', data.data.token)
-                                window.location.href = 'http://localhost:8080/adminpage.html'
+                                window.location.href = 'http://bonavide.hafrizresa.pro/adminpage.html'
                             } else {
                                 localStorage.setItem('token', data.data.token)
                                 this.state.isLogin = true
                                 this.cartAuth = '#cartModal'
+                                this.state.successAlert = true
+                                this.state.failAlert = null
                             }
                         })
                         .catch(err => {
                             if (err) {
+                                this.state.failAlert = true
+                                this.state.successAlert = null
                                 console.log('please check your email/password')
                             }
                         })
@@ -446,7 +551,7 @@
 
                 registerUser(event) {
                     event.preventDefault()
-                    axios.post('http://localhost:3000/users/signup', this.register)
+                    axios.post('http://35.200.243.58:3000/users/signup', this.register)
                         .then(data => {
                             if (typeof data.data === 'string') {
                                 this.state.registerStatus = 'fail'
@@ -478,7 +583,7 @@
                             }
                         }
 
-                        axios.post('http://localhost:3000/cart/add', cart)
+                        axios.post('http://35.200.243.58:3000/cart/add', cart)
                             .then(data => {
                                 this.idCart = data.data[0]._id
                                 let cart = data.data[0].items
@@ -504,11 +609,14 @@
                                 this.cart = result
 
                             })
+                            .catch(err => {
+                                console.log(err)
+                            })
                     }
                 },
                 onclickDeleteCart: function (input) {
                     console.log(input)
-                    axios.delete('http://localhost:3000/cart/delete', {
+                    axios.delete('http://35.200.243.58:3000/cart/delete', {
                         data: {
                             token: localStorage.getItem('token'),
                             idCart: this.idCart,
@@ -548,13 +656,43 @@
 
                 onClickCheckOut: function () {
                     // console.log(this.idCart)
-                    axios.post('http://localhost:3000/cart/submit-checkout', {
+                    axios.post('http://35.200.243.58:3000/cart/submit-checkout', {
                         token: localStorage.getItem('token'),
                         idCart: this.idCart
                     })
                         .then(data => {
+                            return axios.post('http://35.200.243.58:3000/cart/paid', {
+                                token: localStorage.getItem('token')
+                            })
+                        })
+                        .then(data => {
                             console.log(data)
                             this.cart = []
+                            let paid = data.data
+                            // console.log(paid)
+                            let result = []
+                            paid.forEach(element => {
+                                let object = {
+                                    items: []
+                                }
+                                element.items.forEach(val => {
+
+                                    let filtered = element.items.filter(item => {
+                                        return val._id === item._id
+                                    })
+                                    console.log(filtered)
+                                    let selector = object.items.filter(item => {
+                                        return val._id == item._id
+                                    })
+                                    if (selector.length == 0) {
+                                        let temp = val
+                                        temp.qty = filtered.length
+                                        object.items.push(temp)
+                                    }
+                                })
+                                result.push(object)
+                            })
+                            this.paidItems = result
                         })
                         .catch(err => {
                             console.log(err)
@@ -584,6 +722,8 @@
                 console.log('vue has been created')
             },
             mounted: function () {
+                this.state.successAlert = null
+                this.state.failAlert = null
                 gapi.signin2.render('google-signin-button', {
                     onsuccess: this.onSignIn
                 })
@@ -597,8 +737,42 @@
                     this.state.isLogin = true
                     this.cartAuth = '#cartModal'
 
+                    //mount history
+                    axios.post('http://35.200.243.58:3000/cart/paid', {
+                        token: localStorage.getItem('token')
+                    })
+                        .then(data => {
+                            let paid = data.data
+                            // console.log(paid)
+                            let result = []
+                            paid.forEach(element => {
+                                let object = {
+                                    items: []
+                                }
+                                element.items.forEach(val => {
+
+                                    let filtered = element.items.filter(item => {
+                                        return val._id === item._id
+                                    })
+                                    let selector = object.items.filter(item => {
+                                        return val._id == item._id
+                                    })
+                                    if (selector.length == 0) {
+                                        let temp = val
+                                        temp.qty = filtered.length
+                                        object.items.push(temp)
+                                    }
+                                })
+                                result.push(object)
+                            })
+                            this.paidItems = result
+                        })
+                        .catch(err => {
+                            console.log(err)
+                        })
+
                     // mount cart
-                    axios.post('http://localhost:3000/cart/unpaid', {
+                    axios.post('http://35.200.243.58:3000/cart/unpaid', {
                         token: localStorage.getItem('token')
                     })
                         .then(data => {
@@ -627,7 +801,7 @@
                         })
                 }
                 // get all info
-                axios.get('http://localhost:3000')
+                axios.get('http://35.200.243.58:3000')
                     .then(data => {
                         this.categories = data.data.category
                         this.items = data.data.item

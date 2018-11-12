@@ -37,9 +37,9 @@
             <div class="container-fluid" style="background: url(https://assets.bonanzastatic.com/images/home/bg_thatch.png?1539127379) ">
                 <div class="container">
                     <nav class="navbar navbar-expand-lg navbar-light">
-                        <!-- <a class="navbar-brand" href="#">BONANZA 2.0</a> -->
-                        <img alt="Bonanza" id="Bonanza" data-retina="true" src="https://assets.bonanzastatic.com/images/header/bonanza_logo@2x.png"
-                            style="max-width: 200px; max-height: 49px;">
+                            <div class="pointer">
+                                    <img src="./assets/Untitled-1.png" alt="">
+                                </div>
                         <div class="collapse navbar-collapse justify-content-end">
                             <form class="form-inline my-2 my-lg-0">
                                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
@@ -58,7 +58,7 @@
                     <div class="jumbotron p-2 text-center">
                         <!-- <p>Narrow your results 1,781,605 items found</p> -->
                         <div class="list-group">
-                            <button v-on:click="onClickListItem" type="button" class="list-group-item list-group-item-action active">
+                            <button v-on:click="onClickListItem" type="button" class="list-group-item list-group-item-action">
                                 Your List Items
                             </button>
                             <button v-on:click="getCategory" type="button" class="list-group-item list-group-item-action">Add Items</button>
@@ -221,7 +221,6 @@
                                     <input type="file" v-on:change="handleUpload" class="form-control">
                                 </div>
                             </div>
-
                             <div class="form-group row">
                                 <label for="qty" class="col-sm-2 col-form-label">Quantity</label>
                                 <div class="col-sm-10">
@@ -263,7 +262,7 @@
     <script>
         //js
         if (localStorage.getItem('token') == undefined) {
-            window.location.href = ('http://localhost:8080')
+            window.location.href = ('http://bonavide.hafrizresa.pro/')
         }
 
         // vue js
@@ -287,12 +286,12 @@
                 file: ''
             },
             methods: {
-                logOut:function(){
+                logOut: function () {
                     localStorage.removeItem('token')
                 },
                 onClickListItem() {
                     this.currentView = 'viewList'
-                    axios.get('http://localhost:3000/users/get-all-items')
+                    axios.get('http://35.200.243.58:3000/users/get-all-items')
                         .then(data => {
                             this.products = data.data
                         })
@@ -302,7 +301,7 @@
                 },
 
                 onClickDeletItem: function (event) {
-                    axios.delete(`http://localhost:3000/users/delete-item`, { data: { id: event.id } })
+                    axios.delete(`http://35.200.243.58:3000/users/delete-item`, { data: { id: event.id } })
                         .then(data => {
                             this.products = data.data
                         })
@@ -325,7 +324,7 @@
                     formData.append('description', this.itemWillUpdate.description)
                     formData.append('category', this.value._id)
 
-                    axios.put('http://localhost:3000/users/edit-item', formData, {
+                    axios.put('http://35.200.243.58:3000/users/edit-item', formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }
@@ -341,7 +340,7 @@
 
                 },
                 editItem: function (input) {
-                    axios.get('http://localhost:3000/users/get-category')
+                    axios.get('http://35.200.243.58:3000/users/get-category')
                         .then(data => {
                             this.categories = data.data
                         })
@@ -363,7 +362,7 @@
 
                 addNewCategory: function (event) {
                     event.preventDefault()
-                    axios.post('http://localhost:3000/users/add-category', { data: this.addCategory })
+                    axios.post('http://35.200.243.58:3000/users/add-category', { data: this.addCategory })
                         .then(data => {
                             this.categoryStatus = 'betul'
                         })
@@ -374,7 +373,7 @@
                 getCategory: function () {
                     this.currentView = 'addItems'
                     this.addItemStatus = ''
-                    axios.get('http://localhost:3000/users/get-category')
+                    axios.get('http://35.200.243.58:3000/users/get-category')
                         .then(data => {
                             this.categories = data.data
                         })
@@ -405,7 +404,7 @@
                     result.append('category', this.value._id)
                     result.append('description', this.productWillAdd.description)
                     // result.append('text', data)
-                    axios.post('http://localhost:3000/users/add-item', result, {
+                    axios.post('http://35.200.243.58:3000/users/add-item', result, {
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }
@@ -427,13 +426,13 @@
             mounted: function () {
                 console.log('vue has been mounted')
 
-                axios.post('http://localhost:3000/users/get-all-items', {
+                axios.post('http://35.200.243.58:3000/users/get-all-items', {
                     token: localStorage.getItem('token')
                 })
                     .then(data => {
                         console.log(data)
                         if (data.data === 'error') {
-                            window.location.href = 'http://localhost:8080'
+                            window.location.href = 'http://bonavide.hafrizresa.pro/'
                         } else {
                             this.products = data.data
 
