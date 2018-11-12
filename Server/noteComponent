@@ -1,0 +1,88 @@
+
+di html
+<my-button v-bind:text="Button 1"></my-button> ->> akan berubah menjadi data di Vue data
+<my-button text="Button 2"></my-button> ->> ini string akan berubah jadi tex di vue component
+<my-button text="Button 3"></my-button>
+
+
+
+
+MyButton -> convert menjadi my-button
+Vue.component('MyButton', {
+    props: ['text'], ['order'] <<- ini harus di declare menandakan html akan manggil ini, ini menjadi key
+    template: `
+    <button class="btn btn-primary" > {{ text }}  </button> <<- template ini bisa di masukan logic; v-for,dsb
+    <ul>
+    <li v-for="data in order"> {{ data in name }} </li> <<- ini menjadi value
+    </li>
+})
+
+
+
+new Vue ({
+    el: #app,
+    data: {
+        button1: 'Add to Cart',
+        button2: 'Login',
+        button3: 'Register'
+    }
+})
+
+
+
+props = kasih data ke dalam komponen tersebut
+emit = kasih data dari component ke parent
+v-bind pada props digunakan untuk mencari data dengan key yang kita tentukan
+v-bind:data="foods"
+
+
+emit digunakan untuk mengirimkan data dari children (komponen kita)
+ke parent componentnya. counter di klik kita akan mengirimkan event `counterChange`
+dengan data hasil counter yang sudah ditambahkan
+
+this.$emit('counter-change', 100) <<- 100 sama dengan value
+
+new Vue {
+    
+}
+
+
+
+bila dibuat data dalam vue component, maka datanya harus dalam function
+Vue.component ('my-counter), {
+    data: function() {
+        return {
+            counter: 0
+        }
+    },
+    methods: {
+        increment: function() {
+            this.counter++
+            this.$emit('counter-change', this.counter)
+        },
+        decrement: function() {
+            this.counter--
+            this.$emit('counter-change', this.counter)
+        },
+    },
+    template: `
+    <div>
+        <label v-on:counter-change="changeCOunter"> My Counter {{ counter }}
+
+    </div>
+
+    `
+}
+new Vue {
+    data: {
+
+    },
+    methods: {
+        changeCOunter: function(event) {
+            console.log(event)
+        }  
+    }
+}
+
+template di komponen bisa dimasukan nama id nya
+template: "#myOrder", di template bisa di pindah ke root script

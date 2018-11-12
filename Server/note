@@ -1,0 +1,16 @@
+database
+product: nama, harga, deskripsi, tag, rekomendasi
+category: handphone, baju, dsb
+account: user/admin (isAdmin, isLogin)
+
+
+
+front end
+navbar:
+banner and kategori bar
+product
+footer
+search
+
+
+
