@@ -115,11 +115,25 @@
     </div>
   </nav>
   <!-- Navbar -->
+
+  <!-- admin menu -->
   <admin-menu v-if="isadmin"></admin-menu>
+  <!-- admin menu -->
 
   <!--Carousel Wrapper-->
   <carousel-template v-if="!isadmin"></carousel-template>
   <!--/.Carousel Wrapper-->
+
+  <!-- alert -->
+  <div @click="dismissAlert" v-if="alert">
+      <div :class="alert" role="alert">
+        {{alertMessage}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+  </div>
+  <!-- alert -->
 
   <!--Main layout-->
   <main>
@@ -401,14 +415,14 @@
                   <label data-error="wrong" data-success="right" for="modalLRInput11">Your password</label>
                 </div>
                 <div class="text-center mt-2">
-                  <button @click="login" class="btn btn-info">Log in <i class="fa fa-sign-in ml-1"></i></button>
+                  <button @click="login" data-dismiss="modal" class="btn btn-info">Log in <i class="fa fa-sign-in ml-1"></i></button>
                 </div>
               </div>
               <!--Footer-->
               <div class="modal-footer">
                 <div class="options text-center text-md-right mt-1">
-                  <p>Not a member? <a href="#" class="blue-text">Sign Up</a></p>
-                  <p>Forgot <a href="#" class="blue-text">Password?</a></p>
+                  <!-- <p>Not a member? <a href="#" class="blue-text">Sign Up</a></p>
+                  <p>Forgot <a href="#" class="blue-text">Password?</a></p> -->
                 </div>
                 <button type="button" class="btn btn-outline-info waves-effect ml-auto" data-dismiss="modal">Close</button>
               </div>
@@ -440,7 +454,7 @@
                 </div>
 
                 <div class="text-center form-sm mt-2">
-                  <button class="btn btn-info" @click="register">Sign up <i class="fa fa-sign-in ml-1"></i></button>
+                  <button data-dismiss="modal" class="btn btn-info" @click="register">Sign up <i class="fa fa-sign-in ml-1"></i></button>
                 </div>
 
               </div>
@@ -692,10 +706,17 @@
 
         editItemCategory : '',
         editItemDescription : '',
-        editItemPrice : ''
+        editItemPrice : '',
+
+        alert : '',
+        alertMessage : ''
 
       },
       methods : {
+        dismissAlert : function(){
+          this.alert = ''
+          this.alertMessage = ''
+        },
         register : function(){
           let data = {
             name : this.registerName,
@@ -709,10 +730,13 @@
             data
           })
           .then(response=>{
-            alert(response.data)
+            this.alert="alert alert-success"
+            this.alertMessage = `${response.data.message}`
           })
-          .catch(err=>{
-            console.log(err)
+          .catch(error=>{
+            // console.log(err)
+            this.alert="alert alert-danger"
+            this.alertMessage = `${error.response.data.message}`
           })
         },
         deleteItem : function(id){
@@ -895,10 +919,17 @@
               this.isadmin = true
             }
             this.getUserCart()
+
+            this.alert = "alert alert-success"
+            this.alertMessage = "Login Success"
+            // this.alert = 'alert alert-success mt-10'
+            // this.alertmessage = 'Login Success'
           })
-          .catch(err=>{
+          .catch(error=>{
             console.log('login failed...')
-            console.log(err)
+            // console.log('err',error.response.data.message)
+            this.alert = "alert alert-danger"
+            this.alertMessage = `${error.response.data.message}`
           })
         },
         logout : function(){

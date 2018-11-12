@@ -52,6 +52,7 @@ class Controller {
     }
 
     static login(req,res){
+
         if(req.body.email.length < 1 || req.body.password.length < 1){
             res.status(422).json({
                 message : 'Invalid Email / Password'
