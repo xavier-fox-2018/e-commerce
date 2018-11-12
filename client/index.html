@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>H8BikeStore</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha256-NuCn4IvuZXdBaFKJOAcsU2Q3ZpwbdFisd5dux4jkQ5w=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="css/botstrap.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/css/dataTables.bootstrap4.min.css" integrity="sha256-F+DaKAClQut87heMIC6oThARMuWne8+WzxIDT7jXuPA=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="css/main.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+  </head>
+  <body  style="background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);">
+    <div id="app">
+
+        <!-- Navigation -->
+        <navbar-component 
+            :user="user" 
+            :view-mode='viewMode'
+            :total-qty-of-cart='totalQtyOfCart'
+            :toggle-display-cart='toggleDisplayCart'
+            :change-view-mode='changeViewMode'
+            :logout='logout'
+            :toggle-login-register='toggleLoginRegister'
+            :get-report='getReport'>
+        </navbar-component>
+
+        <report-view
+            :report='report'
+            :view-mode='viewMode'
+        ></report-view>
+
+        <!-- transactions -->
+        <transactions-view
+            :user='user'
+            :view-mode='viewMode'
+            :get-rp-format='getRpFormat'
+            :change-view-mode='changeViewMode'
+            :transactions='transactions'
+        ></transactions-view>
+        <!-- transactions end -->
+
+        <!-- admin -->
+        <admin-view
+            :user="user" 
+            :view-mode='viewMode'
+            :change-view-mode='changeViewMode'
+            :edit-item-model='editItemModel'
+            :add-item-model='addItemModel'
+            :add-new-item='addNewItem'
+            :items='items'
+            :get-rp-format='getRpFormat'
+            :display-edit-item='displayEditItem'
+            :update-item='updateItem'
+            :get-img-input='getImgInput'
+            :img-input='imgInput'
+            :img-file-name='imgFileName'
+            :delete-item='deleteItem'>
+        </admin-view>
+        <!-- admin end -->
+
+        <!-- cart -->
+        <cart-component
+            :user='user'
+            :display-cart='displayCart'
+            :cart-items='cartItems'
+            :get-rp-format='getRpFormat'
+            :total='total'
+            :save-cart-items='saveCartItems'
+            :checkout='checkout'
+            :change-view-mode='changeViewMode'
+            :toggle-display-cart='toggleDisplayCart'
+            :remove-from-cart='removeFromCart'
+            :add-to-cart='addToCart'
+            :view-mode='viewMode'>
+        </cart-component>
+        <!-- cart end -->
+
+        <!-- checkout -->
+        <checkout-view
+            :user='user'
+            :view-mode='viewMode'
+            :total-qty-of-cart='totalQtyOfCart'
+            :cart-id='cartId'
+            :checkout-model='checkoutModel'
+            :get-rp-format='getRpFormat'
+            :change-view-mode='changeViewMode'
+            :confirm-checkout='confirmCheckout'
+        ></checkout-view>
+        <!-- checkout end -->
+
+        <!-- register login -->
+        <register-login-view
+            :user='user'
+            :display-login-register='displayLoginRegister'
+            :register-model='registerModel'
+            :register='register'
+            :login-model='loginModel'
+            :login='login'
+        ></register-login-view>
+        <!-- register login end -->
+
+        <!-- main Content -->
+        <main-view
+            :user='user'
+            :view-mode='viewMode'
+            :search='search'
+            :get-items='getItems'
+            :search-by-category='searchByCategory'
+            :categories='categories'
+            :items='items'
+            :get-rp-format='getRpFormat'
+            :item-qtyin-cart-items='itemQtyinCartItems'
+            :add-to-cart='addToCart'
+            :display-cart='displayCart'
+        ></main-view>
+        <!-- main content end -->
+        
+        <!-- Footer -->
+        <footer-component
+        ></footer-component>
+        <!-- Footer end -->
+
+    </div>
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/js/jquery.dataTables.min.js" integrity="sha256-t5ZQTZsbQi8NxszC10CseKjJ5QeMw5NINtOXQrESGSU=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/js/dataTables.bootstrap4.min.js" integrity="sha256-hJ44ymhBmRPJKIaKRf3DSX5uiFEZ9xB/qx8cNbJvIMU=" crossorigin="anonymous"></script>
+
+    <script src="./js/components/navbarComponent.js"></script>
+    <script src="./js/components/adminView.js"></script>
+    <script src="./js/components/cartComponent.js"></script>
+    <script src="./js/components/checkoutView.js"></script>
+    <script src="./js/components/registerLoginComponent.js"></script>
+    <script src="./js/components/mainView.js"></script>
+    <script src="./js/components/footerComponent.js"></script>
+    <script src="./js/components/transactionsView.js"></script>
+    <script src="./js/components/reportView.js"></script>
+
+
+    <script src="./js/main.js"></script>
+    <script src="./js/vue.js"></script>
+
+  </body>
+</html>
