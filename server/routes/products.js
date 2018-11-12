@@ -8,7 +8,7 @@ const isAdmin = require('../middlewares/isAdmin')
 
 /* GET users listing. */
 router.get('/', Controller.findAll);
-router.get('/:id', auth, Controller.findById)
+router.get('/one/:id', auth, Controller.findById)
 router.post('/', isAdmin, Controller.create)
 router.put('/:id', isAdmin, Controller.update)
 router.put('/checkout/:id', auth, Controller.updateQuantity)

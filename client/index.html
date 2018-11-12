@@ -436,33 +436,17 @@
         <form class='ui form'>
           <div class="field">
             <label>Card Type</label>
-            <div class="ui selection dropdown card" v-model='creditCard'>
-              <div class="default text" onclick="$('.ui.selection.dropdown.card').dropdown()">Type</div>
-              <i class="dropdown icon" onclick="$('.ui.selection.dropdown.card').dropdown()"></i>
-              <div class="menu">
-                <div class="item">
-                  <i class="mastercard icon"></i>
-                  Mastercard
-                </div>
-                <div class="item">
-                  <i class="visa icon"></i>
-                  Visa
-                </div>
-                <div class="item">
-                  <i class="amex icon"></i>
-                  American Express
-                </div>
-                <div class="item">
-                  <i class="discover icon"></i>
-                  Discover
-                </div>
-              </div>
-            </div>
+            <select class="ui search selection dropdown" id="search-card" v-model='creditCard'>
+              <option value="Mastercard">Mastercard</option>
+              <option value="Visa">Visa</option>
+              <option value="American Express">American Express</option>
+              <option value="Discover">Discover</option>
+            </select>
           </div>
           <div class="fields">
             <div class="seven wide field">
               <label>Card Number</label>
-              <input type="text" name="card" maxlength="16" placeholder="Card #">
+              <input type="text" name="card" maxlength="16" placeholder="Card #" v-model='creditCardNum'>
             </div>
             <div class="three wide field">
               <label>CVC</label>
@@ -521,6 +505,7 @@
               <div class="ui four wide column">
                 <div><strong>Payment method</strong></div>
                 <div>{{creditCard}}</div>
+                <div>With CC no. ending -xx{{creditCardNum.slice(12)}}</div>
               </div>
               <div class="ui four wide column">
                 <div><strong>Coupon Used</strong></div>
@@ -644,14 +629,14 @@
             <div aria-live="polite" class="">
               <li>
                 <span class="">
-                  <a class="" href="">
+                  <a class="" @click='filterReleaseDate(30)'>
                     <span class="">Last 30 days</span>
                   </a>
                 </span>
               </li>
               <li>
                 <span class="">
-                  <a class="" href="">
+                  <a class="" @click='filterReleaseDate(90)'>
                     <span class="">Last 90 days</span>
                   </a>
                 </span>
@@ -659,34 +644,34 @@
             </div>
           </ul>
           <h4 class="">Avg. Customer Review</h4>
-          <ul><a href=""><i class="ui star yellow icon"></i><i class="ui star yellow icon"></i><i class="ui star yellow icon"></i><i
+          <ul><a @click='filterRating(4)'><i class="ui star yellow icon"></i><i class="ui star yellow icon"></i><i class="ui star yellow icon"></i><i
                 class="ui star yellow icon"></i><i class="ui star icon"></i> 4 Stars & Up</a></ul>
-          <ul><a href=""><i class="ui star yellow icon"></i><i class="ui star yellow icon"></i><i class="ui star yellow icon"></i><i
+          <ul><a @click='filterRating(3)'><i class="ui star yellow icon"></i><i class="ui star yellow icon"></i><i class="ui star yellow icon"></i><i
                 class="ui star icon"></i><i class="ui star icon"></i> 3 Stars & Up</a></ul>
-          <ul><a href=""><i class="ui star yellow icon"></i><i class="ui star yellow icon"></i><i class="ui star icon"></i><i
+          <ul><a @click='filterRating(2)'><i class="ui star yellow icon"></i><i class="ui star yellow icon"></i><i class="ui star icon"></i><i
                 class="ui star icon"></i><i class="ui star icon"></i> 2 Stars & Up</a></ul>
-          <ul><a href=""><i class="ui star yellow icon"></i><i class="ui star icon"></i><i class="ui star icon"></i><i
+          <ul><a @click='filterRating(1)'><i class="ui star yellow icon"></i><i class="ui star icon"></i><i class="ui star icon"></i><i
                 class="ui star icon"></i><i class="ui star icon"></i> 1 Stars & Up</a></ul>
           <h4 class="">Price<small> (in USD Million)</small></h4>
           <ul class="" style="list-style-type:none">
             <div aria-live="" class="">
-              <li><span class=""><a class="" href=""><span class="">Under $10 M</span></a></span></li>
-              <li><span class=""><a class="" href=""><span class="">$10 M to $50 M</span></a></span></li>
-              <li><span class=""><a class="" href=""><span class="">$50 M to $100 M</span></a></span></li>
-              <li><span class=""><a class="" href=""><span class="">$100 M to $500 M</span></a></span></li>
-              <li><span class=""><a class="" href=""><span class="">$500 M & Above</span></a></span></li>
+              <li><span class=""><a class="" @click='filterRangePrice(0,10)'><span class="">Under $10 M</span></a></span></li>
+              <li><span class=""><a class="" @click='filterRangePrice(10,50)'><span class="">$10 M to $50 M</span></a></span></li>
+              <li><span class=""><a class="" @click='filterRangePrice(50,100)'><span class="">$50 M to $100 M</span></a></span></li>
+              <li><span class=""><a class="" @click='filterRangePrice(100,500)'><span class="">$100 M to $500 M</span></a></span></li>
+              <li><span class=""><a class="" @click='filterRangePrice(500,99999)'><span class="">$500 M & Above</span></a></span></li>
             </div>
           </ul>
           <div class="ui form">
             <label for="">Range:</label>
             <div class="three fields">
               <div class="field">
-                <input type="text" placeholder="$Min">
+                <input type="text" placeholder="$Min" v-model='minPrice'>
               </div>
               <div class="field">
-                <input type="text" placeholder="$Max">
+                <input type="text" placeholder="$Max" v-model='maxPrice'>
               </div>
-              <div class="ui button mini">
+              <div class="ui button mini" @click='filterRangePrice(minPrice,maxPrice)'>
                 Go
               </div>
             </div>
@@ -700,7 +685,7 @@
           <div class="ui link cards">
             <div class="card" v-for='product in products'>
               <div class="image" @click='seeDetails(product)' data-inverted="" data-tooltip="click to see details"
-                data-position='bottom center' data-variation="mini">
+                data-position='bottom center'>
                 <img :src="product.image">
               </div>
               <div class="content">
@@ -710,9 +695,12 @@
                 <div class="meta">
                   <a>{{ product.category }}</a>
                 </div>
-                <div class="description">
-                  {{ product.description }}
+                <div class="description" v-if='calculateRating(product.reviews)>0'>
+                  <i class="ui yellow star icon"></i>
+                  Rating: 
+                  {{ calculateRating(product.reviews) }} / 5
                 </div>
+                <div v-else>Unrated</div>
               </div>
               <div class="extra content">
                 <span class="right floated" v-if='product.quantity != 0' style="color: black">
@@ -743,7 +731,7 @@
 
     <!-- Login Modal -->
     <div class="ui modal login">
-      <i class="close icon" id="close"></i>
+      <i class="close icon" id="close-login"></i>
       <div class="ui" style="margin: 20px 0;">
         <div class="ui middle aligned center aligned grid">
           <div class="ui ten wide column">
@@ -902,6 +890,7 @@
         receiver: '',
         address: '',
         creditCard: '',
+        creditCardNum: '',
         coupon: '',
         discount: 0,
         total: 0,
@@ -921,7 +910,9 @@
         createCategory: false,
         newCategory: '',
         rating: 0,
-        reviewMsg: ''
+        reviewMsg: '',
+        minPrice: 0,
+        maxPrice: 0
       },
       watch: {
         showErr: function (newVal, oldVal) {
@@ -934,8 +925,14 @@
         showMsg: function (newVal, oldVal) {
           if (newVal == true) {
             setTimeout(function () {
-              app.showErr = false
+              app.showMsg = false
             }, 2500)
+          }
+        },
+        showTransactionHistory: function(newVal, oldVal) {
+          if(newVal) {
+            this.showCartPage =false
+            this.showDetailsPage =false
           }
         }
       },
@@ -999,7 +996,7 @@
               app.isLogin = true
               app.email = '', app.password = ''
               setInterval(function () {
-                document.getElementById('close').click()
+                document.getElementById('close-login').click()
               }, 900)
             }).catch((err) => {
               app.msg = err.response.data.message || err.response.data.error
@@ -1536,6 +1533,46 @@
           })
           this.productsSold = newArr
         },
+        filterRating(rating) {
+          this.products = []
+          axios.get(`${host}/products/filter?rating=${rating}`)
+          .then((result) => {
+            app.products = result.data
+          }).catch((err) => {
+            console.log(err.response)
+            app.getAllProducts()
+          });
+        },
+        filterReleaseDate(days) {
+          this.products = []
+          axios.get(`${host}/products/filter?days=${days}`)
+          .then((result) => {
+            result.data.forEach(item=>{
+              if(!item.isDelete) {
+                app.products.push(item)
+              }
+            })
+          }).catch((err) => {
+            console.log(err.response)
+            app.getAllProducts()
+          });
+        },
+        filterRangePrice(pricefrom, priceto) {
+          let from = pricefrom * 1000000
+          let to = priceto * 1000000
+          this.products = []
+          axios.get(`${host}/products/filter?pricefrom=${from}&priceto=${to}`)
+          .then((result) => {
+            result.data.forEach(item=>{
+              if(!item.isDelete) {
+                app.products.push(item)
+              }
+            })
+          }).catch((err) => {
+            console.log(err.response)
+            app.getAllProducts()
+          });
+        },
         generateCoupon() {
           let alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
           let num = '1234567890'
@@ -1551,29 +1588,32 @@
           return coupon.join('')
         },
         checkCouponEligble() {
-          let coupon = this.generateCoupon()
-          let discount = Math.floor((Math.random()*30) + 10) 
-          axios.get(`${host}/transactions/${localStorage.getItem('userId')}`, {
-              headers: {
-                authorization: `Bearer ${localStorage.getItem('token')}`
-              }
-            })
-            .then((result) => {
-              if (result.data.length >= 3) {
-                axios.post(`${host}/coupons`,{code:coupon, discount:discount}, {
-                  headers: {
-                    authorization: `Bearer ${localStorage.getItem('token')}`
-                  }
-                }).then((result) => {
-                  // setTimeout(function() {
-                  //   alert(`Congratulation you got coupon ${discount}%, Coupon:"${coupon}"
-                  //   due to you have made 3 or more transactions`)
-                  // }, 3500)
-                }).catch((err) => {
-                });
-              }
-            }).catch((err) => {
-            });
+          if(localStorage.getItem('admin')) {
+          } else if(localStorage.getItem('token')){
+            let coupon = this.generateCoupon()
+            let discount = Math.floor((Math.random()*20) + 10) 
+            axios.get(`${host}/transactions/${localStorage.getItem('userId')}`, {
+                headers: {
+                  authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+              })
+              .then((result) => {
+                if (result.data.length >= 3) {
+                  axios.post(`${host}/coupons`,{code:coupon, discount:discount}, {
+                    headers: {
+                      authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                  }).then((result) => {
+                    setTimeout(function() {
+                      alert(`Congratulation you got coupon ${discount}%, Coupon:"${coupon}"
+                      due to you have made 3 or more transactions`)
+                    }, 3500)
+                  }).catch((err) => {
+                  });
+                }
+              }).catch((err) => {
+              });
+          }
         },
         transactionHistory() {
           axios.get(`${host}/transactions/${localStorage.getItem('userId')}`, {
@@ -1670,6 +1710,11 @@
               })
               .then((result) => {
                 app.getAllProducts()
+                setTimeout(function() {
+                  let data = app.getProductData()
+                  app.showDetailsPage = false
+                  app.seeDetails(data)
+                }, 300)
               }).catch((err) => {
                 console.log(err.response)
               });

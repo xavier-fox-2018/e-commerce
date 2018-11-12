@@ -6,6 +6,16 @@ a {
   cursor: pointer;
 }
 
+.link.cards {
+  font-size: 14px;
+}
+
+.link.cards img {
+  width: 200px;
+  min-height: 200px;
+
+}
+
 .link:hover {
   cursor: pointer;
   color: darkblue;

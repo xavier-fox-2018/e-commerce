@@ -7,12 +7,13 @@ const axios = require('axios')
 
 module.exports = {
   findCoupon: function(req, res) {
-    Coupon.findOne({user: req.user.id})
+    Coupon.find({user: req.user.id})
     .then((result) => {
       let found = false
-      result.coupons.forEach(coupon=>{
-        if(coupon.code === req.params.coupon) {
-          res.status(200).json(coupon)
+      result.forEach(coupon=>{
+        console.log(result, coupon.coupons, req.params.coupon)
+        if(coupon.coupons.code === req.params.coupon) {
+          res.status(200).json(coupon.coupons)
           found = true
         }
       })
