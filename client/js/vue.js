@@ -3,11 +3,29 @@ Vue.config.errorHandler = function (err, vm) {
 }
 
 const server = axios.create({ baseURL:'https://h8ikestore-api.adishare.online' })
+// const server = axios.create({ baseURL:'http://localhost:3000' })
+
+server.interceptors.request.use(function (config) {
+    document.body.classList.add('loading-indicator');
+    
+    return config
+}, function (error) {
+    return Promise.reject(error);
+});
+server.interceptors.response.use(function (response) {
+    document.body.classList.remove('loading-indicator');
+    
+    return response;
+}, function (error) {
+    return Promise.reject(error);
+});
+
 Vue.prototype.$server = server
 
 let app = new Vue({
     el : '#app',
     data : {
+        notify : '',
 
         viewMode : 'main',
         editItemMode : "",
@@ -119,6 +137,15 @@ let app = new Vue({
     },
     methods: {
 
+        gotNotify(message) {
+            this.notify = message
+            document.body.classList.remove('loading-indicator');
+            setTimeout(() => {
+                this.notify = ''
+            }, 5000);
+
+        },
+
         getReport() {
             let option = {}
 
@@ -130,7 +157,7 @@ let app = new Vue({
             .then(result => {
                 this.report = result.data.data
             }).catch(err => {
-                console.log(err.response);
+                this.gotNotify(err.response.data)
             });
         },
 
@@ -164,12 +191,12 @@ let app = new Vue({
                     .then(result => {
                         this.getItems()
                     }).catch(err => {
-                        console.log(err.response);
+                        this.gotNotify(err.response.data)
                     });
 
                 })
                 .catch((err) => {
-                    console.log(err.response);
+                    this.gotNotify(err.response.data)
                 })
 
         },
@@ -184,7 +211,7 @@ let app = new Vue({
             .then((result) => {
                 this.transactions = result.data
             }).catch((err) => {
-                console.log(err.response.data);
+                this.gotNotify(err.response.data)
             });
 
         },
@@ -212,7 +239,8 @@ let app = new Vue({
                 this.viewMode ='main'
                 this.getUserTransactions()
             }).catch(err => {
-                console.log(err.response);
+                // console.log(err.response);
+                this.gotNotify(err.response.data)
             });
 
         },
@@ -228,7 +256,8 @@ let app = new Vue({
                 this.getItems()
                 this.editItemMode = ''
             }).catch((err) => {
-                console.log(err.response);
+                // console.log(err.response);
+                this.gotNotify(err.response.data)
             });
 
         },
@@ -243,7 +272,8 @@ let app = new Vue({
             .then((result) => {
                 this.getItems()
             }).catch((err) => {
-                console.log(err.response);
+                // console.log(err.response);
+                this.gotNotify(err.response.data)
             });
 
         },
@@ -321,7 +351,8 @@ let app = new Vue({
                 this.cartItems = Cart.cartItems
                 this.total = Cart.total
             }).catch((err) => {
-                console.log(err.response.data);
+                // console.log(err.response.data);
+                this.gotNotify(err.response.data)
             });
 
         },
@@ -338,7 +369,7 @@ let app = new Vue({
                 localStorage.setItem('token', result.data.token)
                 this.getUserByToken()
             }).catch(err => {
-                console.log(err.response.data);
+                this.gotNotify(err.response.data.error.message)
             });
 
         },
@@ -354,13 +385,14 @@ let app = new Vue({
                 localStorage.setItem('token', result.data.token)
                 this.getUserByToken()
             }).catch(err => {
-                console.log(err.response.data);
+                // console.log(err.response.data);
+                this.gotNotify(err.response.data.message)
             });
 
         },
 
         addToCart(itemObj) {
-
+            
             let InCartItem = [...this.cartItems]
             let index = InCartItem.findIndex(val => {
                 return val._id == itemObj._id
@@ -392,7 +424,7 @@ let app = new Vue({
             .then((result) => {
                 this.getCart(this.user._id)
             }).catch((err) => {
-                console.log(err.response.data);
+                this.gotNotify(err.response.data.message)
             });
 
         },
@@ -433,7 +465,9 @@ let app = new Vue({
                 this.categories = [ ...new Set(arr) ]
 
             }).catch((err) => {
-                console.log(err.response.data);
+                // console.log(err.response.data);
+                this.gotNotify(err.response.data.message)
+
             });
 
         },
@@ -459,7 +493,9 @@ let app = new Vue({
                 });
             })
             .catch(function(error) {
-                console.log(error.response);
+                // console.log(error.response);
+                this.gotNotify(err.response.data.message)
+
             })
             
         },
@@ -491,7 +527,9 @@ let app = new Vue({
                     this.items = result.data
                     this.getCategories()
                 }).catch((err) => {
-                    console.log(err.response);
+                    // console.log(err.response);
+                    this.gotNotify(err.response.data.message)
+
                 });
 
         },
@@ -518,7 +556,9 @@ let app = new Vue({
                 .then((result) => {
                     this.items = result.data
                 }).catch((err) => {
-                    console.log(err.response.data);
+                    // console.log(err.response.data);
+                    this.gotNotify(err.response.data.message)
+
                 });
 
         },
@@ -532,7 +572,9 @@ let app = new Vue({
                 .then((result) => {
                     this.items = result.data
                 }).catch((err) => {
-                    console.log(err.response.data);
+                    // console.log(err.response.data);
+                    this.gotNotify(err.response.data.message)
+
                 });
 
         },

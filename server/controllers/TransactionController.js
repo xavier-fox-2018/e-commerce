@@ -86,46 +86,41 @@ module.exports = {
 
         TransactionModel.find()
         .then((transactions) => {
-            let AllTransactionItems = []
+            
+            let groupedByTransactionDate = {}
 
             transactions.forEach(transaction => {
-                transaction.items.forEach(item => {
-                    AllTransactionItems.push(item)
-                })
-            })
+                let date = transaction.updatedAt.toISOString().slice(0,10)
+                if(groupedByTransactionDate[date] === undefined) {
+                    groupedByTransactionDate[date] = {}
+                    transaction.items.forEach(item => {
+                        if(groupedByTransactionDate[date][item._id] === undefined){
+                            groupedByTransactionDate[date][item._id] = {
+                                name : item.name,
+                                quantity : item.quantity
+                            }
+                        } else {
+                            groupedByTransactionDate[date][item._id].quantity += item.quantity
+                        }   
+                    })
 
-            let dateGrouped = {}
-            let dates = []
-            AllTransactionItems.forEach(transactionItem => {
-                let date = transactionItem.updatedAt.slice(0,10)
-                if(dateGrouped[date] === undefined) {
-                    dateGrouped[date] = [transactionItem]
-                    dates.push(date)
                 } else {
-                    dateGrouped[date].push(transactionItem)
+                    transaction.items.forEach(item => {
+                        if(groupedByTransactionDate[date][item._id] === undefined){
+                            groupedByTransactionDate[date][item._id] = {
+                                name : item.name,
+                                quantity : item.quantity
+                            }
+                        } else {
+                            groupedByTransactionDate[date][item._id].quantity += item.quantity
+                        }   
+                    })
                 }
-            })
-
-            let dateAndItemGrouped = {}
-            
-            dates.forEach(date => {
-                dateAndItemGrouped[date] = {}
-                dateGrouped[date].forEach(item => {
-
-                    if(dateAndItemGrouped[date][item._id] === undefined) {
-                        dateAndItemGrouped[date][item._id] = {
-                            name : item.name,
-                            quantity : item.quantity
-                        }
-                    } else {
-                        dateAndItemGrouped[date][item._id].quantity += item.quantity
-                    }
-                })
 
             })
 
             res.json({
-                data : dateAndItemGrouped
+                data : groupedByTransactionDate
             })
 
         }).catch((err) => {

@@ -29,6 +29,14 @@
             :get-report='getReport'>
         </navbar-component>
 
+        <!-- notif -->
+        <div v-if="notify" class="alert text-center alert-warning alert-dismissible fade show" role="alert">
+            <span class="text-center"> {{notify}} </span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
         <report-view
             :report='report'
             :view-mode='viewMode'
@@ -134,15 +142,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/js/jquery.dataTables.min.js" integrity="sha256-t5ZQTZsbQi8NxszC10CseKjJ5QeMw5NINtOXQrESGSU=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/js/dataTables.bootstrap4.min.js" integrity="sha256-hJ44ymhBmRPJKIaKRf3DSX5uiFEZ9xB/qx8cNbJvIMU=" crossorigin="anonymous"></script>
 
+    <script src="./js/views/adminView.js"></script>
+    <script src="./js/views/checkoutView.js"></script>
+    <script src="./js/views/mainView.js"></script>
+    <script src="./js/views/reportView.js"></script>
+    <script src="./js/views/transactionsView.js"></script>
     <script src="./js/components/navbarComponent.js"></script>
-    <script src="./js/components/adminView.js"></script>
     <script src="./js/components/cartComponent.js"></script>
-    <script src="./js/components/checkoutView.js"></script>
     <script src="./js/components/registerLoginComponent.js"></script>
-    <script src="./js/components/mainView.js"></script>
     <script src="./js/components/footerComponent.js"></script>
-    <script src="./js/components/transactionsView.js"></script>
-    <script src="./js/components/reportView.js"></script>
 
 
     <script src="./js/main.js"></script>

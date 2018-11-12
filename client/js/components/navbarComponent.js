@@ -1,6 +1,6 @@
 let navbarComponentTemplate = `<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
-        <a class="navbar-brand" href="/"> {{websitename}} </a>
+        <a class="navbar-brand" href="/"> <i class="fa fa-bicycle fa-lg"></i> {{websitename}} </a>
         <a v-if="!user" class="nav-link" href="" @click.prevent="toggleLoginRegister()">
             <div class="text-light">
                 <i class="fa fa-sign-in fa-lg"></i>

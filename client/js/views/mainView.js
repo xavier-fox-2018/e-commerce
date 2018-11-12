@@ -60,19 +60,20 @@ let mainViewTemplate = `<transition name="fade">
         <div class="col-lg-9"> <br>
 
             <!-- articles / items -->
-            <div class="row">
+            <div class="row"  >
                 <div class="col-lg-4 col-md-6 mb-4" v-if="item.stock > 0" v-for="(item,index) in items " :key="item._id">
-                    <div class="card border-info mb-3">
+                    <div v-on:mouseover="cardActive = item._id" class="card border-info mb-3">
                         <a href="#"><img class="cardImg card-img-top centered" height="200" :src="item.img ? item.img : 'img/bikePlaceholder.png'" alt=""></a>
                         <div class="card-body">
+                            <small class="text-muted pull-right">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
                             <h4 class="card-title">
-                                <a href="#">{{item.name}}</a>
+                                <a href="" @click.prevent="">{{item.name}}</a>
                             </h4>
                             <h5> {{ getRpFormat(item.price) }} </h5>
-                            <p class="card-text"> {{item.description}} </p>
+                            <span v-if="cardActive == item._id" class="badge badge-pill badge-light pull-right"> {{item.categories.join(', ')}} </span>
+                            <p v-if="cardActive == item._id" class="card-text"> {{item.description}} </p>
                         </div>
                         <div v-if="user" class="card-footer">
-                            <!-- <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small> -->
                             Available <span class="badge badge-info">{{ item.stock }}</span>
                             <span  v-if="user && itemQtyinCartItems[item._id]" class="badge badge-warning">{{ itemQtyinCartItems[item._id].quantity }} In Your Cart</span> 
                             <span v-if="user.role != 'admin' ">
@@ -102,7 +103,9 @@ Vue.component('mainView', {
     data () {
         return {
             searchInput : '',
-            searcOptionKey : 'name'
+            searcOptionKey : 'name',
+
+            cardActive: false
         }
     }
 })
