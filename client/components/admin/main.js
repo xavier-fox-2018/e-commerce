@@ -1,21 +1,23 @@
 Vue.component('admin-menu', {
+    props : ['isadmin'],
     template: `
     <!--Main layout-->
     <main class="pt-5 mx-lg-5">
         <div class="container-fluid mt-5">
-
             <!--Grid row-->
             <div class="row wow fadeIn">
 
                 <!--Grid column-->
-                <div class="col-md-6 mb-4">
+                <div class="col-md-12 col-lg-6 mb-4">
 
                     <!--Card-->
                     <div class="card">
-                        <a class="btn btn-danger" @click="getAllTransactions">Get All transactions</a>
+                        <!-- <a class="btn btn-danger" @click="getAllTransactions">Get All transactions</a> -->
                         
                         <!--Card content-->
                         <div class="card-body">
+                            <h4 class="card-title text-muted text-center">Transactions Report</h4>
+                            <hr>
                         
                             <!-- Grid row -->
                             <div class="row d-flex justify-content-center mb-3">
@@ -46,6 +48,7 @@ Vue.component('admin-menu', {
                                 <!-- Table head -->
                                 <thead class="blue-grey lighten-4">
                                     <tr>
+                                        <th>#</th>
                                         <th>Transaction Id</th>
                                         <th>Date</th>
                                         <th>Name</th>
@@ -57,7 +60,8 @@ Vue.component('admin-menu', {
                                 <!-- Table body -->
                                 <tbody>
                                     <tr v-for="transaction,index in filteredData" :key="index" @click="getTransactionDetail(transaction)" style="cursor:pointer" data-toggle="modal" data-target="#transactionDetailModal">
-                                        <th scope="row">{{transaction._id}}</th>
+                                        <th scope="row" >{{index}}</th>
+                                        <td>{{transaction._id}}</td>
                                         <td>{{transaction.createdAt}}</td>
                                         <td>{{transaction.user.name}}</td>
                                         <td>$ {{transaction.total_price}}</td>
@@ -151,25 +155,44 @@ Vue.component('admin-menu', {
                 </div>
                 <!-- Modal -->
 
-
-
                 <!--Grid column-->
-                <div class="col-md-6 mb-4">
+                <div class="col-md-12 col-lg-6 mb-4">
 
                     <!--Card-->
                     <div class="card">
-                        <button class="btn btn-danger" @click="getAllItems">Get Items Sold</button>
+                        <!-- <button class="btn btn-danger" @click="getAllItems">Get Items Sold</button> -->
 
                         <!--Card content-->
                         <div class="card-body">
-                            Filter By Month And Year
-                            <input type="month" v-model="filterItems">
-                            <button @click="filterItemsByDate">Filter</button>
+                            <h4 class="card-title text-muted text-center">Items Report</h4>
+                            <hr>
+
+                            <!-- Grid row -->
+                            <div class="row d-flex justify-content-center">
+
+                                <!-- <div class="col-lg-4 text-right mt-2">
+                                    <strong>Filter By Year And Month</strong>
+                                </div> -->
+
+                                <!-- Grid column -->
+                                <div class="col-lg-4">
+                                    <!-- Default input -->
+                                    <input v-model="filterItems" type="month" class="form-control mt-2">
+                                </div>
+                                <!-- Grid column -->
+                                
+                                <!-- Grid column -->
+                                <div class="col-lg-4">
+                                    <a class="btn btn-secondary" @click="filterItemsByDate">Filter</a>
+                                </div>
+                                <!-- Grid column -->
+                            </div>
+                            <!-- Grid row -->
 
                             <!-- Table  -->
                             <table class="table table-hover">
                                 <!-- Table head -->
-                                <thead class="blue lighten-4">
+                                <thead class="blue-grey lighten-4">
                                     <tr>
                                         <th>#</th>
                                         <th>Item</th>
@@ -180,8 +203,8 @@ Vue.component('admin-menu', {
 
                                 <!-- Table body -->
                                 <tbody>
-                                    <tr v-for="item in itemsSold">
-                                        <th scope="row" >1</th>
+                                    <tr v-for="item,index in itemsSold" :key="index">
+                                        <th scope="row" >{{index}}</th>
                                         <td>{{item.name}}</td>
                                         <td>{{item.sold}}</td>
                                     </tr>
@@ -236,6 +259,7 @@ Vue.component('admin-menu', {
     },
     methods : {
         getAllTransactions : function(){
+            console.log('get all transactions...')
             axios({
                 method : 'GET',
                 url : `${this.config.port}/transactions`,
@@ -256,16 +280,60 @@ Vue.component('admin-menu', {
             })
         },
         getAllItems : function(){
+            console.log('get all items...')
+
             axios({
                 method : 'GET',
-                url : `${this.config.port}/items`
+                url : `${this.config.port}/transactions`,
+                headers : {
+                    token : localStorage.getItem('token')
+                }
             })
             .then(response=>{
+
                 // console.log(response.data)
-                this.items = response.data
+
+                let output = response.data
+
+                let group = []
+
+                for(let i = 0 ; i < output.length ; i ++){
+
+                    let item_list = output[i].item_list
+                    
+
+                    for(let j = 0 ; j < item_list.length ; j ++){
+                        let item = item_list[j].item
+                        let quantity = item_list[j].qty
+
+                        let grouped = false
+                        
+                        for(let k = 0 ; k < group.length ; k ++ ){
+                            
+                            if(group[k].name === item.name){
+                                grouped = true
+                            }
+                        }
+
+                        if(grouped === false){
+                            let obj = {
+                                name : item.name,
+                                sold : 0
+                            }
+                            group.push(obj)
+                        }
+
+                        for(let k = 0 ; k < group.length ; k ++ ){
+                            if(group[k].name === item.name){
+                                group[k].sold = group[k].sold + quantity
+                            }
+                        }
+                    }
+                }
+                this.itemsSold = group
             })
-            .catch(err=>{
-                console.log(err)
+            .catch(error=>{
+                console.log(error)
             })
         },
         getAllUsers : function(){
@@ -396,6 +464,31 @@ Vue.component('admin-menu', {
                     return (date >= startDate && date <= endDate);
                 }
             }))
+        }
+    },
+    watch : {
+        startDate : function(val){
+            if(this.startDate === '' && this.endDate === ''){
+                this.startDate = null
+                this.endDate = null
+            }
+        },
+        endDate : function(val){
+            if(this.startDate === '' && this.endDate === ''){
+                this.startDate = null
+                this.endDate = null
+            }
+        },
+        filterItems : function(val){
+            if(this.filterItems === ''){
+                this.getAllItems()
+            }
+        }
+    },
+    mounted : function(){
+        if(this.isadmin){
+            this.getAllTransactions()
+            this.getAllItems()
         }
     }
 })

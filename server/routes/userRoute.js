@@ -5,9 +5,12 @@ const middleware = require('../middlewares/index')
 router.post('/register',middleware.emailUnique,controller.register)
 router.post('/login',controller.login)
 
-// router.post('/gsignin',controller.gsignin)
-
 router.get('/',middleware.authenticate,controller.readOne)
-router.get('/all',middleware.authenticate,controller.read)
+
+// admin
+router.post('/',middleware.authenticate,middleware.isAdmin,controller.create)
+router.get('/all',middleware.authenticate,middleware.isAdmin,controller.read)
+router.put('/:id',middleware.authenticate,middleware.isAdmin,controller.update)
+router.delete('/:id',middleware.authenticate,middleware.isAdmin,controller.delete)
 
 module.exports = router
