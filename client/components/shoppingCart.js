@@ -3,7 +3,7 @@ const config = {
 };
 
 Vue.component('shopping-cart', {
-    props: ['cart-show', 'getusercart', 'getcartbadge', 'gettotalprice', 'cart', 'total-price', 'getitems', 'showlistitem', 'getusertransactions'],
+    props: ['cart-show', 'getusercart', 'getcartbadge', 'gettotalprice', 'cart', 'total-price', 'getitems', 'showlistitem', 'getusertransactions', 'getuserprofile'],
     methods: {
         removeItemFromCart: function(itemId) {
             axios({
@@ -36,6 +36,7 @@ Vue.component('shopping-cart', {
                     this.showlistitem();
                     this.getcartbadge();
                     this.getusertransactions();
+                    this.getuserprofile();
                 })
                 .catch(function(err) {
                     console.log('Checkout Error: ', err);

@@ -125,7 +125,7 @@
             </div>
 
             <!--SHOPPING CART-->
-            <shopping-cart :cart-show="cartShow" :getusercart="getUserCart" :getcartbadge="getCartBadge" :gettotalprice="getTotalPrice" :cart="cart" :total-price="totalPrice" :getitems="getItems" :showlistitem="showListItem" :getusertransactions="getUserTransactions"></shopping-cart>
+            <shopping-cart :cart-show="cartShow" :getusercart="getUserCart" :getcartbadge="getCartBadge" :gettotalprice="getTotalPrice" :cart="cart" :total-price="totalPrice" :getitems="getItems" :showlistitem="showListItem" :getusertransactions="getUserTransactions" :getuserprofile="getUserProfile"></shopping-cart>
 
             <!-- USER PROFILE -->
             <div v-if="profileShow" class="container">
@@ -216,10 +216,6 @@
         <script src="components/searchItems.js"></script>
         <script src="components/shoppingCart.js"></script>
         <script>
-            const config = {
-                host: 'https://ekitserver.reshalem.info'
-            };
-
             var app = new Vue({
                 el: '#app',
                 data: {

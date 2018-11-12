@@ -140,6 +140,9 @@
                                 app.showLogin();
                                 console.log('Register succeeded!');
                                 app.isError = false;
+                                app.registerUser.username = '';
+                                app.registerUser.email = '';
+                                app.registerUser.password = '';
                             })
                             .catch(function(err) {
                                 app.errorMsg = err.response.data.message;
@@ -164,6 +167,9 @@
                                 } else if (result.data.role == 'admin') {
                                     window.location.replace("/admin.html");
                                 }
+
+                                app.loginUser.email = '';
+                                app.loginUser.password = '';
                             })
                             .catch(function(err) {
                                 app.errorMsg = err.response.data.message;
