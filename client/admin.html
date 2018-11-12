@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <title>Admin Panel Ecommercs</title>
+</head>
+
+<body>
+    <div id="app">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar navbar-dark navbar-custom fixed-top">
+            <div class="container">
+                <a class="navbar-brand" href="/">Admin Panel</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link">Product</a>
+                        </li>
+                       
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Navbar -->
+
+        <!-- IMAGE -->
+        <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img class="d-block w-100" src="https://portotheme.com/html/porto/demo-4/assets/images/banners/banner-top.jpg"
+                        alt="First slide">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h2>The best shopping ever</h2>
+                        <p>this is a paragragph text</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- IMAGE -->
+
+        <!-- side -->
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 mt-4">
+                    <div class="card">
+                        <div class="card-header bg-custom">
+                            Menu
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <a  v-on:click="showCategoryPage" class="list-group-item list-group-item-action">Category</a>
+                            <a  v-on:click="showProductPage" class="list-group-item list-group-item-action">Product</a>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- category -->
+                <div v-if="page.category" class="col-md-9  mt-4">
+                    <div class="row mb-4 ml-2">
+                            <!-- <input class="form-control mr-sm-2" placeholder="Search for products" aria-label="Search" v-model="filterProduct"  > -->
+                            <h2 class="text-center">Category</h2>
+                    </div>
+                  <div class="row">
+                      <div class="col-3">
+                            <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-plus"></i>&nbsp;
+                                Add new category
+                            </button>              
+                      </div> 
+                      <div class="col-9">
+                            <input class="form-control" placeholder="Search category" >      
+                      </div>                                  
+                    </div>
+                    <div class="row">
+                        <table class="table">
+                            <thead>
+                              <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">name</th>
+                                <th scope="col">Action</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr v-for="category in categories.items">
+                                <th scope="row">1</th>
+                                <td>{{category.name}}</td>
+                                <td>
+                                    <div class="btn btn-danger" v-on:click="deleteCategory(category._id)">delete</div>
+                                    <div class="btn btn-info" v-on:click="updateCategory(category)" data-toggle="modal" data-target="#editModal">update</div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                    </div>                   
+                </div>
+                <!-- --category -->
+
+
+
+
+                <!-- Product -->
+                <div  v-if="page.product" class="col-md-9  mt-4">
+                        <div class="row mb-4 ml-2">
+                                <h2 class="text-center">Product</h2>
+                        </div>
+                      <div class="row">
+                          <div class="col-3">
+                                <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#createProduct"><i class="fa fa-plus"></i>&nbsp;
+                                    Add new Product
+                                </button>              
+                          </div> 
+                          <div class="col-9">
+                                <input class="form-control" placeholder="Search product" >      
+                          </div>                                  
+                        </div>
+                        <div class="row">
+                            <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">name</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">price</th>
+                                    <th scope="col">discount</th>
+                                    <th scope="col">Action</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr v-for="product in products.items">
+                                    <th scope="row">1</th>
+                                    <td>{{product.name}}</td>
+                                    <td>{{product.category.name}}</td>
+                                    <td>{{product.price}}</td>
+                                    <td>{{product.discount}}</td>
+                                    <td>
+                                        <div class="btn btn-danger" v-on:click="deleteProduct(product._id)">delete</div>
+                                        <div class="btn btn-info" v-on:click="updateProduct(product)" data-toggle="modal" data-target="#editroduct">update</div>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                        </div>                   
+                </div>
+                  <!-- --Product -->
+
+
+
+
+
+
+
+            </div>
+        </div>
+
+
+        <!-- MODAL CREATE-->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Form</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form>
+                        <div class="form-group">
+                          <label for="recipient-name" class="col-form-label">category Name:</label>
+                          <input type="text" class="form-control" id="recipient-name" v-model="categories.create.name">
+                        </div>
+                        <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary" data-dismiss="modal" v-on:click="createCategory">submit</button>
+                              </div>
+                      </form>
+                    </div>
+                    
+                  </div>
+             </div>
+        </div>
+
+
+        <!-- create product modal -->
+        <div class="modal fade" id="createProduct" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">product</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form>
+                        <div class="form-group">
+                          <label for="recipient-name" class="col-form-label">peoduct Name:</label>
+                          <input type="text" class="form-control" id="recipient-name" v-model="products.create.name">
+                        </div>
+
+                        <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">category:</label>
+                                <select class="form-control" v-model="products.create.id">
+                                    <option selected disabled>-- select category --</option>
+                                    <option v-for="category in categories.items" v-bind:value="category._id">{{ category.name }}</option>
+                                </select>
+                              </div>
+
+                        <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">description:</label>
+                                <textarea  class="form-control" id="recipient-name" v-model="products.create.description"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">price:</label>
+                                <input type="number" min="0" class="form-control" v-model="products.create.price">
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">stock:</label>
+                            <input type="number" min="0" class="form-control" v-model="products.create.stock">
+                         </div>
+
+                        <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">discount:</label>
+                                <input type="number" min="0" class="form-control" v-model="products.create.discount">
+                        </div>
+                        <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary" data-dismiss="modal" v-on:click="createProduct">submit</button>
+                              </div>
+                      </form>
+                    </div>
+                    
+                  </div>
+             </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+        <!-- MODAL EDIT -->
+
+        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Edit</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form>
+                        <div class="form-group">
+                          <label for="recipient-name" class="col-form-label">category Name:</label>
+                          <input type="text" class="form-control" id="recipient-name" v-model="categories.edit.name">
+                        </div>
+                        <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary" data-dismiss="modal" v-on:click="updateCategoryE">submit</button>
+                              </div>
+                      </form>
+                    </div>
+                    
+                  </div>
+             </div>
+        </div>
+
+
+        <!-- Modal Edit product -->
+        <div class="modal fade" id="editroduct" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">product</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form>
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label">peoduct Name:</label>
+                    <input type="text" class="form-control" id="recipient-name" v-model="products.edit.name">
+                  </div>
+
+                  <div class="form-group">
+                          <label for="recipient-name" class="col-form-label">category:</label>
+                          <select class="form-control" v-model="products.edit.category">
+                              <option selected disabled>-- select category --</option>
+                              <option v-for="category in categories.items" v-bind:value="category._id">{{ category.name }}</option>
+                          </select>
+                        </div>
+
+                  <div class="form-group">
+                          <label for="recipient-name" class="col-form-label">description:</label>
+                          <textarea  class="form-control" id="recipient-name" v-model="products.edit.description"></textarea>
+                  </div>
+
+                  <div class="form-group">
+                          <label for="recipient-name" class="col-form-label">price:</label>
+                          <input type="number" min="0" class="form-control" v-model="products.edit.price">
+                  </div>
+
+                  <div class="form-group">
+                          <label for="recipient-name" class="col-form-label">discount:</label>
+                          <input type="number" min="0" class="form-control" v-model="products.edit.discount">
+                  </div>
+                  <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          <button type="submit" class="btn btn-primary" data-dismiss="modal" v-on:click="updateProductE">submit</button>
+                        </div>
+                </form>
+              </div>
+              
+            </div>
+       </div>
+    </div>
+
+
+
+
+
+    </div>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="/assets//js/admin.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+</body>
+
+</html>

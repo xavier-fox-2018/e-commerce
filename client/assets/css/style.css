@@ -8,3 +8,7 @@
     background-image: none;
     border-color: #007bff;
 }
+
+ a:hover {
+  cursor:pointer;
+ }

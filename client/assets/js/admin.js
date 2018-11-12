@@ -1,0 +1,207 @@
+const app = new Vue({
+    el: '#app',
+    data: {
+        page: {
+            category: true,
+            product: false,
+            coupon: false
+        },
+
+        categories: {
+            items: [],
+            create: {
+                name: ''
+            },
+            edit: {
+                id: null,
+                name: ''
+            }
+        },
+
+        products: {
+            items: [],
+            create: {
+                id: null,
+                name: '',
+                discount: 0,
+                description:'',
+                price: '',
+                stock: 0
+            },
+            edit: {
+                id: null,
+                name: '',
+                discount: 0,
+                description:'',
+                price: '',
+                category: '',
+                stock: 0
+            }
+        }
+       
+    },
+
+    created: function() {
+        this.getAllCategories()
+        this.getAllProducts()
+    },
+    methods: {
+
+        showCategoryPage: function() {
+            this.page.product = false
+            this.page.category = true
+        },
+        showProductPage: function() {
+            this.page.product = true
+            this.page.category = false
+        },
+
+        createCategory: function() {
+            axios({
+                method: 'POST',
+                url: 'http://localhost:3000/categories',
+                data: {
+                    name: this.categories.create.name
+                }
+            })
+            .then(response => {
+                this.categories.create.name = ''
+                this.getAllCategories()
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        },
+
+        deleteCategory: function(id) {
+            axios({
+                method: 'DELETE',
+                url: `http://localhost:3000/categories/${id}`
+            })
+            .then(response => {
+                this.getAllCategories()
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        },        
+
+        updateCategory: function(category) {
+            this.categories.edit.id = category._id
+            this.categories.edit.name = category.name             
+        },
+
+        updateCategoryE: function() {
+            axios({
+                method: 'PUT',
+                url: `http://localhost:3000/categories/${this.categories.edit.id}`,
+                data: {
+                    name: this.categories.edit.name
+                }
+            })
+            .then(response => {
+                this.getAllCategories()
+            })
+            .catch(err => {
+                console.log(err)
+            })      
+        },
+
+        getAllCategories: function() {
+            axios({
+                method: 'GET',
+                url: 'http://localhost:3000/categories'
+            })
+            .then(response => {
+                this.categories.items = response.data
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        },
+
+        getAllProducts: function() {
+            axios({
+                method: 'GET',
+                url: 'http://localhost:3000/products'
+            })
+            .then(response => {
+                this.products.items = response.data
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        },
+
+
+        createProduct: function() {
+            axios({
+                method: 'POST',
+                url: 'http://localhost:3000/products',
+                data: {
+                    name: this.products.create.name,
+                    discount: this.products.create.discount,
+                    description: this.products.create.description,
+                    price: this.products.create.price,
+                    category: this.products.create.id,
+                    stock: this.products.create.stock
+                }
+            })
+            .then(response => {
+                this.products.create.name = ''
+                this.products.create.discount = 0
+                this.products.create.description = ''
+                this.products.create.price = 0
+                this.getAllProducts()
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        },
+
+        deleteProduct: function(id) {
+            axios({
+                method: 'DELETE',
+                url: `http://localhost:3000/products/${id}`
+            })
+            .then(response => {
+                this.getAllProducts()
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        },
+
+        updateProduct: function(product) {
+                this.products.edit.id = product._id
+                this.products.edit.name = product.name
+                this.products.edit.discount = product.discount
+                this.products.edit.description = product.description
+                this.products.edit.price = product.price
+                this.products.edit.category = product.category
+        },
+
+        updateProductE: function(product) {
+            axios({
+                method: 'PUT',
+                url: `http://localhost:3000/products/${this.products.edit.id}`,
+                data: {
+                    name: this.products.edit.name,
+                    description: this.products.edit.description,
+                    discount: this.products.edit.discount,
+                    price: this.products.edit.price,
+                    category: this.products.edit.category
+                }
+            })
+            .then(response => {
+                this.getAllCategories()
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+
+    },
+
+   
+})
