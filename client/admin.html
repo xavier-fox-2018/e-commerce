@@ -291,6 +291,10 @@
 
         <!-- VUE INSTANCE -->
         <script>
+            const config = {
+                host: 'https://ekitserver.reshalem.info'
+            };
+
             var app = new Vue({
                 el: '#app',
                 data: {
@@ -333,7 +337,7 @@
                     getAllItems: function() {
                         axios({
                             method: 'GET',
-                            url: `http://localhost:3000/items`
+                            url: `${config.host}/items`
                         })
                             .then(function(items) {
                                 app.currentItems = items.data;
@@ -348,7 +352,7 @@
                     getSoldItems: function() {
                         axios({
                             method: 'GET',
-                            url: `http://localhost:3000/items/sold`,
+                            url: `${config.host}/items/sold`,
                             headers: {
                                 'access-token': localStorage.getItem('token')
                             }
@@ -376,7 +380,7 @@
                     getCategories: function() {
                         axios({
                             method: 'GET', 
-                            url: `http://localhost:3000/categories`, 
+                            url: `${config.host}/categories`, 
                             headers: {
                                 'access-token': localStorage.getItem('token')
                             }
@@ -398,7 +402,7 @@
                     getOneCategory: function(categoryId) {
                         axios({
                             method: 'GET', 
-                            url: `http://localhost:3000/categories/${categoryId}`,
+                            url: `${config.host}/categories/${categoryId}`,
                             headers: {
                                 'access-token': localStorage.getItem('token')
                             }
@@ -418,7 +422,7 @@
                     addCategory: function() {
                         axios({
                             method: 'POST',
-                            url: `http://localhost:3000/categories`,
+                            url: `${config.host}/categories`,
                             headers: {
                                 'access-token': localStorage.getItem('token')
                             },
@@ -444,7 +448,7 @@
                     updateCategory: function() {
                         axios({
                             method: 'PUT',
-                            url: `http://localhost:3000/categories/${this.editCategory.id}`,
+                            url: `${config.host}/categories/${this.editCategory.id}`,
                             data: {
                                 name: this.editCategory.name
                             },
@@ -468,7 +472,7 @@
                     deleteCategory: function() {
                         axios({
                             method: 'DELETE',
-                            url: `http://localhost:3000/categories/${app.deleteCategoryId}`,
+                            url: `${config.host}/categories/${app.deleteCategoryId}`,
                             headers: {
                                 'access-token': localStorage.getItem('token')
                             }
@@ -497,7 +501,7 @@
                         if (this.editItem.imgURL === '') {
                             axios({
                                 method: 'PUT',
-                                url: `http://localhost:3000/items/${this.editItem.id}`,
+                                url: `${config.host}/items/${this.editItem.id}`,
                                 data: {
                                     name: app.editItem.name,
                                     price: app.editItem.price,
@@ -524,7 +528,7 @@
                             let formdata = new FormData();
                             formdata.append('image', this.editItem.imgURL);
 
-                            axios.post(`http://localhost:3000/uploadimage`, formdata, {
+                            axios.post(`${config.host}/uploadimage`, formdata, {
                                 headers: {
                                     'access-token': localStorage.getItem('token')
                                 }
@@ -532,7 +536,7 @@
                                 .then(function(response) {
                                     axios({
                                         method: 'PUT',
-                                        url: `http://localhost:3000/items/${app.editItem.id}`,
+                                        url: `${config.host}/items/${app.editItem.id}`,
                                         data: {
                                             name: app.editItem.name,
                                             price: app.editItem.price,
@@ -570,7 +574,7 @@
                         if (this.createItem.imgURL === '') {
                             axios({
                                 method: 'POST',
-                                url: `http://localhost:3000/items`,
+                                url: `${config.host}/items`,
                                 data: {
                                     name: app.createItem.name,
                                     price: app.createItem.price,
@@ -601,7 +605,7 @@
                             let formdata = new FormData();
                             formdata.append('image', this.createItem.imgURL);
                             
-                            axios.post(`http://localhost:3000/items/uploadimage`, formdata, {
+                            axios.post(`${config.host}/items/uploadimage`, formdata, {
                                 headers: {
                                     'access-token': localStorage.getItem('token')
                                 }
@@ -609,7 +613,7 @@
                                 .then(function(response) {
                                     axios({
                                         method: 'POST',
-                                        url: `http://localhost:3000/items`,
+                                        url: `${config.host}/items`,
                                         data: {
                                             name: app.createItem.name,
                                             price: app.createItem.price,
@@ -654,7 +658,7 @@
                     deleteItem: function() {
                         axios({
                             method: 'DELETE',
-                            url: `http://localhost:3000/items/${app.deleteItemId}`,
+                            url: `${config.host}/items/${app.deleteItemId}`,
                             headers: {
                                 'access-token': localStorage.getItem('token')
                             }
@@ -672,7 +676,7 @@
                     searchItem: function() {
                         axios({
                             method: 'GET',
-                            url: `http://localhost:3000/items/search/${this.keyword_for_all}`,
+                            url: `${config.host}/items/search/${this.keyword_for_all}`,
                             headers: {
                                 'access-token': localStorage.getItem('token')
                             }

@@ -1,10 +1,14 @@
+const config = {
+    host: 'https://ekitserver.reshalem.info'
+};
+
 Vue.component('shopping-cart', {
     props: ['cart-show', 'getusercart', 'getcartbadge', 'gettotalprice', 'cart', 'total-price', 'getitems', 'showlistitem', 'getusertransactions'],
     methods: {
         removeItemFromCart: function(itemId) {
             axios({
                 method: 'PATCH',
-                url: `http://localhost:3000/carts/remove/${itemId}`,
+                url: `${config.host}/carts/remove/${itemId}`,
                 headers: {
                     'access-token': localStorage.getItem('token')
                 }
@@ -22,7 +26,7 @@ Vue.component('shopping-cart', {
         checkout: function() {
             axios({
                 method: 'POST',
-                url: 'http://localhost:3000/transactions',
+                url: `${config.host}/transactions`,
                 headers: {
                     'access-token': localStorage.getItem('token')
                 }

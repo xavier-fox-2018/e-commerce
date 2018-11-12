@@ -216,6 +216,10 @@
         <script src="components/searchItems.js"></script>
         <script src="components/shoppingCart.js"></script>
         <script>
+            const config = {
+                host: 'https://ekitserver.reshalem.info'
+            };
+
             var app = new Vue({
                 el: '#app',
                 data: {
@@ -261,7 +265,7 @@
                     getItems: function() {
                         axios({
                             method: 'GET',
-                            url: 'http://localhost:3000/items'
+                            url: `${config.host}/items`
                         })
                             .then(function(items) {
                                 let itemsData = items.data;
@@ -274,7 +278,7 @@
                     getCategories: function() {
                         axios({
                             method: 'GET', 
-                            url: `http://localhost:3000/categories`, 
+                            url: `${config.host}/categories`, 
                             headers: {
                                 'access-token': localStorage.getItem('token')
                             }
@@ -292,7 +296,7 @@
                     getOneCategory: function(categoryId) {
                         axios({
                             method: 'GET', 
-                            url: `http://localhost:3000/categories/${categoryId}`,
+                            url: `${config.host}/categories/${categoryId}`,
                             headers: {
                                 'access-token': localStorage.getItem('token')
                             }
@@ -309,7 +313,7 @@
                     addItemToCart: function(itemId) {
                         axios({
                             method: 'PATCH',
-                            url: `http://localhost:3000/carts/add/${itemId}`,
+                            url: `${config.host}/carts/add/${itemId}`,
                             headers: {
                                 'access-token': localStorage.getItem('token')
                             }
@@ -327,7 +331,7 @@
                     getCartBadge: function() {
                         axios({
                             method: 'GET',
-                            url: 'http://localhost:3000/carts',
+                            url: `${config.host}/carts`,
                             headers: {
                                 'access-token': localStorage.getItem('token')
                             }
@@ -347,7 +351,7 @@
                     getUserCart: function() {
                         axios({
                             method: 'GET',
-                            url: 'http://localhost:3000/carts',
+                            url: `${config.host}/carts`,
                             headers: {
                                 'access-token': localStorage.getItem('token')
                             }
@@ -373,7 +377,7 @@
                     searchItem: function() {
                         axios({
                             method: 'GET',
-                            url: `http://localhost:3000/items/search/${this.keyword_for_all}`,
+                            url: `${config.host}/items/search/${this.keyword_for_all}`,
                             headers: {
                                 'access-token': localStorage.getItem('token')
                             }
@@ -388,7 +392,7 @@
                     getTotalPrice: function() {
                         axios({
                             method: 'GET',
-                            url: 'http://localhost:3000/carts',
+                            url: `${config.host}/carts`,
                             headers: {
                                 'access-token': localStorage.getItem('token')
                             }
@@ -412,7 +416,7 @@
                     getUserProfile: function() {
                         axios({
                             method: 'GET',
-                            url: 'http://localhost:3000/users/profile',
+                            url: `${config.host}/users/profile`,
                             headers: {
                                 'access-token': localStorage.getItem('token')
                             }
@@ -427,7 +431,7 @@
                     getUserTransactions: function() {
                         axios({
                             method: 'GET',
-                            url: `http://localhost:3000/transactions`,
+                            url: `${config.host}/transactions`,
                             headers: {
                                 'access-token': localStorage.getItem('token')
                             }

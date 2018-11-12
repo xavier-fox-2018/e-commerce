@@ -97,6 +97,10 @@
 
         <!-- VUE INSTANCE -->
         <script>
+            const config = {
+                host: 'https://ekitserver.reshalem.info'
+            };
+
             var app = new Vue({
                 el: '#app',
                 data: {
@@ -125,7 +129,7 @@
                     register: function() {
                         axios({
                             method: 'POST',
-                            url: 'http://localhost:3000/register',
+                            url: `${config.host}/register`,
                             data: {
                                 username: app.registerUser.username,
                                 email: app.registerUser.email,
@@ -146,7 +150,7 @@
                     login: function() {
                         axios({
                             method: 'POST',
-                            url: 'http://localhost:3000/login',
+                            url: `${config.host}/login`,
                             data: {
                                 email: app.loginUser.email,
                                 password: app.loginUser.password
