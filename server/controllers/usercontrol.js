@@ -4,6 +4,11 @@ const Cart = require('../models/cart')
 const Transaction = require('../models/transaction')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
+var accountSid = 'AC90f76c5e7de21880d8a1bb7fa85747ff'; // Your Account SID from www.twilio.com/console
+var authToken = '3cb506caaf33d6071a47080338a69cf8';   // Your Auth Token from www.twilio.com/console
+
+var twilio = require('twilio');
+const client = require('twilio')(accountSid, authToken);
 
 
 
@@ -173,6 +178,14 @@ class UserController {
       purchaseDate: new Date()
     })
     .then(data => {
+      client.messages
+      .create({
+        body: 'Hello there!',
+        from: 'whatsapp:+14155238886',
+        to: 'whatsapp:+6281290959916'
+      })
+      .then(message => console.log(message.sid))
+      .done();
       return Cart.findOneAndUpdate({userId: req.auth_user.id}, {
         products: []
       })
