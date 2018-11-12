@@ -44,6 +44,7 @@ class ItemController {
         item.price = Number(req.body.price);
         item.stock = Number(req.body.stock);
         item.category = req.body.category;
+        item.url_img = req.body.url_img
         console.log(item);
         
         return item.save()
