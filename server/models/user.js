@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const hash = require('../helpers/hash')
 
 const Schema = mongoose.Schema
 
@@ -23,15 +24,15 @@ const userSchema = new Schema({
     type: String,
     required: [true, 'Email required'],
     unique: true
-    // ,validate: {
-    //   validator () {
-    //     let regExp = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    //     let result = regExp.test(this.email)
-    //     if (!result) {
-    //       throw new Error('Email is invalid')
-    //     }
-    //   }
-    // }
+    ,validate: {
+      validator () {
+        let regExp = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        let result = regExp.test(this.email)
+        if (!result) {
+          throw new Error('Email is invalid')
+        }
+      }
+    }
   },
   password: {
     type: String,
@@ -62,6 +63,10 @@ const userSchema = new Schema({
   timestamps: true
 })
 
+userSchema.pre('save', function(next) {
+  this.password = hash.hash(this.password)
+  next()
+})
 
 const User = mongoose.model('User', userSchema)
 

@@ -7,9 +7,11 @@ const axios = require('axios')
 
 module.exports = {
   findAll: function(req, res) {
+    console.log('get all products server')
     Product.find({})
     .populate('userId')
     .populate('reviews')
+    .populate('reviews.user')
     .then((result) => {
       res.status(200).json(result)
     }).catch((err) => {
@@ -67,12 +69,23 @@ module.exports = {
     });
   },
   updateQuantity: function(req, res) {
-    console.log('in update qty:', req.body)
+    console.log('in update qty:',req.params.id, req.body)
     Product.findByIdAndUpdate(req.params.id, req.body)
     .then((result) => {
       res.status(200).json(result)
     }).catch((err) => {
       res.status(500).json(err)
     });
+  },
+  search: function(req, res) {
+    Product.find({[[req.params.key]] : req.params.val})
+    .then((result) => {
+      res.status(200).json(result)
+    }).catch((err) => {
+      res.status(500).json(err)
+    });
+  },
+  filter: function(req, res) {
+    Product.find({})
   }
 }

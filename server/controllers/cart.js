@@ -73,8 +73,40 @@ module.exports = {
       res.status(500).json(err)
     });
   },
+  updateQty: function(req, res) {
+    Cart.updateOne(
+      { products: req.body.products },
+      { $unset: { "products.$": "" } },
+      { multi: true })
+    .then((result) => {
+      Cart.updateOne(
+        { products: null },
+        { $pull: { products: null } },
+        { multi: true }
+      )
+      .then((result) => {
+        res.status(200).json(result)
+      }).catch((err) => {
+        res.status(500).json(err)        
+      });
+    }).catch((err) => {
+      res.status(500).json(err)
+    });
+  },
+  updateRemove: function(req, res) {
+    Cart.updateOne(
+      {user: req.body.user},
+      {$pull: {products: req.body.products}},
+      {multi: true}
+    )
+    .then((result) => {
+      res.status(200).json(result)
+    }).catch((err) => {
+      res.status(500).json(err)  
+    });
+  },
   delete: function(req, res) {
-    Cart.findByIdAndDelete(req.params.id)
+    Cart.findOneAndDelete({user:req.user.id})
     .then((result) => {
       res.status(200).json(result)
     }).catch((err) => {

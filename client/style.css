@@ -2,6 +2,10 @@ body {
   /* background-image: url('https://thumbs.dreamstime.com/b/royal-abstract-gold-seamless-pattern-luxury-oriental-style-black-background-can-be-used-wallpaper-wrapping-textile-web-101145970.jpg') */
 }
 
+a {
+  cursor: pointer;
+}
+
 .link:hover {
   cursor: pointer;
   color: darkblue;

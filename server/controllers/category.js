@@ -1,5 +1,5 @@
 require('dotenv').config()
-const Review = require('../models/review')
+const Category = require('../models/category')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
@@ -7,8 +7,7 @@ const axios = require('axios')
 
 module.exports = {
   findAll: function(req, res) {
-    Review.find({})
-    .populate('user')
+    Category.find({})
     .then((result) => {
       res.status(200).json(result)
     }).catch((err) => {
@@ -16,8 +15,7 @@ module.exports = {
     });
   },
   findById: function(req, res) {
-    Review.findById(req.params.id)
-    .populate('user')
+    Category.findById(req.params.id)
     .then((result) => {
       res.status(200).json(result)
     }).catch((err) => {
@@ -26,10 +24,10 @@ module.exports = {
   },
   create: function(req, res) {
     console.log('create body---', req.body)
-    Review.create(req.body)
+    Category.create(req.body)
     .then((result) => {
       res.status(201).json({
-        message:'Success created new Review',
+        message:'Success created new Category',
         status: 'success'
       })
     }).catch((err) => {
@@ -41,7 +39,7 @@ module.exports = {
   },
   update: function(req, res) {
     // console.log('update body---', req.body)
-    Review.findByIdAndUpdate(req.params.id, req.body)
+    Category.findByIdAndUpdate(req.params.id, req.body)
     .then((result) => {
       res.status(200).json(result)
     }).catch((err) => {
@@ -49,7 +47,7 @@ module.exports = {
     });
   },
   delete: function(req, res) {
-    Review.findByIdAndDelete(req.params.id)
+    Category.findByIdAndDelete(req.params.id)
     .then((result) => {
       res.status(200).json(result)
     }).catch((err) => {
@@ -57,7 +55,7 @@ module.exports = {
     });
   },
   patch: function(req, res) {
-    Review.findByIdAndUpdate(req.params.id, req.body)
+    Category.findByIdAndUpdate(req.params.id, req.body)
     .then((result) => {
       res.status(200).json(result)
     }).catch((err) => {

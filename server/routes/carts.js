@@ -10,9 +10,11 @@ const isAdmin = require('../middlewares/isAdmin')
 router.get('/', auth, Controller.findAll);
 router.get('/:id', Controller.findById)
 router.post('/', Controller.create)
-router.put('/:id', Controller.update)
+router.put('/edit/:id', Controller.update)
+router.put('/quantity', Controller.updateQty)
+router.put('/remove', Controller.updateRemove)
 router.patch('/:id', Controller.patch)
-router.delete('/:id', Controller.delete)
+router.delete('/', auth, Controller.delete)
 
 
 module.exports = router;

@@ -1,5 +1,6 @@
 require('dotenv').config()
-const Review = require('../models/review')
+const Transaction = require('../models/transaction')
+const Coupon = require('../models/coupon')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
@@ -7,7 +8,8 @@ const axios = require('axios')
 
 module.exports = {
   findAll: function(req, res) {
-    Review.find({})
+    Transaction.find({})
+    .populate('itemList.item')
     .populate('user')
     .then((result) => {
       res.status(200).json(result)
@@ -16,8 +18,8 @@ module.exports = {
     });
   },
   findById: function(req, res) {
-    Review.findById(req.params.id)
-    .populate('user')
+    Transaction.find({user:req.user.id})
+    .populate('itemList.item')
     .then((result) => {
       res.status(200).json(result)
     }).catch((err) => {
@@ -26,10 +28,15 @@ module.exports = {
   },
   create: function(req, res) {
     console.log('create body---', req.body)
-    Review.create(req.body)
+    Transaction.create({
+      user: req.user.id,
+      itemList: req.body.itemList,
+      grandTotal: req.body.grandTotal,
+      address: req.body.address
+    })
     .then((result) => {
       res.status(201).json({
-        message:'Success created new Review',
+        message:'Success created new Transaction',
         status: 'success'
       })
     }).catch((err) => {
@@ -41,7 +48,7 @@ module.exports = {
   },
   update: function(req, res) {
     // console.log('update body---', req.body)
-    Review.findByIdAndUpdate(req.params.id, req.body)
+    Transaction.findByIdAndUpdate(req.params.id, req.body)
     .then((result) => {
       res.status(200).json(result)
     }).catch((err) => {
@@ -49,7 +56,7 @@ module.exports = {
     });
   },
   delete: function(req, res) {
-    Review.findByIdAndDelete(req.params.id)
+    Transaction.findByIdAndDelete(req.params.id)
     .then((result) => {
       res.status(200).json(result)
     }).catch((err) => {
@@ -57,7 +64,7 @@ module.exports = {
     });
   },
   patch: function(req, res) {
-    Review.findByIdAndUpdate(req.params.id, req.body)
+    Transaction.findByIdAndUpdate(req.params.id, req.body)
     .then((result) => {
       res.status(200).json(result)
     }).catch((err) => {

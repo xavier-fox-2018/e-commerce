@@ -11,11 +11,11 @@ router.get('/', Controller.findAll);
 router.get('/:id', auth, Controller.findById)
 router.post('/', isAdmin, Controller.create)
 router.put('/:id', isAdmin, Controller.update)
-router.put('/add-to-cart/:id', auth, Controller.updateQuantity)
+router.put('/checkout/:id', auth, Controller.updateQuantity)
 router.patch('/:id', isAdmin, Controller.patch)
 router.delete('/:id', isAdmin, Controller.delete)
-// router.get('/group/:groupId', auth, groupAuth, Controller.findByGroup)
-// router.get('/getMap/:address', Controller.getMap)
+router.get('/search/:key/:val', Controller.search)
+router.get('/filter', Controller.filter)
 
 
 module.exports = router;

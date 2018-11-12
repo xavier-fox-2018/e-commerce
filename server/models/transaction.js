@@ -15,10 +15,6 @@ const transactionSchema = new Schema({
     qty: {
       type: Number,
       default: 0
-    },
-    subTotal: {
-      type: Number,
-      default: 0
     }
   }],
   grandTotal: {
@@ -34,5 +30,14 @@ const transactionSchema = new Schema({
 
 
 const Transaction = mongoose.model('Transaction', transactionSchema)
+
+transactionSchema.post('save', function(doc) {
+  Transaction.find({user: req.user.id})
+  .then((result) => {
+    console.log('result post save transaction', result)
+  }).catch((err) => {
+    console.log('error when finde transaction post save', err)
+  });
+})
 
 module.exports = Transaction

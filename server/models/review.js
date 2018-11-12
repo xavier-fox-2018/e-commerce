@@ -27,6 +27,7 @@ const reviewSchema = new Schema({
 })
 
 reviewSchema.post('save', function(doc) {
+  console.log(doc)
   Product.findByIdAndUpdate(doc.product, {
     $push: {reviews:doc._id}
   })
@@ -37,7 +38,6 @@ reviewSchema.post('save', function(doc) {
   });
 
 })
-
 
 
 const Review = mongoose.model('Review', reviewSchema)
