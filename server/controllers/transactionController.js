@@ -3,6 +3,7 @@ const Cart = require('../models/cartModel')
 
 class Controller {
     static create(req,res){
+        console.log('masuk ke checkout (create transaction)')
 
         Transaction.create({
             user : req.userId,

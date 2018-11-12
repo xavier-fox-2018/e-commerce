@@ -76,7 +76,7 @@
         </ul>
 
         <!-- Right -->
-        <ul class="navbar-nav nav-flex-icons">
+        <ul v-if="islogin && !isadmin" class="navbar-nav nav-flex-icons">
           <li class="nav-item" data-toggle="modal" data-target="#cartModal">
             <a class="nav-link waves-effect">
               <span class="badge red z-depth-1 mr-1"> {{itemincart}} </span>
@@ -115,10 +115,10 @@
     </div>
   </nav>
   <!-- Navbar -->
-  <admin-menu></admin-menu>
+  <admin-menu v-if="isadmin"></admin-menu>
 
   <!--Carousel Wrapper-->
-  <!-- <carousel-template></carousel-template> -->
+  <carousel-template v-if="!isadmin"></carousel-template>
   <!--/.Carousel Wrapper-->
 
   <!--Main layout-->
@@ -162,7 +162,7 @@
       </nav>
       <!--/.Navbar-->
 
-      <div class="row d-flex justify-content-center mb-5">
+      <div v-if="isadmin" class="row d-flex justify-content-center mb-5">
         <div class="btn btn-secondary" data-toggle="modal" data-target="#addNewItem">Add New Item</div>
       </div>
 
@@ -242,11 +242,11 @@
             <div class="d-flex justify-content-left">
               <!-- Default input -->
               <!-- <input type="number" value="1" min="1" aria-label="Search" class="form-control" style="width: 100px"> -->
-              <button class="btn btn-primary btn-md my-0 p" v-on:click="addToCart()">Add to cart
+              <button v-if="islogin && !isadmin" class="btn btn-primary btn-md my-0 p" v-on:click="addToCart()">Add to cart
                 <i class="fa fa-shopping-cart ml-1"></i>
               </button>
-              <button class="btn btn-success btn-md my-0 p" data-toggle="modal" data-target="#editItem" @click="readBeforeEdit(selected._id)">Edit</button>
-              <button class="btn btn-danger btn-md my-0 p" @click="deleteItem(selected._id)">Delete</button>
+              <button v-if="isadmin" class="btn btn-success btn-md my-0 p" data-toggle="modal" data-target="#editItem" @click="readBeforeEdit(selected._id)">Edit</button>
+              <button v-if="isadmin" class="btn btn-danger btn-md my-0 p" @click="deleteItem(selected._id)">Delete</button>
             </div>
           </div>
           <!--Content-->
@@ -423,24 +423,24 @@
               <div class="modal-body">
                 <div class="md-form form-sm mb-5">
                   <i class="fa fa-envelope prefix"></i>
-                  <input type="email" id="modalLRInput12" class="form-control form-control-sm validate">
+                  <input v-model="registerName" type="text" class="form-control form-control-sm">
+                  <label data-error="wrong" data-success="right" for="modalLRInput12">Your Name</label>
+                </div>
+
+                <div class="md-form form-sm mb-5">
+                  <i class="fa fa-envelope prefix"></i>
+                  <input v-model="registerEmail" type="email" id="modalLRInput12" class="form-control form-control-sm validate">
                   <label data-error="wrong" data-success="right" for="modalLRInput12">Your email</label>
                 </div>
 
                 <div class="md-form form-sm mb-5">
                   <i class="fa fa-lock prefix"></i>
-                  <input type="password" id="modalLRInput13" class="form-control form-control-sm validate">
+                  <input v-model="registerPassword" type="password" id="modalLRInput13" class="form-control form-control-sm validate">
                   <label data-error="wrong" data-success="right" for="modalLRInput13">Your password</label>
                 </div>
 
-                <div class="md-form form-sm mb-4">
-                  <i class="fa fa-lock prefix"></i>
-                  <input type="password" id="modalLRInput14" class="form-control form-control-sm validate">
-                  <label data-error="wrong" data-success="right" for="modalLRInput14">Repeat password</label>
-                </div>
-
                 <div class="text-center form-sm mt-2">
-                  <button class="btn btn-info">Sign up <i class="fa fa-sign-in ml-1"></i></button>
+                  <button class="btn btn-info" @click="register">Sign up <i class="fa fa-sign-in ml-1"></i></button>
                 </div>
 
               </div>
@@ -672,6 +672,10 @@
         login_email : '',
         login_password : '',
 
+        registerName : '',
+        registerEmail : '',
+        registerPassword : '',
+
         search : '',
         
         addNewItemName : '',
@@ -692,6 +696,25 @@
 
       },
       methods : {
+        register : function(){
+          let data = {
+            name : this.registerName,
+            email : this.registerEmail,
+            password : this.registerPassword
+          }
+
+          axios({
+            method : 'POST',
+            url : `${this.config.port}/users/register`,
+            data
+          })
+          .then(response=>{
+            alert(response.data)
+          })
+          .catch(err=>{
+            console.log(err)
+          })
+        },
         deleteItem : function(id){
           // console.log(id)
           axios({
@@ -863,11 +886,15 @@
           .then(response=>{
             console.log('user logged in...')
             localStorage.setItem('token',response.data.token)
-            localStorage.setItem('isAdmin',response.data.isAdmin)
+            if(response.data.is_admin === true){
+              console.log('admin login...')
+              localStorage.setItem('isAdmin',response.data.is_admin)
+            }
             this.islogin = true
             if(response.data.is_admin){
               this.isadmin = true
             }
+            this.getUserCart()
           })
           .catch(err=>{
             console.log('login failed...')
@@ -885,7 +912,8 @@
           let token = localStorage.getItem('token')
           if(token){
             this.islogin = true
-            if(localStorage.getItem('isAdmin')){
+            let isadmin = localStorage.getItem('isAdmin')
+            if(isadmin === true){
               this.isadmin = true
             }
           }else{
@@ -1010,10 +1038,12 @@
             item_list : this.carts,
             total_price : this.total_price
           }
+
+          console.log(data)
           
           axios({
             method : 'POST',
-            url : `${this.config.port}/transactions/my`,
+            url : `${this.config.port}/transactions/`,
             headers : {
               token : localStorage.getItem('token')
             },
@@ -1030,7 +1060,7 @@
         getMyTransaction(){
           axios({
             method : 'GET',
-            url : `${this.config.port}/transactions`,
+            url : `${this.config.port}/transactions/my`,
             headers : {
               token : localStorage.getItem('token')
             }

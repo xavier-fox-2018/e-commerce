@@ -98,11 +98,10 @@ class Controller {
         })
     }
 
-    static read(req,res){
+    static readOne(req,res){
         User.findOne({
             _id : req.userId //dari middleware
         })
-        .populate('todo_list')
         .then((profile)=>{
             res.status(200).json(profile)
         })
@@ -110,6 +109,21 @@ class Controller {
             res.status(500).json({
                 error : err,
                 message : 'Failed to retrieve user data'
+            })
+        })
+    }
+
+    static read(req,res){
+        User.find({
+
+        })
+        .then((users)=>{
+            res.status(200).json(users)
+        })
+        .catch((err)=>{
+            res.status(500).json({
+                message : "Failed To Read All Users Data",
+                error : err
             })
         })
     }

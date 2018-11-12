@@ -26,7 +26,7 @@ Vue.component('carousel-template', {
                   everyday.</strong>
               </p>
 
-              <a target="_blank" href="https://mdbootstrap.com/education/bootstrap/" class="btn btn-outline-white btn-lg">Today's
+              <a target="_blank" href="#" class="btn btn-outline-white btn-lg">Today's
                 Deals
                 <i class="fa fa-shopping-basket ml-2"></i>
               </a>

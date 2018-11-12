@@ -7,6 +7,7 @@ router.post('/login',controller.login)
 
 // router.post('/gsignin',controller.gsignin)
 
-router.get('/',middleware.authenticate,controller.read)
+router.get('/',middleware.authenticate,controller.readOne)
+router.get('/all',middleware.authenticate,controller.read)
 
 module.exports = router
