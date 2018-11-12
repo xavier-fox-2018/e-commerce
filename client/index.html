@@ -28,7 +28,7 @@
                 <ul class="navbar-nav mr-auto"></ul>
                 <form class="form-inline">
                     <input class="form-control mr-1" type="text" placeholder="Search: Mau Belanja Apa?" aria-label="Search">
-                    <span v-if="token === null">
+                    <span v-if="user === null">
                         <a class="btn btn-outline-warning" href="login.html">Log In</a>
                         <a class="btn btn-outline-success" href="signup.html">Sign Up</a>
                     </span>
@@ -155,7 +155,7 @@
                 </table>
             </div>
             <div slot="footer">
-                <a class="btn btn-primary" href="./login.html" v-if="token === null">Add To Cart</a>
+                <a class="btn btn-primary" href="./login.html" v-if="user === null">Add To Cart</a>
                 <a class="btn btn-primary" href="#" v-on:click="addToCart(ItemId)" v-else>Add To Cart</a>
                 <a class="btn btn-primary" href="#" v-on:click="closeModalItem">Close</a>
             </div>
@@ -185,7 +185,8 @@
             </div>
             </transition>
         </script>
-    
+        const userRoute = require('./user.js');
+
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -203,13 +204,7 @@
         let app = new Vue({
             el: '#app',
             data: {
-                token: null,
-                user: {
-                    UserId: '',
-                    name: '',
-                    email: '',
-                    cart: []
-                },
+                user: null,
                 showModalItem: false,
                 showModalCart: false,
                 item: {
@@ -223,7 +218,10 @@
                 categoryList: []
             },
             created: function() {
-                this.getUser();
+                let token = localStorage.getItem('token');
+                if(token !== null) {
+                    this.getUser();
+                }
                 this.getAllData();
                 this.getCategory();
             },
@@ -235,7 +233,7 @@
                     this.user.email = '';
                     this.user.cart = [];
                     localStorage.removeItem('token');
-                    localStorage.removeItem('user');
+                    window.location.href = "./";
                 },
                 getAllData: function() {
                     axios({
@@ -264,13 +262,14 @@
                 getUser: function() {
                     axios({
                         method: "GET",
-                        url: "http://localhost:3000/user/",
+                        url: "http://localhost:3000/users/",
                         headers: {
                             token: localStorage.getItem('token')
                         } 
                     })
                         .then(function(response) {
-                            app.user = response;
+                            app.user = response.data;
+                            console.log(JSON.stringify(app.user.cart))
                         })
                         .catch(function(error) {
                             console.log(error)
@@ -292,13 +291,13 @@
                         method: "POST",
                         url: "http://localhost:3000/users/cart",
                         data: {
-                            UserId: this.UserId,
+                            UserId: app.user.UserId,
                             ItemId: ItemId
                         }
                     })
                         .then(function(response) {
-                            // app.categoryList = response.data;
-                            console.log(response)
+                            app.getUser();
+                            app.showModalItem = false;
                         })
                         .catch(function(error) {
                             console.log(error)

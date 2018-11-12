@@ -36,6 +36,29 @@ class UserController {
             });
     }
 
+    static getUser(req, res) {
+        let decryptJwt = token.verifToken(req.headers.token);
+        User.findOne({
+            email: decryptJwt.email
+        })
+            .populate({
+                path: 'cart',
+                name: 'Item'
+            })
+            .then(function(resolve) {
+                let dataUser = {
+                    UserId: resolve._id,
+                    name: resolve.name,
+                    email: resolve.email,
+                    cart: resolve.cart
+                }
+                res.status(201).json(dataUser)
+            })
+            .catch(function(reject) {
+                res.status(500).json(reject)
+            });
+    }
+
     static isLogin(req, res) {
         if(req.headers.token) {
             let decryptJwt = token.verifToken(req.headers.token);
@@ -69,7 +92,7 @@ class UserController {
     }
 
     static cart(req, res) {
-        let dataChart = {
+        let dataCart = {
             item: req.body.UserId,
             qty: 1
         }
@@ -78,7 +101,7 @@ class UserController {
                 _id: req.body.UserId
             },
             {
-                $push: {chart: dataChart}
+                $push: {cart: dataCart}
             }
         )
             .then(function(resolve) {

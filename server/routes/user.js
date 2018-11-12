@@ -6,6 +6,6 @@ route.get('/', UserController.getUser);
 route.post('/signup', UserController.signup);
 route.post('/login', UserController.login);
 route.get('/isLogin', UserController.isLogin);
-route.get('/cart', UserController.cart);
+route.post('/cart', UserController.cart);
 
 module.exports = route;
