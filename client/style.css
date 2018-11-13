@@ -1,0 +1,162 @@
+.carousel {
+  width: 100% !important;
+  height: 400px !important;
+  overflow: hidden;
+}
+.img-banners {
+  object-fit: cover;
+  background-position: 50% 50%;
+  background-size: cover;
+  width: 100%;
+  background-repeat: no-repeat;
+}
+
+
+
+.navbar-fixed {
+  position: fixed;
+  top: -5em;
+}
+
+nav {
+  width: 100%;
+  color: rgb(255, 255, 255);
+  background: #97af8a;
+  z-index: 800;
+  box-shadow: 0px 3px 15px #bebebe;
+
+}
+
+nav ul {
+
+  margin: 0;
+}
+
+nav ul li, li {
+  display: inline-block;
+
+  /* line-height: 3em; */
+}
+
+/* nav ul li:hover {
+  background: #00939C;
+} */
+
+/*----------------------
+  $BODY
+  ----------------------*/
+body {
+  background: rgb(255, 255, 255);
+}
+
+/*----------------------
+  $MISC
+  ----------------------*/
+.filler {
+  width: 1px;
+  height: 200px;
+}
+
+.two {
+  height: 3000px;
+}
+
+
+.choba {
+    /* height: 20px; */
+    line-height: 3.8em;
+}
+
+
+.rowy {
+  margin-top: 5%;
+  margin-left: 9%;
+  margin-right: 9%;
+  margin-bottom: 5%
+}
+
+
+.cardy {
+  margin-bottom: 50px;
+  z-index: 10;
+  box-shadow: 0px 6px 12px #d1d1d1;
+  transition: all 0.2s;
+  bottom: 0px;
+}
+
+.cardy:hover {
+  bottom: 15px;
+  box-shadow: 0px 15px 30px #d1d1d1;
+}
+
+.btn-primary {
+  background: #69815c;
+  border: #636363;
+  color: white !important;
+  
+}
+
+.btn-primary:hover {
+  background: #5c9b35;
+  border: #5b8642;
+  /* box-shadow: 0px 0px 20px #c0c0c0; */
+}
+
+.btn-primary:focus{
+  box-shadow: 0px 0px 7px #82e238;
+}
+
+.btn-primary:active {
+  box-shadow: 0px 0px 7px #b0d897;
+  background: #6eb940;
+  background-color: #6eb940;
+}
+
+:placeholder-shown{
+  color: white;
+}
+
+.form-control {
+  margin-bottom: 5px;
+}
+
+.card-img-top {
+  width: 100%;
+  height: 255px;
+}
+
+.item-cover-thumbnail, img {
+  object-fit: cover;
+  background-position: 50% 50%;
+}
+
+.item-cover-detail {
+  height: 400px
+}
+.carousel-inner {
+  margin-top: -100px;
+}
+
+.item-card-margin {
+  margin: 7px;
+  text-align: justify;
+}
+
+.category-button {
+  margin-right: 5px;
+}
+
+
+a, button{
+  color: white !important;
+}
+
+.transparent-bg {
+  background-color: rgba(1, 1, 1, 0);
+  border: 0;
+}
+
+.btn-info {
+  background-color: rgb(53, 163, 121);
+  border: #5c9b35;
+}
