@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+    <div id="app">
+        <div style="width: 80%;margin:auto">
+            <h1>Welcome</h1>
+            <div id="alert-error-create" class="alert alert-danger alert-dismissible" role="alert" style="display:none;height:45px;">
+                <strong style="display:inline-block">Create Failed</strong>
+                <p style="display:inline-block"></p>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+                        <form id="update_task_form" style="width: 80%;margin:auto;padding:10px;" onload="loadData()">
+                            <h4>Update</h4>
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" class="form-control" id="name" placeholder="Enter name" v-model="selectedItem.name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <textarea type="text" class="form-control" id="description" placeholder="Enter Description" v-model="selectedItem.description" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="price">Price</label>
+                                <input type="number" class="form-control" id="price" v-model="selectedItem.price" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="stock">Stock</label>
+                                <input type="number" class="form-control" v-model="selectedItem.stock" id="stock" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="category">Select category (select one):</label>
+                                <select class="form-control" id="category" v-model="value">
+                                    <option v-for="datum in categories" v-bind:value="datum">{{datum.name}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="file">Select image:</label>
+                                <input id="file" type="file" name="image" multiple accept="image/png, image/jpeg" ref="myFiles" v-on:change="previewFiles($event)">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary" data-dismiss="modal" v-on:click="updateItem()">Update </button>
+                            </div>
+
+                        </form>
+                        <div class="modal-body">
+                            <div class="te"></div>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+
+            <div id="alert-error" class="alert alert-danger alert-dismissible" role="alert" style="display:none;height:45px;">
+                <strong style="display:inline-block">Validation Error</strong>
+                <p style="display:inline-block"></p>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Add</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="topup_tab" data-toggle="tab" href="#form_topup" role="tab" aria-controls="profile" aria-selected="false">Topups</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false" v-on:click="signout">Sign Out</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <div class="container my-3">
+                        <input class="form-control" id="search" type="text" placeholder="Search.." style="margin-bottom:10px">
+                    </div>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="list-group my-3">
+                                    <a class="list-group-item list-group-item-action" v-for="i in categories" v-on:click="displayActive(i.name)" v-bind:class='{active : checkActive(i.name)}'> 
+                                {{i.name}}</a>
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="row" style="display:flex;flex-direction:row;text-align:center;">
+                                    <div class="col-md-4" v-for="(datum,index) in hotlist" v-if="(datum.category_id.name === isActive) || (isActive === 'All') ">
+                                        <div class="card my-3">
+                                            <img class="card-img-top" v-bind:src="datum.image" alt="Card image cap" style="width:auto;height:220px">
+                                            <div class="card-body">
+                                                <hr>
+                                                <h5 class="card-title">{{maxText(datum.name)}}</h5>
+                                                <p class="card-text">Price $<b style="color:red;" v-html="datum.price"></b></p>
+                                                <div v-if="datum.stock !== 0">
+                                                    <p>{{datum.stock}} stock left</p>
+                                                    <a href="#" class="btn btn-warning" data-toggle="modal" data-target="#myModal" v-on:click="passData({
+                                                        index: index,
+                                                        _id: datum._id,
+                                                        name: datum.name,
+                                                        description: datum.description,
+                                                        price: datum.price,
+                                                        stock: datum.stock,
+                                                        category_id: datum.category_id,
+                                                        category_name: datum.category_id.name                                          
+                                                    })"><img src="https://img.icons8.com/windows/50/000000/pencil.png" style="width:35%;height:45%"></a>
+                                                    <deletebutton v-on:clickdelete="deleteItem(datum._id)"></deletebutton>
+                                                </div>
+                                                <div v-else>
+                                                    <p style="color:red">Not Available</p>
+                                                    <a href="#" class="btn btn-warning" data-toggle="modal" data-target="#myModal"><img src="https://img.icons8.com/windows/50/000000/pencil.png" style="width:35%;height:45%" v-on:click="passData({
+                                                        index: index,
+                                                        _id: datum._id,
+                                                        name: datum.name,
+                                                        description: datum.description,
+                                                        price: datum.price,
+                                                        stock: datum.stock,
+                                                        category_id: datum.category_id,
+                                                        category_name: datum.category_id.name
+                                                    })"></a>
+                                                    <deletebutton v-on:clickdelete="deleteItem(datum._id)"></deletebutton>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <div class="container my-3">
+                        <form id="input_task_form" style="width: 80%;margin:auto;padding:10px;">
+                            <h4>Input Item</h4>
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" class="form-control" id="name" placeholder="Enter name" v-model="input.name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <textarea type="text" class="form-control" id="description" placeholder="Enter Description" v-model="input.description" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="price">Price</label>
+                                <input type="number" class="form-control" id="price" v-model="input.price" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="stock">Stock</label>
+                                <input type="number" class="form-control" id="stock" v-model="input.stock" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="category">Select category (select one):</label>
+                                <select class="form-control" id="category" v-model="value">
+                                    <option v-for="datum in categories" v-bind:value="datum">{{datum.name}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="file">Select image:</label>
+                                <input id="file" type="file" name="image" multiple accept="image/png, image/jpeg" ref="myFiles" v-on:change="previewFiles($event)">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary" data-dismiss="modal" v-on:click="addItem()">Adds </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="form_topup" role="tabpanel" aria-labelledby="contact-tab">
+                    <table class="table my-4">
+                        <thead>
+                            <tr>
+                                <th scope="col">Email</th>
+                                <th scope="col">Customer</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Verification</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="topup in topups" v-show="topup.status =='pending'">
+                                <td>{{topup.user_id.email}}</td>
+                                <td>{{topup.user_id.name}}</td>
+                                <td>$ {{topup.amount}}</td>
+                                <td><img v-bind:src="topup.validation" alt=""></td>
+                                <td>{{topup.status}}</td>
+                                <td v-if="topup.status == 'pending'">
+                                    <button class="btn btn-outline-primary" v-on:click="verifyTopup(topup._id)">Verify</button>
+                                </td>
+                                <td v-if="topup.status == 'verified'">
+                                    <button class="btn btn-outline-primary" disabled>Verify</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                file: "",
+                selectedItem: {},
+                isActive: 'All',
+                carts: [],
+                categories: [{
+                    name: 'All'
+                }],
+                updated: {},
+                value: null,
+                hotlist: [],
+                input: {},
+                topups: []
+            },
+            beforeCreate: function() {
+                if (localStorage.getItem("token") === null) {
+                    window.location.href = "homeadmin.html";
+                }
+            },
+            created: function() {
+                axios.get('http://localhost:3000/categories')
+                    .then((response) => {
+                        this.categories = response.data
+                        this.categories.push({
+                            name: 'All'
+                        });
+                        this.categories.reverse()
+                    })
+                    .catch(function(err) {
+                        console.log(err)
+                    })
+
+                axios.get('http://localhost:3000/items', {
+                        headers: {
+                            token: localStorage.getItem("token")
+                        }
+                    })
+                    .then((response) => {
+                        this.hotlist = response.data
+                    })
+                    .catch(function(err) {
+                        console.log(err)
+                    })
+                axios.get('http://localhost:3000/topups/all', {
+                        headers: {
+                            token: localStorage.getItem("token")
+                        }
+                    })
+                    .then((result) => {
+                        this.topups = result.data
+                        console.log('ini data topup', this.topups)
+                    })
+                    .catch(function(err) {
+                        console.log(err)
+                    })
+            },
+            methods: {
+                verifyTopup: function(value) {
+                    // console.log(localStorage.getItem("token"))
+                    axios.get(`http://localhost:3000/topups/verify/${value}`, {
+                            headers: {
+                                token: localStorage.getItem("token")
+                            }
+                        })
+                        .then((response) => {
+                            this.topups = response.data
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                        })
+                },
+                previewFiles: function(link) {
+                    this.file = link.target.files[0]
+                },
+                maxText: function(value) {
+                    if (value.length > 11) {
+                        let str = value.substr(0, 21)
+                        return `${str}...`
+                    } else {
+                        return value
+                    }
+                },
+                signout: function() {
+                    localStorage.removeItem("token");
+                    location.reload();
+                },
+                displayActive: function(value) {
+                    this.isActive = value
+                },
+                checkActive: function(value) {
+                    if (value === this.isActive) {
+                        return true
+                    } else {
+                        return false
+                    }
+                },
+                passData: function(value) {
+                    this.selectedItem = value
+                    this.value = value.category_name
+                    console.log(this.value);
+                },
+                updateItem: function() {
+                    let tmp = this.value._id
+                    var formData = new FormData();
+                    formData.append('image', this.file);
+                    formData.append('name', this.selectedItem.name);
+                    formData.append('price', this.selectedItem.price);
+                    formData.append('stock', this.selectedItem.stock);
+                    formData.append('description', this.selectedItem.description);
+                    formData.append('category_id', tmp);
+                    for (var value of formData.values()) {
+                        console.log(value);
+                    }
+                    axios.put(`http://localhost:3000/items/${this.selectedItem._id}`, formData, {
+                            headers: {
+                                token: localStorage.getItem("token")
+                            }
+                        })
+                        .then((response) => {
+                            console.log('ini sebelum', this.hotlist);
+                            // this.hotlist[this.selectedItem.index] = response.data;
+                            this.$set(this.hotlist, this.selectedItem.index, response.data);
+                            console.log('ini response', response.data);
+                            console.log('ini sesudah', this.hotlist);
+
+                        })
+                        .catch(function(err) {
+                            console.log('ini error', err.response)
+                        })
+                },
+                addItem: function() {
+                    var formData = new FormData();
+                    let tmp = this.value._id
+                        // Display the values
+                    formData.append('image', this.file);
+                    formData.append('name', this.input.name);
+                    formData.append('price', this.input.price);
+                    formData.append('stock', this.input.stock);
+                    formData.append('description', this.input.description);
+                    formData.append('category_id', tmp);
+                    for (var value of formData.values()) {
+                        console.log(value);
+                    }
+                    axios.post(`http://localhost:3000/items`, formData, {
+                            headers: {
+                                token: localStorage.getItem("token")
+                            }
+                        })
+                        .then((response) => {
+                            this.hotlist = response.data
+                        })
+                        .catch(function(err) {
+                            console.log('ini error', err.response)
+                        })
+                },
+                deleteItem: function(value) {
+                    axios.delete(`http://localhost:3000/items/${value}`, {
+                            headers: {
+                                token: localStorage.getItem("token")
+                            }
+                        })
+                        .then((response) => {
+                            this.hotlist = response.data
+                            console.log(this.hotlist)
+                        })
+                        .catch(function(err) {
+                            console.log('FAILURE!!!');
+                        });
+                },
+                submitFile: function() {
+                    let formData = new FormData();
+                    formData.append('image', this.file);
+                    axios.post('http://localhost:3000/upload',
+                            formData, {})
+                        .then(function() {
+                            console.log('SUCCESS!!');
+                        })
+                        .catch(function(err) {
+                            console.log('FAILURE!!!');
+                        });
+                }
+            }
+        })
+        Vue.component('deletebutton', {
+            template: '#myTrash'
+        })
+    </script>
+    <script type="text/x-template" id="myTrash">
+        <button class="btn btn-danger" v-on:click="$emit('clickdelete')"><img src="https://img.icons8.com/windows/50/000000/trash.png" style="width:35%;height:45%" ></button>
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+
+</html>
