@@ -37,6 +37,17 @@
             </button>
         </div>
 
+        <!-- account profile edit -->
+        <account-view
+            :user='user'
+            :view-mode='viewMode'
+            :img-file-name='imgFileName'
+            :change-view-mode='changeViewMode'
+            :edit-user-model='editUserModel'
+            :update-user='updateUser'
+            :get-img-input='getImgInput'
+        ></account-view>
+
         <report-view
             :report='report'
             :view-mode='viewMode'
@@ -147,6 +158,7 @@
     <script src="./js/views/mainView.js"></script>
     <script src="./js/views/reportView.js"></script>
     <script src="./js/views/transactionsView.js"></script>
+    <script src="./js/views/accountEdit.js"></script>
     <script src="./js/components/navbarComponent.js"></script>
     <script src="./js/components/cartComponent.js"></script>
     <script src="./js/components/registerLoginComponent.js"></script>

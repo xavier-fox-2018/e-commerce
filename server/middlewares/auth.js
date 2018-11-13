@@ -36,7 +36,7 @@ module.exports = {
             })
         } else {
             res.status(500).json({
-                message: `User Creditial Required`
+                message: `User Creditial Required g1`
             })
         }
 

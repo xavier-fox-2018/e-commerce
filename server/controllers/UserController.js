@@ -123,35 +123,29 @@ const UserController = {
 
     update(req, res) {
         const id = req.params.id;
-        UserModel.findOne({
-            _id: id
-        }, function (err, User) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when getting User',
-                    error: err
-                });
-            }
-            if (!User) {
-                return res.status(404).json({
-                    message: 'No such User'
-                });
-            }
-
-            User.name = req.body.name ? req.body.name : User.name;
-            User.email = req.body.email ? req.body.email : User.email;
-            User.password = req.body.password ? req.body.password : User.password;
-
-            User.save(function (err, User) {
-                if (err) {
-                    return res.status(500).json({
-                        message: 'Error when updating User.',
-                        error: err
-                    });
-                }
-                return res.json(User);
-            });
+        let updateUser = {
+            avatar : req.body.avatar,
+            name : req.body.name,
+        }
+        
+        if(req.body.password) {
+            updateUser.password = helpers.hash(req.body.password)
+        }
+        
+        UserModel.findByIdAndUpdate(id, updateUser, {
+            // runValidators : true
+        })
+        .then((result) => {
+            res.json({
+                message : `update user success`
+            })
+        }).catch((err) => {
+            res.status(500).json({
+                message : 'error when updating user. errcode:ucu1',
+                error : err
+            })
         });
+
     },
 
     remove(req, res) {

@@ -83,6 +83,8 @@ let app = new Vue({
             categories : '' 
         },
 
+        editUserModel : {},
+
         report : [],
 
         dt : $('#transactionTable').DataTable()
@@ -136,6 +138,41 @@ let app = new Vue({
         }
     },
     methods: {
+
+        updateUser(){
+
+            let formdata1 = new FormData()
+            formdata1.append('picturefile', this.imgInput)
+
+            this.$server.post(`/uploads/picture`, formdata1, {
+                    headers : {
+                        token : localStorage.getItem('token')
+                    }
+                })
+                .then((image) => {
+
+                    if(image) this.editUserModel.avatar = image.data.link
+            
+                    this.$server.put(`/users/${this.user._id}`, this.editUserModel, {
+                        headers : {
+                            token : localStorage.getItem('token')
+                        }
+                    })
+                    .then(result => {
+                        this.gotNotify(result.data.message)
+                        setTimeout(() => {
+                            this.logout()
+                        }, 2000);
+                    }).catch(err => {
+                        this.gotNotify(err.response.data.message)
+                    });
+
+                })
+                .catch(err => {
+                    this.gotNotify(err.response.data.message)
+                });
+            
+        },
 
         gotNotify(message) {
             this.notify = message
@@ -486,7 +523,12 @@ let app = new Vue({
                 if(result.data.role == 'admin') {
                     this.getReport()
                 }
-                                
+                this.editUserModel = {
+                    avatar : this.user.avatar,
+                    name : this.user.name,
+                    email : this.user.email,
+                    password : ''
+                }          
                 this.dt.destroy();
                 this.$nextTick(() => {
                     this.dt = $('#transactionTable').DataTable()

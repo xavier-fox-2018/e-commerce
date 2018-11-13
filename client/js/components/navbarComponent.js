@@ -7,9 +7,10 @@ let navbarComponentTemplate = `<nav class="navbar navbar-expand-lg navbar-dark b
                 Login / Register
             </div>
         </a>
-        <a v-if="user" class="nav-link" href="" @click.prevent="changeViewMode('main','main')">
+        <a v-if="user" class="nav-link" href="" @click.prevent="changeViewMode('accountProfile','main')">
             <div class="text-light">
-                <i class="fa fa-lg fa-user-circle-o" aria-hidden="true"></i>
+                <i v-if="!user.avatar" class="fa fa-lg fa-user-circle-o" aria-hidden="true"></i>
+                <img v-if="user.avatar" :src="user.avatar" alt="ava" width="20px" height="20px">
                 {{user.email}} 
             </div>
         </a>
