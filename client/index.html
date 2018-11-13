@@ -63,7 +63,7 @@
 
                         <li style="margin-left:10%;">
                             <div class="dropdown mr-1" >
-                                <a style="font-size:40px; margin-right: 20px;" href="#">piyapiapa</a>
+                                <a style="font-size:40px; margin-right: 20px; text-decoration: none;">piyapiapa</a>
                                 <button v-if="is_logged_in" type="button" class="btn btn-primary dropdown-toggle" id="dropdownMenuOffset" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-offset="10,20">
                                   MENU
                                 </button>
@@ -73,7 +73,7 @@
                                     <h5 class="dropdown-item" href="" data-toggle="modal" data-target="#transactionModal">Transaction History</h5>
                                     
 
-                                    <h5 class="dropdown-item" href="">Profile</h5>
+                                    <h5 v-on:click="toProfilePage()" class="dropdown-item" href="">Profile</h5>
                                     <div class="dropdown-divider"></div>
                                     <h6 class="dropdown-item " href="" >Shop</h6>
                                     <h5 v-on:click="getShopData(shop)" v-for="shop in user_data.shop_list" class="dropdown-item">{{shop.name}}</h5>
@@ -173,6 +173,45 @@
                     <!-- end item list on shop page -->
                 </div>
                 <!-- end shop page -->
+
+
+
+                <!-- profile page -->
+                <div v-if="at_profile_page"  class="container-fluid">
+                    
+
+                    <div class="card" style="margin-top: 140px;">
+                        <div class="card-body" style="box-shadow: 0px 0px 12px rgb(163, 163, 163); border: 0px;">
+                            <div class="card-body row" style="position:relative; top: -100px;">
+                                <img width="300" height="300" v-bind:src="user_data.image" alt="" style="border-radius: 30px; box-shadow: 0px 3px 4px rgb(163, 163, 163);">
+                                <div style="position:relative; top: 70px; left: 30px; color: rgb(68, 129, 98);">
+                                        <h1 >{{user_data.first_name}} {{user_data.last_name}}</h1>
+                                        <br>
+                                        <button v-on:click="emptyShopData()" class="btn btn-primary" data-toggle="modal" data-target="#createShopModal">Add Shop</button>
+                                        <button class="btn btn-primary" data-toggle="modal" data-target="#loginModal">Edit Info</button>
+
+                                        <hr>
+                                        <p>First Name: {{user_data.first_name}}</p>
+                                        <p>Last name: {{user_data.last_name}}</p>
+                                        <p>Phone:{{user_data.phone}}</p>
+                                        <p>Addrress:{{user_data.address}}</p>
+                                        <p>Balance: Rp {{user_data.money}}</p>
+
+                                        <hr>
+
+                                        <h6>Shops:</h6>
+
+                                        <button v-on:click="getShopData(shop)" class="btn btn-primary" v-for="shop in user_data.shop_list">{{shop.name}}</button>
+                                </div>
+                                
+                                
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+                <!-- end profile page -->
     
 
 
@@ -238,6 +277,36 @@
                     </div>
                 </div>
                 <!-- end create item modal -->
+
+                <!-- create shop modal -->
+                <div class="modal fade" id="createShopModal" tabindex="-1" role="dialog" aria-labelledby="createShopModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5  class="modal-title" id="createShopModalLabel">Add Shop</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <label>Name:</label>
+                                <input v-model="shop_data.name" class="form-control" type="text" placeholder="name">
+                                <label>Description:</label>
+                                <input v-model="shop_data.description" class="form-control" type="text" placeholder="description">
+                                <label>Addrress:</label>
+                                <input v-model="shop_data.address" class="form-control" type="text" placeholder="address">
+                                <label>Image:</label>
+                                <input v-model="shop_data.image" class="form-control" type="text" placeholder="http://">
+                                
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button v-on:click="addShop()" type="button" class="btn btn-primary">Add Shop</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end create shop modal -->
 
                 <!-- item modal -->
                 <div class="modal fade" id="itemModal" tabindex="-1" role="dialog" aria-labelledby="itemModalLabel" aria-hidden="true">
@@ -647,6 +716,29 @@
                             this.showAllitems()
                         })
                 },
+                addCategory(shop_id) {
+                    console.log(shop_id);
+                    console.log('sukes add item');
+                    
+
+                    axios({
+                        method: 'POST',
+                        url: `http://localhost:3000/shops/${shop_id}/items`,
+                        data: {
+                            name: this.item.name,
+                            image: this.item.image,
+                            description: this.item.description,
+                            price: this.item.price,
+                            stock: this.item.stock,
+                        },
+                        headers: {
+                            token: localStorage.getItem('token')
+                        }
+                    })
+                        .then( () => {
+                            this.showAllitems()
+                        })
+                },
                 emptyItemData() {
                     this.item._id = ''
                     this.item.name = ''
@@ -657,6 +749,35 @@
                     this.item.shop_id = '',
                     this.item.user_id = '',
                     this.item.stock = 0
+                },
+                addShop() {
+                    console.log('add shop');
+                    
+                    axios({
+                        method: 'POST',
+                        url: `http://localhost:3000/shops`,
+                        data: {
+                            name: this.shop_data.name,
+                            image: this.shop_data.image,
+                            description: this.shop_data.description,
+                            address: this.shop_data.address
+                        },
+                        headers: {
+                            token: localStorage.getItem('token')
+                        }
+                    })
+                        .then( () => {
+                            console.log('sukses add shop');
+                            
+                        })
+                },
+                emptyShopData() {
+                    this.shop_data.name = ''
+                    this.shop_data.image = ''
+                    this.shop_data.description = ''
+                    this.shop_data.user_id = ''
+                    this.shop_data.address = ''
+                    this.shop_data.item_list = []
                 },
                 addingToCart(item) {
                     let added = false
@@ -823,6 +944,11 @@
                     this.at_shop_page = false
                     this.at_main_page = true
                     this.at_profile_page = false
+                },
+                toProfilePage() {
+                    this.at_shop_page = false
+                    this.at_main_page = false
+                    this.at_profile_page = true
                 }
             }
         });
