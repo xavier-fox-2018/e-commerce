@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(cors());
 app.use('/', router);
 
-mongoose.connect('mongodb://localhost:27017/ecommmerce', {
+mongoose.connect('mongodb://ecommerce:123ecommerce@ds155653.mlab.com:55653/ecommerce', {
     useNewUrlParser: true,
     useCreateIndex: true
 });
