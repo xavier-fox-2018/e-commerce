@@ -1,10 +1,14 @@
 const jwt = require('jsonwebtoken')
 
 function isAuthenticated(req, res, next) {
+    // headers di set di client, ga bisa langsung req.headers woi
+    
+    // klo ada accessToken -> berarti ada yg login! klo ga ada ga bisa next
     if (req.headers.hasOwnProperty('accesstoken')) {
         let accesstoken = req.headers.accesstoken
-
-        let user = jwt.verify(accesstoken, process.env.JWT_SECRET) 
+        // console.log('accesstoken', accesstoken);
+        
+        let user = jwt.verify(accesstoken, process.env.JWT_SECRET) // nnti pindah ke middleware!!
         console.log('from middleware', user);
         req.userID = user.id
         next()

@@ -8,7 +8,7 @@ const cartSchema = new Schema({
         quantity: { type: Number, default: 0 }
     }],
     userID: { type: Schema.Types.ObjectId, ref: 'User' }, 
-    totalPrice: { type: Number, default: 0 }, 
+    totalPrice: { type: Number, default: 0 }, // ini di transaction aja, nnti bikin model baru
 }, {timestamps: true})
 
 const Cart = mongoose.model('Cart', cartSchema)

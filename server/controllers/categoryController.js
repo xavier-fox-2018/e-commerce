@@ -4,6 +4,7 @@ class CategoryController {
     static create(req, res) {
         Category.create({
             name: req.body.name
+            // items: [] // GA BUTUH karena udah otomatis ada based on model
         })
         .then( newCategory => {
             res.status(200).json({data: newCategory})

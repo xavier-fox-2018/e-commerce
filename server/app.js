@@ -5,7 +5,9 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const routes = require('./routes')
 
-mongoose.connect('mongodb://localhost/shopping-cart', { useNewUrlParser: true})
+// mongoose.connect('mongodb://localhost/shopping-cart', { useNewUrlParser: true})
+mongoose.connect('mongodb://ecommerce-hedya1:h72f72e27@ds121871.mlab.com:21871/shopping-cart', { useNewUrlParser: true}) //masukin env
+
 
 
 const db = mongoose.connection;

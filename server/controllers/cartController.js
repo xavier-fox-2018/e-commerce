@@ -7,8 +7,8 @@ const Item = require('../models/item.js')
 class CartController {
     static create(req, res) {
         Cart.create({
-            cartItems: [], 
-            userID: req.userID, 
+            cartItems: [], // awalnya isi dengan object pertama ato dikosongin??
+            userID: req.userID, // nnti jadi req.user karena dapet dari middleware
             totalPrice: 0
         })
         .then( newCart => {
@@ -19,20 +19,24 @@ class CartController {
         })
     }
 
-    static addToCart(req, res) { 
+    static addToCart(req, res) { // dari client: itemID
+        // console.log('masukk',req.body.itemID, 'user', req.userID);
+        
         let itemID = mongoose.Types.ObjectId(req.body.itemID)
+        // cari cart based on userID -> klo ada di push, klo ga ada create baru trs masukin ke cart
         Cart.findOne({userID: req.userID})
         .then( cart => {
+            // console.log(mongoose.Types.ObjectId(req.body.itemID), 'apaa nihhhh');
             console.log('ini cart', cart);
             
-            if (cart) { 
+            if (cart) { // klo uda ada cart -> push newItem ke cartItems
                 let filtered = cart.cartItems.filter(function(el){
-                    return el.itemID == req.body.itemID 
+                    return el.itemID == req.body.itemID // string, bukan ObjectId
                 })
                 console.log('ini filtered', filtered);
                 
 
-                if (filtered.length == 0) { 
+                if (filtered.length == 0) { // klo blom ada itemIDnya di cart: 
                     Cart.findOneAndUpdate({userID: req.userID}, 
                         { $push: 
                             { cartItems: {
@@ -68,6 +72,7 @@ class CartController {
                                 }
                             })
                         .then( response => {
+                            // response.cartItems // sampe sinii, qty + 1, stock - 2
                             res.status(200).json({response, currentItem})
                         })
                         .catch( err => {
@@ -110,9 +115,10 @@ class CartController {
         
     }
 
-    static checkout(req, res) { 
+    static checkout(req, res) { // saat checkout -> akan otomatis buat cart kosong baru
         Cart.deleteOne({ userID: req.userID }) 
         .then( response => {
+            // res.status(200).json(response)
             Cart.create({
                 cartItems: [], 
                 userID: req.userID, 

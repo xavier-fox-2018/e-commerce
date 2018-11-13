@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "testing-commerce",
+  "private_key_id": "9d16a5c5a803472045f492599ea64551bdfc2027",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCz8VM4qiSq4ICm\nhSZprEOTwr3ACXWjCDjd5cEmLfY0GVsvL+x2uUqjKpB9f38ekdLRk/ookynsPPNM\nf+JGXhDanaTrRwvLud0UJZJFKIyhisarwhe4M9PDvZ7iUSB4XeXrdFUaFJIQyhUp\nw/nn79qR0UwfXA9wPfimmbKNUUUZOAA+SX9pvIM6TpThUTxouAW2k2VAo6Ixwumr\nQcH44xpvDteseJ7LXlWbHt3+GmwKJaF6h1ctkIuuRkK+P6qTsDJtXl+6Ddj5tZd1\nxoQXS0MKzKTlMCwXZLWM/8fJPm+ChT283GkukHvR+VSzPEgaEGsRr/OOAKMOrFth\npS5stKBjAgMBAAECgf8vA/tlRJ2lXXUjYopt9XgkeL2NNrKiWC5Kr71WA4/e8Ig4\nBPg1m1DIpo9THqemcY/5Mnfxd2W1qVOvxbo9GlbbOeOkeV1/MtgfFiPMX+hevsdi\n/OHgW6pOXiCzrA0Iu4ACPio3GAxncxBNZ5HkXXHa4JvmsicdnmjnyXnBOeybG5UH\nk2XEOdfTsbpqM3olGSK6lfxlmkWKVT8EiC3FKlPJ3xLFcDUR7CXuAroTw+mpPS0U\n8rQga09jhYXcQ9buARgUJnNwPF1DP3xHNecEFLZoFF6qz5uA3rwblDPeya9FMoXC\ncaIVbblJPG6qewrlgZeVWz7+v/k5Vf2kQNes9LECgYEA/VfH/hui9aMiMcBYK9s3\nCzhv++Rl18wyk45MCUaVkGX8iXUYxGndume+mg14YTDY38i9kowrGs/sGqDheKzv\nG0jkwHwHoleFUWTvVgwycgsOXsNY7BLavt8TTMef6E8LZYRI7Sn+Z3BYFOdnbR3U\nQpXilLCJd5R8up2UA2Yj3/UCgYEAtdR3XYzG2RUd7jFnMT+bi71KWbEqONbq4YdF\nV28Se1QBZh9NpkGJjU7VrDcKsTC+69eV27u3ix5bxUVNe5MnDyuet8e6bG7xBmQT\nuYI7BmptDosJOo/k5+F0ORMXTSULOOriWoe8fajM2hyJbRp0HzXVQJpKo39haSTw\nsobpf/cCgYEAhHTV2rTmYdmWMj7nmp51zAcI/cEvwkFAHEfk12CxKBs6iz/O4Dqd\ntC0zyWXLj70zVuWkwC9LBiy5vD5rRGXeafyVpVHzx9xMlv7X57xez6OaMs+d+Wfu\nOKd3dshUgeh6A+zDGETBf6GMW/mU6McUyG+HVMhsRzo6cHOdBJ3tmdUCgYEAo38N\nadf4wR/EzvYrNNReF/O4FBhCv+M4Rlxs1GaydqSdsWb6WkFZ3u8BIJ5JhfQv6D7s\nqC0NqBE/MY3UUwaJO5HcYKI+FdxX64g3WDoquuUddNM+FCNpD7vg1qU88YgapC5I\nJGEi8tbChGjehXUg7yNnwnQ6IvOZ8oJd0BmRghcCgYEAr2G0qPsTUNLX8sfbGHh1\ncOL6EU1A9sgJo7qoVtE+ZNu6YXfhj4ED4su/WjBnrrkTeNpmIVsBS8qL34c+bjif\ne11aGa4izDEk22X0pnYFjQzesXrie96Qm2CCxul1Czgdjy3eBkxnAVZlE5/B2Oa7\nrKSD25gyxVuzZ3iJ/qkQfaY=\n-----END PRIVATE KEY-----\n",
+  "client_email": "hedya-upload@testing-commerce.iam.gserviceaccount.com",
+  "client_id": "117643071349184328718",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/hedya-upload%40testing-commerce.iam.gserviceaccount.com"
+}

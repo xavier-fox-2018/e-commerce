@@ -102,8 +102,9 @@
                 <div class="col-9 border">
                     <div class="row border" v-for="item in items">
                         <div class="col-3">
-                            <img src="book.jpg" alt="image not found" class="img-thumbnail rounded">
-                            <button class="btn btn-light btn-sm btn-block">Upload Picture</button>
+                            <img v-bind:src='item.imageUrl' alt="image not found" class="img-thumbnail rounded">
+                            <!-- <button class="btn btn-light btn-sm btn-block" v-on:click="uploadImage">Upload Picture</button> -->
+                            <input type="file" name="pic" accept="image/*" @change="uploadImage($event, item._id)">
                         </div>
                         <div class="col-7">
                             <ul class="list-group list-group-flush">
@@ -121,7 +122,7 @@
 
 
 
-                        <!-- MODAL - ITEMS -->
+                        <!-- MODAL - ITEMS (gimana supaya item nya dinamis??)-->
                         <div class="modal fade editItem" tabindex="-1" role="dialog">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
@@ -175,7 +176,7 @@
                         <th scope="col">Role</th>
                         <th scope="col">ID</th>
                         <th scope="col">Phone Number</th>
-                        <th>Options</th>
+                        <!-- <th>Options</th> -->
                         </tr>
                     </thead>
                     <tbody>
@@ -185,7 +186,7 @@
                             <td> {{ user.role }} </td>
                             <td> {{ user._id }} </td>
                             <td> {{ user.phoneNumber }} </td>
-                            <td> <button class="btn btn-dark"> Edit </button> <button class="btn btn-dark"> Delete </button></td>
+                            <!-- <td> <button class="btn btn-dark"> Edit </button> <button class="btn btn-dark"> Delete </button></td> -->
                         </tr>
                     </tbody>
                 </table>

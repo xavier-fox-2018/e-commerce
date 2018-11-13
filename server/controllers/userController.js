@@ -6,7 +6,7 @@ require('dotenv').config()
 
 class UserController {
     static register(req, res) {
-        const hash = crypto.createHmac('sha256', process.env.HASH_SECRET) 
+        const hash = crypto.createHmac('sha256', process.env.HASH_SECRET) // kayaknya ada yang kurang, soalnya smua hashing password jd sama
         .update(req.body.password)
         .digest('hex')
 
@@ -39,23 +39,23 @@ class UserController {
     static login(req, res) {
         let accesstoken = req.headers.accesstoken
         console.log('accesstoken', accesstoken);
-        const hash = crypto.createHmac('sha256', process.env.HASH_SECRET) 
+        const hash = crypto.createHmac('sha256', process.env.HASH_SECRET) // kayaknya ada yang kurang, soalnya smua hashing password jd sama
         .update(req.body.password)
         .digest('hex')
 
-        User.findOne({email: req.body.email, password: hash}) 
+        User.findOne({email: req.body.email, password: hash}) // langsung ngecek si email & hashed password
         .then(user => {
             if (!user) {
-                res.status(400).json({ message: 'wrong username or password'}) 
+                res.status(400).json({ message: 'wrong username or password'}) // klo ga ada user -> message aja, tp nnti res.status nya 400. tp kan 
             }
             else { 
-                const accesstoken = jwt.sign({ 
+                const accesstoken = jwt.sign({ // tanpa password yaa, detail yg lain bisa di reference nnti
                     id: user._id,
                     name: user.name, 
                     email: user.email,
                     role: user.role
                 }, process.env.JWT_SECRET)
-                res.status(200).json({ message: 'user exist', accesstoken, userID: user._id, role: user.role }) 
+                res.status(200).json({ message: 'user exist', accesstoken, userID: user._id, role: user.role }) // gpp ga gw lempar userID & role?
             }
 
         })
@@ -88,7 +88,7 @@ class UserController {
 
     static update(req, res) { 
         const hash = crypto.createHmac('sha256', process.env.HASH_SECRET) 
-        .update(req.body.password) 
+        .update(req.body.password) // ini update gmn? baca lagi!
         .digest('hex')
 
         User.updateOne({ _id: req.params.userID }, { 
