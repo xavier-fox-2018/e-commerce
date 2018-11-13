@@ -32,7 +32,7 @@ var app = new Vue({
     el: '#app',
     data: {
         config: {
-            port: `http://localhost:3000`
+            port: `http://ecommerce-server.hedyafeb.me`
         },
         register: {
             email: "",
