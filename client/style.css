@@ -148,10 +148,15 @@ body {
 
 
 a, button, span{
-  color: white;
+  color: white !important;
 }
 
 .transparent-bg {
   background-color: rgba(1, 1, 1, 0);
   border: 0;
+}
+
+.btn-info {
+  background-color: rgb(53, 163, 121);
+  border: #5c9b35;
 }
