@@ -33,7 +33,8 @@
 
                             <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">
                                 <div style="top: 100px; left:150px; position:relative; z-index: 1000; font-size: 40px; color: white; text-shadow: 0px 0px 20px rgb(53, 70, 63);">
-                                    <p>Welcome back, {{user_data.first_name}}!</p>
+                                    <p v-if="is_logged_in">Welcome back, {{user_data.first_name}}!</p>
+                                    <p v-if="!is_logged_in">Welcome!</p>
                                 </div>
                                 <div class="carousel-inner">
                                     <div class="carousel-item active">
@@ -134,7 +135,7 @@
                                 <div style="position:relative; top: 70px; left: 30px; color: rgb(68, 129, 98);">
                                         <h1 >{{shop_data.name}}</h1>
                                         <br>
-                                        <button class="btn btn-primary" data-toggle="modal" data-target="#createItemModal">Add Item</button>
+                                        <button v-on:click="emptyItemData()" class="btn btn-primary" data-toggle="modal" data-target="#createItemModal">Add Item</button>
                                         <!-- <button class="btn btn-primary" data-toggle="modal" data-target="#loginModal">Edit Page</button> -->
 
                                         <hr>
@@ -219,19 +220,19 @@
                             </div>
                             <div class="modal-body">
                                 <label>Name:</label>
-                                <input class="form-control" type="text" placeholder="name">
+                                <input v-model="item.name" class="form-control" type="text" placeholder="name">
                                 <label>Description:</label>
-                                <input class="form-control" type="text" placeholder="description">
+                                <input v-model="item.description" class="form-control" type="text" placeholder="description">
                                 <label>Price:</label>
-                                <input class="form-control" type="email" placeholder="Rp">
+                                <input v-model="item.price" class="form-control" type="text" placeholder="Rp">
                                 <label>Stock:</label>
-                                <input class="form-control" type="password" placeholder="0">
+                                <input v-model="item.stock" class="form-control" type="text" placeholder="0">
                                 <label>Image:</label>
-                                <input class="form-control" type="password" placeholder="http://...">
+                                <input v-model="item.image" class="form-control" type="text" placeholder="http://...">
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button v-if="!login_pressed" v-on:click="registering()" type="button" class="btn btn-primary">Add Item</button>
+                                <button v-on:click="addItem(shop_data._id)" type="button" class="btn btn-primary">Add Item</button>
                             </div>
                         </div>
                     </div>
@@ -622,6 +623,40 @@
                 itemDetailToModal(item) {
                     this.item = item
                     this.item_category_list_exclusive = item.category_list  
+                },
+                addItem(shop_id) {
+                    console.log(shop_id);
+                    console.log('sukes add item');
+                    
+
+                    axios({
+                        method: 'POST',
+                        url: `http://localhost:3000/shops/${shop_id}/items`,
+                        data: {
+                            name: this.item.name,
+                            image: this.item.image,
+                            description: this.item.description,
+                            price: this.item.price,
+                            stock: this.item.stock,
+                        },
+                        headers: {
+                            token: localStorage.getItem('token')
+                        }
+                    })
+                        .then( () => {
+                            this.showAllitems()
+                        })
+                },
+                emptyItemData() {
+                    this.item._id = ''
+                    this.item.name = ''
+                    this.item.image = '',
+                    this.item.description = '',
+                    this.item.category_list = '',
+                    this.item.price = 0,
+                    this.item.shop_id = '',
+                    this.item.user_id = '',
+                    this.item.stock = 0
                 },
                 addingToCart(item) {
                     let added = false
