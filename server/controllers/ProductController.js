@@ -25,7 +25,8 @@ class ProductController {
             price: req.body.price,
             discount: req.body.discount,
             category: req.body.category,
-            stock: req.body.stock
+            stock: req.body.stock,
+            image: req.body.image
         })
         .then(product => {
             Category.findByIdAndUpdate(req.body.category, {

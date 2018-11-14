@@ -26,7 +26,8 @@ const app = new Vue({
                 discount: 0,
                 description:'',
                 price: '',
-                stock: 0
+                stock: 0,
+                imageUrl: ''
             },
             edit: {
                 id: null,
@@ -46,7 +47,9 @@ const app = new Vue({
         this.getAllProducts()
     },
     methods: {
-
+        getImage(link) {
+            this.products.create.imageUrl = link.target.files[0]
+        },
         showCategoryPage: function() {
             this.page.product = false
             this.page.category = true
@@ -135,28 +138,38 @@ const app = new Vue({
 
 
         createProduct: function() {
-            axios({
-                method: 'POST',
-                url: 'http://localhost:3000/products',
-                data: {
-                    name: this.products.create.name,
-                    discount: this.products.create.discount,
-                    description: this.products.create.description,
-                    price: this.products.create.price,
-                    category: this.products.create.id,
-                    stock: this.products.create.stock
-                }
-            })
-            .then(response => {
-                this.products.create.name = ''
-                this.products.create.discount = 0
-                this.products.create.description = ''
-                this.products.create.price = 0
-                this.getAllProducts()
-            })
-            .catch(err => {
-                console.log(err)
-            })
+            let formData = new FormData()
+            formData.append('image', this.products.create.imageUrl)
+            axios.post('http://localhost:3000/upload', formData, {})
+                .then(response => {
+                    axios({
+                        method: 'POST',
+                        url: 'http://localhost:3000/products',
+                        data: {
+                            name: this.products.create.name,
+                            discount: this.products.create.discount,
+                            description: this.products.create.description,
+                            price: this.products.create.price,
+                            category: this.products.create.id,
+                            stock: this.products.create.stock,
+                            image: response.data.link
+                        }
+                    })
+                    .then(response => {
+                        this.products.create.name = ''
+                        this.products.create.discount = 0
+                        this.products.create.description = ''
+                        this.products.create.price = 0
+                        this.products.create.imageUrl = ''
+                        this.getAllProducts()
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+                }) 
+                .catch(err => {
+                    console.log(err)
+                })         
         },
 
         deleteProduct: function(id) {

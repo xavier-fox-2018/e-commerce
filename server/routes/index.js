@@ -9,12 +9,27 @@ const UserController = require('../controllers/UserController')
 const CategoryController = require('../controllers/CategoryController')
 const CartController = require('../controllers/CartController')
 const TransactioController = require('../controllers/TransactionController')
+const images = require('../helpers/images')
 
 // Router.get('/categories', categoryRoutes)
 Router.get('/categories', CategoryController.getAll)
 Router.post('/categories/', CategoryController.create)
 Router.delete('/categories/:id', CategoryController.delete)
 Router.put('/categories/:id', CategoryController.update)
+
+
+
+Router.post('/upload',
+  images.multer.single('image'), 
+  images.sendUploadToGCS,
+  (req, res) => {
+    res.send({
+      status: 200,
+      message: 'Your file is successfully uploaded',
+      link: req.file.cloudStoragePublicUrl
+    })
+  })
+
 
 
 
