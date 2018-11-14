@@ -14,7 +14,7 @@ app.use('/', router)
 
 
 
-app.listen(3000, () => {
+app.listen(80, () => {
     console.log('express started on port 3000')
     // mongoose.connect('mongodb://localhost/ecommerce', {useNewUrlParser: true})
     //     .then(() => {
