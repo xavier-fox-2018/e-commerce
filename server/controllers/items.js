@@ -3,15 +3,14 @@ const Category = require('../models/categories')
 
 module.exports = {
 
-    add: function(req, res){         
+    add: function(req, res){    
         Item.create({
             name: req.body.name,
             price: req.body.price,
             category: req.body.category,
             description: req.body.description,
             stock: req.body.stock,
-            image: 'https://static1.squarespace.com/static/56a213bbd82d5ee027b4a502/t/5876547429687f9d498d3908/1484149884650/coffee-lovers-1080p-hd-wallpaper.jpg?format=2500w'
-            // image: req.file.cloudStoragePublicUrl
+            image: req.file.cloudStoragePublicUrl
         })
         .then((result) => {
             res.status(201).json({message: "Item added", data: result})
@@ -33,15 +32,13 @@ module.exports = {
     },
     edit: function(req, res){
         Item.updateOne({
-            _id: req.params.id,
-            isDeleted: false
+            _id: req.params.id
         }, {
             name: req.body.name,
             price: req.body.price,
             category: req.body.category,
             description: req.body.description,
-            stock: req.body.stock,
-            image: 'https://static1.squarespace.com/static/56a213bbd82d5ee027b4a502/t/5876547429687f9d498d3908/1484149884650/coffee-lovers-1080p-hd-wallpaper.jpg?format=2500w'
+            stock: req.body.stock
         })
         .then((result) => {
             res.status(200).json({message: "Item Updated", data: result})
@@ -86,10 +83,9 @@ module.exports = {
         });
     },
     search(req, res){
-        console.log(req.params.q);
-        
         var regexQuery = {
-            name: new RegExp(req.params.q, 'i')
+            name: new RegExp(req.params.q, 'i'),
+            isDeleted: false
         }
         Item.find(regexQuery)
         .then((result) => {
@@ -99,17 +95,18 @@ module.exports = {
         });
     },
     editWithImage(req, res){
-        Item.update({
-            _id: req.body.id,
-            isDeleted: false
+        Item.updateOne({
+            _id: req.params.id
         }, {
             name: req.body.name,
             price: req.body.price,
             category: req.body.category,
-            urlImage: req.file.cloudStoragePublicUrl
+            description: req.body.description,
+            stock: req.body.stock,
+            image: req.file.cloudStoragePublicUrl
         })
         .then((result) => {
-            res.status(200).json({message: "Item Updated"})
+            res.status(200).json({message: "Item Updated", data: result})
         }).catch((err) => {
             res.status(500).json(err)
         });

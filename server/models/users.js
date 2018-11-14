@@ -29,7 +29,8 @@ const userSchema = new Schema({
         default: false
     },
     picture: {
-        type: String
+        type: String,
+        default: 'https://www.google.co.id/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwj1lu_VzMveAhULOI8KHTzqAnYQjRx6BAgBEAU&url=http%3A%2F%2Fpcm.um.edu.my%2Fstaff-and-student%2Fzuraini%2Fempty-avatar-700x480%2F&psig=AOvVaw0g9aQrpXVm3tU-oW50e7dK&ust=1542000215199212'
     },
     cart: [{
         item: {

@@ -17,9 +17,7 @@ module.exports = {
         .then((result) => {            
             res.status(200).json(result)
             IsDeleted: false
-        }).catch((err) => {
-            console.log(err);
-            
+        }).catch((err) => {            
             res.status(500).json(err)
         });
     },

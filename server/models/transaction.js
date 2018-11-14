@@ -4,22 +4,48 @@ const Schema = mongoose.Schema;
 const transactionSchema = new Schema({
     customerId: {
         type: Schema.Types.ObjectId,
-        ref: 'Customer',
+        ref: 'User',
         required: true
     },
     items: [{
-        id: String,
-        name: String,
-        price: Number,
-        qty: Number
+        itemId: {
+            type: Schema.Types.ObjectId,
+            ref: 'Item'
+        },
+        name: {
+            type: String
+        },
+        price: {
+            type: Number
+        },
+        qty: {
+            type: Number
+        },
+        subTotal: {
+            type: Number
+        }
     }],
-    total: {
-        type: String,
-        required: true
+    shippingName: {
+        type: String
     },
-    status: {
+    shippingAddress: {
+        type: String
+    },
+    shippingCourir: {
+        type: String
+    },
+    shippingCost: {
+        type: Number
+    },
+    paymentTotal: {
+        type: String
+    },
+    paymentName: {
         type: String,
-        default: 'Waiting Payment'
+    },
+    paymentStatus: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true

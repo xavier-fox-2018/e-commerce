@@ -18,6 +18,7 @@ var usersRouter = require('./routes/users');
 var categoriesRouter = require('./routes/categories')
 var itemsRouter = require('./routes/items')
 var transactionsRouter = require('./routes/transactions')
+var shippingsRouter = require('./routes/shippings')
 
 var app = express();
 
@@ -30,5 +31,6 @@ app.use('/users', usersRouter);
 app.use('/categories', categoriesRouter)
 app.use('/items', itemsRouter)
 app.use('/transactions', transactionsRouter)
+app.use('/shipping', shippingsRouter)
 
 module.exports = app;

@@ -50,7 +50,7 @@ const Multer = require('multer'),
       multer = Multer({
         storage: Multer.MemoryStorage,
         limits: {
-          fileSize: 5 * 240 * 240
+          fileSize: 5 * 500 * 500
         }
       })
 

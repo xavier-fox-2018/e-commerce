@@ -45,7 +45,6 @@ module.exports = {
         .then((result) => {
             res.status(201).json({message: "Register Success :)", data: result})
         }).catch((err) => {
-            // console.log(err);
             res.status(500).json(err)
         });
     },
@@ -95,7 +94,7 @@ module.exports = {
         .populate('transaction')
         .select('_id name email picture isAdmin cart transaction')
         .exec()
-        .then((result) => {
+        .then((result) => {            
             res.status(200).json({data: result})
         })
         .catch((err) => {
@@ -104,7 +103,6 @@ module.exports = {
     },
     addToCart: function(req, res){
         let itemId = mongoose.Types.ObjectId(req.body.item)
-        // console.log(req.decoded.cart);
         let result = req.decoded.cart.filter(function(data){  // cari udh ada apa blm itemnya, result nya array
             return itemId.equals(data.item)
         })
@@ -118,7 +116,7 @@ module.exports = {
                 }
             }})
             .then((result1) => {
-                console.log(result1);
+                // console.log(result1);
                 res.status(200).json({message: 'add to Cart success'})
             }).catch((err) => {
                 console.log(err);
@@ -132,7 +130,7 @@ module.exports = {
                 'cart.$.qty' : result[0].qty + 1
             }})
             .then((result2) => {
-                console.log(result2);
+                // console.log(result2);
                 res.status(200).json({message: 'add to Cart success'})
             }).catch((err) => {
                 console.log(err);
@@ -154,10 +152,9 @@ module.exports = {
                 'cart.$.qty' : result[0].qty - 1
             }})
             .then((result1) => {
-                console.log(result1);
+                // console.log(result1);
                 res.status(200).json({message: 'remove from Cart success'})
             }).catch((err) => {
-                console.log(err);
                 res.status(500).json(err)
             });
         } else if(result[0].qty === 1){
@@ -169,10 +166,9 @@ module.exports = {
                 }
             }})
             .then((result) => {
-                console.log(result);
+                // console.log(result);
                 res.status(200).json({message: 'remove from Cart success'})
             }).catch((err) => {
-                console.log(err);
                 res.status(500).json(err)
             });
         }
