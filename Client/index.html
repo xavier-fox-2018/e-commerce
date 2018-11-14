@@ -124,7 +124,7 @@
                             </div>
                             <div class="modal-footer">
                                 <div>
-                                    <button v-on:click="getSignIn()" type="submit" class="btn btn-primary btn-lg btn-block">Login</button>
+                                    <button v-on:click="getSignIn()" type="submit" class="btn btn-primary btn-lg btn-block" data-dismiss="modal">Login</button>
                                 </div>
                                 <div>
                                     <!-- <button id="login_lost_btn" type="button" class="btn btn-link" data-toggle="modal" data-target="#lost-form">Lost Password?</button> -->
@@ -192,7 +192,7 @@
                             </div>
                             <div class="modal-footer">
                                 <div>
-                                    <button type="submit" class="btn btn-primary btn-lg btn-block" v-on:click="getSignUp()">Register</button>
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block" v-on:click="getSignUp()" data-dismiss="modal">Register</button>
                                 </div>
                                 <div>
                                     <button id="register_login_btn" type="button" class="btn btn-link" data-toggle="modal" data-target="#login_access" data-dismiss="modal">Log In</button>
@@ -474,6 +474,9 @@
     
 
     <script>
+        var config = {
+            host: 'http://35.231.132.3'
+        }
         var app = new Vue ({
             el: '#app',
             data: {
@@ -510,7 +513,7 @@
                 getAllproducts: function() {
                     axios({
                             method: 'GET',
-                            url: 'http://localhost:3000/product'
+                            url: `${config.host}/product`
                         })
                         .then(products => {
                             this.dummyCategories = products.data.product
@@ -526,7 +529,7 @@
                 getItem: function(id) {
                     axios({
                             method: 'GET',
-                            url: `http://localhost:3000/product/${id}`
+                            url: `${config.host}/product/${id}`
                         })
                         .then(products => {
                             let result = products.data.product
@@ -543,7 +546,7 @@
                 getCategory: function() {
                     axios({
                             method: 'GET',
-                            url: `http://localhost:3000/category`
+                            url: `${config.host}/category`
                         })
                         .then(products => {
                             let result = products.data.categories
@@ -566,7 +569,7 @@
                 getSignIn: function() {
                     axios({
                         method: 'POST',
-                        url: `http://localhost:3000/user/signIn`,
+                        url: `${config.host}/user/signIn`,
                         data: {
                             email: this.email,
                             password: this.password
@@ -579,7 +582,7 @@
                         localStorage.setItem('role', response.data.role)
                         this.isToken = response.data.token
                         this.isLogin = true
-                        $('#login_access').modal('toggle');
+                        // $('#login_access').modal('toggle');
                         if ( response.data.role === 'user' ) {
                             this.isUser = true
                             this.isAdmin = false
@@ -598,7 +601,7 @@
                 getSignUp: function() {
                     axios({
                         method: 'POST',
-                        url: `http://localhost:3000/user/signUp`,
+                        url: `${config.host}/user/signUp`,
                         data: {
                             name: this.name,
                             username: this.username,
@@ -613,8 +616,8 @@
                         localStorage.setItem('token', response.data.token)
                         localStorage.setItem('role', response.data.role)
                         this.isLogin = true
-                        $('#regis_access').modal('toggle');
-                        $('#login_access').modal('toggle');
+                        // $('#regis_access').modal('toggle');
+                        // $('#login_access').modal('toggle');
                         if ( response.data.role === 'user' ) {
                             this.isUser = true
                             this.isAdmin = false
@@ -630,25 +633,10 @@
                 },
 
                 getSignOut: function() {
-                    axios({
-                        method: 'POST',
-                        url: `http://localhost:3000/user`,
-                        data: {
-                            email: this.email,
-                            password: this.password
-                        }
-                    })
-                    .then(response => {
-                        console.log('ini response email', response);
-                        localStorage.removeItem('email', response.data.email)
-                        localStorage.removeItem('token', response.data.token)
-                        localStorage.removeItem('role', response.data.role)
-                        this.isLogin = false
-                    })
-                    .catch(err => {
-                        console.log(err)
-                        console.log('ini error get signout');
-                    })
+                    localStorage.removeItem('email')
+                    localStorage.removeItem('token')
+                    localStorage.removeItem('role')
+                    this.isLogin = false
                 },
 
                 statusLogin: function() {
@@ -686,7 +674,7 @@
                     console.log(checkEmail);
                     axios({
                         method: 'PUT',
-                        url: `http://localhost:3000/user/`,
+                        url: `${config.host}/user/`,
                         headers: {
                             email: checkEmail,
                             carts: JSON.stringify(this.cartItems)
@@ -726,18 +714,22 @@
                 },
 
                 roleLogger: function() {
-                    if ( localStorage.role === 'user') {
-                        this.isUser = true
-                        this.isAdmin = false
-                        this.isProdList = false
-                    } else if ( localStorage.role === 'merchant') {
-                        this.isUser = false
-                        this.isAdmin = true
-                        this.isProdList = true
-                    } else if ( this.getSignOut() ) {
-                        this.isUser = ''
-                        this.isAdmin = ''
-                        this.isProdList = ''
+                    console.log(localStorage);
+
+                    if ( isLogin === true ) {
+                        if ( localStorage.role === 'user') {
+                            this.isUser = true
+                            this.isAdmin = false
+                            this.isProdList = false
+                        } else if ( localStorage.role === 'merchant') {
+                            this.isUser = false
+                            this.isAdmin = true
+                            this.isProdList = true
+                        } else if ( this.getSignOut() ) {
+                            this.isUser = ''
+                            this.isAdmin = ''
+                            this.isProdList = ''
+                        }
                     }
                 },
             },

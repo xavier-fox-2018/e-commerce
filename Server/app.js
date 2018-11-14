@@ -10,18 +10,18 @@ const productRouter = require('./routers/product')
 const categoryRouter = require('./routers/category')
 const cartRouter = require('./routers/cart')
 
-// mongoose.connect('mongodb://localhost:27017/ecommerce', { useNewUrlParser: true });
+mongoose.connect('mongodb://localhost:27017/ecommerce', { useNewUrlParser: true });
 
-// const db = mongoose.connection;
-// db.on('error', console.error.bind(console, 'connection error:'));
-// db.once('open', function() {
-//     console.log('mongo connected')
-// });
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+    console.log('mongo connected')
+});
 
-var mongodUri = `mongodb://${process.env.MLAB_USER}:${process.env.MLAB_PASS}@ds163013.mlab.com:63013/simple_ecommerce`
-mongoose.connect(mongodUri, {
-    useNewUrlParser: true
-})
+// var mongodUri = `mongodb://${process.env.MLAB_USER}:${process.env.MLAB_PASS}@ds163013.mlab.com:63013/simple_ecommerce`
+// mongoose.connect(mongodUri, {
+//     useNewUrlParser: true
+// })
 
 app.use(cors())
 app.use(express.json())

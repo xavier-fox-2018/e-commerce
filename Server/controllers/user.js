@@ -179,8 +179,7 @@ module.exports = {
         })
     },
     gSignin,
-    signup: function (req,res) {
-
+    signUp: function (req,res) {
         let dataUser = new User({
             name: req.body.name,
             username: req.body.username,
@@ -188,9 +187,11 @@ module.exports = {
             password: req.body.password,
             role: req.body.role
         })
+        console.log('in data user',dataUser);
         bcryptPassword(dataUser)
         dataUser.save()
           .then((user) => {
+              console.log('ini user', user);
             const token = jwt.sign({user}, process.env.JWT_TOKEN)
             res.status(200).json({
                 email: user.email,
