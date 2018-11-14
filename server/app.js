@@ -16,11 +16,17 @@ app.use('/', router)
 
 app.listen(3000, () => {
     console.log('express started on port 3000')
-    mongoose.connect('mongodb://localhost/ecommerce', {useNewUrlParser: true})
-        .then(() => {
-            console.log('mongodb started')
-        })
-        .catch(err => {
-            console.log(err)
-        })
+    // mongoose.connect('mongodb://localhost/ecommerce', {useNewUrlParser: true})
+    //     .then(() => {
+    //         console.log('mongodb started')
+    //     })
+    //     .catch(err => {
+    //         console.log(err)
+    //     })
+
+
+    const mongodUri = `mongodb://${process.env.MLAB_USER}:${process.env.MLAB_PASSWORD}@ds239682.mlab.com:39682/ecommerce`
+    mongoose.connect(mongodUri, {
+        useNewUrlParser: true
+    })
 })
