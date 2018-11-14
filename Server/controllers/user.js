@@ -187,11 +187,11 @@ module.exports = {
             password: req.body.password,
             role: req.body.role
         })
-        console.log('in data user',dataUser);
+        // console.log('in data user',dataUser);
         bcryptPassword(dataUser)
         dataUser.save()
           .then((user) => {
-              console.log('ini user', user);
+            //   console.log('ini user', user);
             const token = jwt.sign({user}, process.env.JWT_TOKEN)
             res.status(200).json({
                 email: user.email,
@@ -240,8 +240,8 @@ module.exports = {
     },
 
     getUserData: function(req,res) {
-        console.log('dapet email dari client', req.headers);
-        console.log('ini headers carts', req.headers.carts);
+        // console.log('dapet email dari client', req.headers);
+        // console.log('ini headers carts', req.headers.carts);
         User.updateOne({email: req.params.email},
         {
             carts: req.headers.carts
