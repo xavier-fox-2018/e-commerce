@@ -128,7 +128,7 @@
                                 </div>
                                 <div>
                                     <!-- <button id="login_lost_btn" type="button" class="btn btn-link" data-toggle="modal" data-target="#lost-form">Lost Password?</button> -->
-                                    <button id="login_register_btn" type="button" class="btn btn-link" data-toggle="modal" data-target="#regis_access">Register</button>
+                                    <button id="login_register_btn" type="button" class="btn btn-link" data-toggle="modal" data-target="#regis_access" data-dismiss="modal">Register</button>
                                 </div>
                             </div>
                         </form>
@@ -164,7 +164,7 @@
         </div>
 
 
-        <!-- Modal: Login -->
+        <!-- Modal: Register -->
         <div class="modal fade" id="regis_access" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -195,7 +195,7 @@
                                     <button type="submit" class="btn btn-primary btn-lg btn-block" v-on:click="getSignUp()">Register</button>
                                 </div>
                                 <div>
-                                    <button id="register_login_btn" type="button" class="btn btn-link">Log In</button>
+                                    <button id="register_login_btn" type="button" class="btn btn-link" data-toggle="modal" data-target="#login_access" data-dismiss="modal">Log In</button>
                                     <!-- <button id="register_lost_btn" type="button" class="btn btn-link">Lost Password?</button> -->
                                 </div>
                             </div>
@@ -408,7 +408,6 @@
                         
                         <tr v-for="item in cartItems">
                             <th scope="row" id="cartItems_length">1</th>
-                            <td></td>
                             <td v-if="item">{{ item.name }}</td>
                             <!-- <td><input type="text" name="" id=""> Quantity</td> -->
                             <td v-if="item">{{ item.totalPrice }}</td>
@@ -437,7 +436,7 @@
         <div class="footer">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-md-4">
                         <ul class="clear">
                             <li><a target="_self" href="" data-i18n="media" module-id="common">Media</a></li>
                             <li><a target="_self" href="" data-i18n="careers" module-id="common">Careers</a></li>
@@ -448,29 +447,7 @@
                             <li><a target="_blank" href="">All Plans</a></li>
                         </ul>
                     </div>
-                    <div class="col-md-2">
-                        <ul class="clear">
-                            <li><a target="_self" href="" data-i18n="media" module-id="common">Media</a></li>
-                            <li><a target="_self" href="" data-i18n="careers" module-id="common">Careers</a></li>
-                            <li><a target="_self" href="" data-i18n="about_airtel" module-id="common">About Airtel</a></li>
-                            <li><a target="_self" href="" data-i18n="brand" module-id="common">Brand</a></li>
-                            <li><a target="_self" href="">Press Release</a></li>
-                            <li><a target="_self" href="">Investor Support</a></li>
-                            <li><a target="_blank" href="">All Plans</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-2">
-                        <ul class="clear">
-                            <li><a target="_self" href="" data-i18n="media" module-id="common">Media</a></li>
-                            <li><a target="_self" href="" data-i18n="careers" module-id="common">Careers</a></li>
-                            <li><a target="_self" href="" data-i18n="about_airtel" module-id="common">About Airtel</a></li>
-                            <li><a target="_self" href="" data-i18n="brand" module-id="common">Brand</a></li>
-                            <li><a target="_self" href="">Press Release</a></li>
-                            <li><a target="_self" href="">Investor Support</a></li>
-                            <li><a target="_blank" href="">All Plans</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-2">
+                    <div class="col-md-4">
                         <ul class="clear">
                             <li><a target="_self" href="" data-i18n="media" module-id="common">Media</a></li>
                             <li><a target="_self" href="" data-i18n="careers" module-id="common">Careers</a></li>
@@ -683,33 +660,19 @@
                 },
 
                 addToCart: function(product) {
-                    // console.log(this.cartItems.length);
-                    if(this.cartItems.length > 0){
-                        for(i in this.cartItems){
-                            if (this.cartItems[i].id === product._id) {
-                                // console.log('ini cartItems id', this.cartItems[i]);
-                                console.log('ini product id', product._id);
-                                this.cartItems[i].name = product.name
-                                this.cartItems[i].price = product.price
-                                this.cartItems[i].totalPrice += product.price
-                                this.cartItems[i].quantity++
-                            } else if (this.cartItems[i].id !== product._id ){
-                                // console.log('ini cartItems id 2', this.cartItems[i].id);
-                                console.log('ini product id 2', product._id);
-                                let dataCart = {
-                                    id: product._id,
-                                    name: product.name,
-                                    price: product.price,
-                                    totalPrice: product.price,
-                                    quantity: 1
-                                }
-                                // console.log(product);
-                                console.log('ini datacart',dataCart);
-                                this.cartItems.push(dataCart)
-                                // console.log(this.cartItems);
-                            }
-                        }
-                    } else {
+                    let barangKetemu = false
+                    for(i in this.cartItems){
+                        console.log(i)
+                        if (this.cartItems[i].id === product._id) {
+                            console.log('ini cartItems id', this.cartItems[i]);
+                            console.log('ini product id', product._id);
+                            this.cartItems[i].totalPrice += product.price
+                            this.cartItems[i].quantity++
+                            barangKetemu = true
+                            break
+                        } 
+                    }
+                    if( !barangKetemu ){
                         let dataCart = {
                             id: product._id,
                             name: product.name,
@@ -719,21 +682,20 @@
                         }
                         this.cartItems.push(dataCart)
                     }
-                    this.product
-                    let checkEmail = localStorage.getItem("email")
-                    // console.log('ini checkemail',checkEmail);
+                    let checkEmail = localStorage.getItem('email')
+                    console.log(checkEmail);
                     axios({
                         method: 'PUT',
-                        url: `http://localhost:3000/user/email/${checkEmail}`,
+                        url: `http://localhost:3000/user/`,
                         headers: {
                             email: checkEmail,
                             carts: JSON.stringify(this.cartItems)
+                        },
+                        body: {
+                            id: product._id
                         }
                     })
                     .then((response) => {
-                        // this.cartItems = []
-                        console.log('ini response axios', response);
-                        console.log("ini local storage email", checkEmail)
                         this.cartItems = response.data.carts
                     })
                     .catch((err) => {
@@ -745,7 +707,6 @@
                     console.log(this.isLoginForm);
                     this.isLoginForm = true
                     console.log(this.isLoginForm);
-                    
                 },
 
                 addProductListing: function() {

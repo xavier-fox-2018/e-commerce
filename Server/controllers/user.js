@@ -258,5 +258,9 @@ module.exports = {
                 message: `you can't access the carts data`
             })
         })
+    },
+
+    updateCart: function(req,res) {
+        console.log('masuk update cart');
     }
 }

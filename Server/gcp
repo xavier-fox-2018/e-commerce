@@ -10,6 +10,7 @@ tunggu buttonnya berwarna ijo, connect (click ssh) -> lanjut ke terminal cloud
 
 
 tutorial how to install -> digital ocean
+masuk terminal di google cloud shell
 nodejs -v
 (sudo) npm i (yg di perlukan)
 mkdir (nama file)
@@ -21,16 +22,20 @@ left bar masuk ke vpc network di gcp, vpc networks
 left bar lg masuk ek firewall rulse, create firewall rule
 name: open-port-3000
 source ip ranges: 0.0.0.0/0
-protocol and ports: specified -> tcp: 3000
 target tags: open-port-3000
+protocol and ports: specified -> tcp: 3000
 
 masuk lg ke instance vm, klik edit, network tags: open-port-3000 -> save
+
+wget -qO- https://deb.nodesource.com/setup_10.x | sudo -E bash -
+sudo apt-get install -y nodejs
 
 
 pindah ke terminal
 npm start/nodemon (install dulu nodemon nya)
 copy external ip dari gcp +':3000'
 sudo su
+sudo apt update
 export port=80
 echo $port <- untuk memastikan apakah port sudah di set 80 atau bukan
 npm start

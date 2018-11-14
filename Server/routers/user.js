@@ -1,10 +1,11 @@
 const  express = require('express')
 const router = express.Router()
-const { findAll, insert, update, remove, findBy, gSignin, signIn, signup, getUserData } = require('../controllers/user')
+const { findAll, insert, update, remove, findBy, gSignin, signIn, signup, getUserData, updateCart } = require('../controllers/user')
 const {isLogin} = require('../middleware/isLogin')
 
 router.get('/', findAll)
 router.post('/', insert)
+router.put('/', updateCart)
 router.put('/:id', update)
 router.delete('/:id', remove)
 router.get('/:id', findBy)

@@ -13,4 +13,55 @@ footer
 search
 
 
+Component
+html
+body
+dari body ke script ->> child(props <- bind)
+dari script ke body ->> parent(emit -> event)
+emit('tes')
+event, v-on:click, @click, @tes
 
+script
+
+html:
+<list-categories :data="categories"></list-categories>  // :data dapet dari props
+<form-category @event-add-category="addCategory"></form-category>
+
+Vue.component(nama_component, object)
+Vue.component('list-categories', {
+    props: ['data],
+    template: `<div>
+    
+    `
+})
+
+Vue.component('form-categories', {
+    data() {
+        return {
+            name: ''
+        }
+    },
+    template: `<div>
+    
+    <button>
+    `,
+    methods: {
+        childAddCategory() {
+            console.log(this.name)
+            this.name can be an object
+            this.$emit('event-add-category', this.name)
+        }
+    }
+
+})
+
+
+parent 
+@add="addData" 2
+
+mthods: {
+    addData(data) 3
+}
+
+
+this.$emit('add', data) 1
