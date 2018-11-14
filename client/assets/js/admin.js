@@ -1,3 +1,7 @@
+const config = {
+    host: 'http://35.229.25.90'
+}
+
 const app = new Vue({
     el: '#app',
     data: {
@@ -62,7 +66,7 @@ const app = new Vue({
         createCategory: function() {
             axios({
                 method: 'POST',
-                url: 'http://localhost:3000/categories',
+                url: `${config.host}/categories`,
                 data: {
                     name: this.categories.create.name
                 }
@@ -79,7 +83,7 @@ const app = new Vue({
         deleteCategory: function(id) {
             axios({
                 method: 'DELETE',
-                url: `http://localhost:3000/categories/${id}`
+                url: `${config.host}/categories/${id}`
             })
             .then(response => {
                 this.getAllCategories()
@@ -97,7 +101,7 @@ const app = new Vue({
         updateCategoryE: function() {
             axios({
                 method: 'PUT',
-                url: `http://localhost:3000/categories/${this.categories.edit.id}`,
+                url: `${config.host}/categories/${this.categories.edit.id}`,
                 data: {
                     name: this.categories.edit.name
                 }
@@ -113,7 +117,7 @@ const app = new Vue({
         getAllCategories: function() {
             axios({
                 method: 'GET',
-                url: 'http://localhost:3000/categories'
+                url: `${config.host}/categories`
             })
             .then(response => {
                 this.categories.items = response.data
@@ -126,7 +130,7 @@ const app = new Vue({
         getAllProducts: function() {
             axios({
                 method: 'GET',
-                url: 'http://localhost:3000/products'
+                url: `${config.host}/products`
             })
             .then(response => {
                 this.products.items = response.data
@@ -140,11 +144,11 @@ const app = new Vue({
         createProduct: function() {
             let formData = new FormData()
             formData.append('image', this.products.create.imageUrl)
-            axios.post('http://localhost:3000/upload', formData, {})
+            axios.post(`${config.host}/upload`, formData, {})
                 .then(response => {
                     axios({
                         method: 'POST',
-                        url: 'http://localhost:3000/products',
+                        url: `${config.host}/products`,
                         data: {
                             name: this.products.create.name,
                             discount: this.products.create.discount,
@@ -175,7 +179,7 @@ const app = new Vue({
         deleteProduct: function(id) {
             axios({
                 method: 'DELETE',
-                url: `http://localhost:3000/products/${id}`
+                url: `${config.host}/products/${id}`
             })
             .then(response => {
                 this.getAllProducts()
@@ -197,7 +201,7 @@ const app = new Vue({
         updateProductE: function(product) {
             axios({
                 method: 'PUT',
-                url: `http://localhost:3000/products/${this.products.edit.id}`,
+                url: `${config.host}/products/${this.products.edit.id}`,
                 data: {
                     name: this.products.edit.name,
                     description: this.products.edit.description,

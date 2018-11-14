@@ -1,3 +1,6 @@
+const config = {
+    host: 'http://35.229.25.90'
+}
 const app = new Vue({
     el: '#app',   
     data: {
@@ -49,7 +52,7 @@ const app = new Vue({
             console.log('testt')
            axios({
                method: 'POST',
-               url: 'http://localhost:3000/transactions',
+               url: `${config.host}/transactions`,
                headers: {
                    token: localStorage.getItem('token')
                }
@@ -67,7 +70,7 @@ const app = new Vue({
         getTransaction: function() {
             axios({
                 method: 'GET',
-                url: 'http://localhost:3000/transactions',
+                url: `${config.host}/transactions`,
                 headers: {
                     token: localStorage.getItem('token')
                 }
@@ -110,7 +113,7 @@ const app = new Vue({
             else {
                axios({
                    method: 'POST',
-                   url: 'http://localhost:3000/users/register',
+                   url: `${config.host}/users/register`,
                    data: {
                        fullName: this.customer.fullName,
                        email: this.customer.email,
@@ -132,7 +135,7 @@ const app = new Vue({
         login: function() {
             axios({
                 method: 'POST',
-                url:'http://localhost:3000/users/login',
+                url:`${config.host}/users/login`,
                 data: {
                     email: this.customer.email,
                     password: this.customer.password1
@@ -158,7 +161,7 @@ const app = new Vue({
             } else {
                 axios({
                     method: 'POST',
-                    url: 'http://localhost:3000/cart',
+                    url: `${config.host}/cart`,
                     data: {
                         product: {
                             productId: product._id,
@@ -220,7 +223,7 @@ const app = new Vue({
         getCategory: function() {
             axios({
                 method: 'GET',
-                url: 'http://localhost:3000/categories'
+                url: `${config.host}/categories`
             })
             .then(function (response) {
                 app.categories = response.data
@@ -233,7 +236,7 @@ const app = new Vue({
         getProduct: function() {
             axios({
                 method: 'GET',
-                url: 'http://localhost:3000/products'
+                url: `${config.host}/products`
             })
             .then(response => {
                 this.products = response.data
@@ -247,7 +250,7 @@ const app = new Vue({
             this.isActive = id
             axios({
                 method: 'GET',
-                url: `http://localhost:3000/products/${id}`
+                url: `${config.host}/products/${id}`
             })
             .then(response => {
                 // console.log(response.data)
@@ -262,7 +265,7 @@ const app = new Vue({
         getCart: function() {
             axios({
                 method: 'GET',
-                url: 'http://localhost:3000/cart',
+                url: `${config.host}/cart`,
                 headers: {
                     token: localStorage.getItem('token')
                 }
@@ -294,7 +297,7 @@ const app = new Vue({
             if(newData.length > 0) {
                 axios({
                     method: 'GET',
-                    url: `http://localhost:3000/filterproducts/${newData}`
+                    url: `${config.host}/filterproducts/${newData}`
                 })
                 .then(products => {
                     this.products = products.data
