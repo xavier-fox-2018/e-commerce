@@ -69,29 +69,29 @@ module.exports = {
     },
     addItem : (req, res) => {
         
-        console.log(req)
-        // let createdNewItem = null
-        // let category_id = req.body.category_id
+       
+        let createdNewItem = null
+        let category_id = req.body.category_id
 
-        // let item = new Item({ name : req.body.name, description : req.body.description, stock : Number(req.body.stock), price : Number(req.body.price ),url : req.file.cloudStoragePublicUrl})
+        let item = new Item({ name : req.body.name, description : req.body.description, stock : Number(req.body.stock), price : Number(req.body.price )})
         
-        // item
-        //     .save()      
-        //     .then( newitem => {
-        //         createdNewItem = newitem
-        //         return Category.findById( category_id )
-        //     })
-        //     .then( category => {
+        item
+            .save()      
+            .then( newitem => {
+                createdNewItem = newitem
+                return Category.findById( category_id )
+            })
+            .then( category => {
                 
-        //         category.item_list.push(createdNewItem._id)
-        //         return category.save()
-        //     })
-        //     .then( response_adding_item_to_category => {
-        //         res.status(200).json( createdNewItem )
-        //     })
-        //     .catch( error => {
-        //         res.status(500).json({ message : error.message})
-        //     })
+                category.item_list.push(createdNewItem._id)
+                return category.save()
+            })
+            .then( response_adding_item_to_category => {
+                res.status(200).json( createdNewItem )
+            })
+            .catch( error => {
+                res.status(500).json({ message : error.message})
+            })
     },
     removeItem : (req, res) => {
         let item_id = ObjectId( req.params.id )

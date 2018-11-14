@@ -4,7 +4,7 @@ const {  isLogin, isAuthorize, isTokenStillValid, isTransactionValid } = require
 
 const { create , read} = require('../controllers/controller-transaction')
 
-router.post('/:id',isLogin,isTokenStillValid, isTransactionValid, create)
+router.post('/:id',isLogin,isTokenStillValid, create)
 router.get('/', isLogin, isTokenStillValid, read)
 
 
