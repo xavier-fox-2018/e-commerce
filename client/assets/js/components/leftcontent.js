@@ -1,7 +1,7 @@
 Vue.component('left-content', {
     data: function(){
         return {
-            host: 'http://localhost:3000',
+            host: 'https://ecom-server.ndiw.online',
             addItemName: '',
             addItemImage: '',
             addItemIsActive: '',

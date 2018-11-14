@@ -2,7 +2,7 @@
 var app = new Vue({
     el: '#app',
     data: { 
-        host: 'http://localhost:3000',
+        host: 'https://ecom-server.ndiw.online',
         user: null,
         items: [],
         categories: [],

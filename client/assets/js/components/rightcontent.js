@@ -1,7 +1,7 @@
 Vue.component('right-content', {
     data: function(){
         return{
-            host: 'http://localhost:3000',
+            host: 'https://ecom-server.ndiw.online',
             addItemName: '',
             addItemImage: '',
             addItemIsActive: '',
@@ -229,7 +229,7 @@ Vue.component('right-content', {
                 method: 'GET',
                 url: `${this.host}/transactions/itemreport/${this.itemReportYear}/${this.itemReportMount}`,
                 headers: {
-                    // token: localStorage.getItem('tokenEC')
+                    token: localStorage.getItem('tokenEC')
                 }
             })
             .then((result) => {
@@ -254,7 +254,7 @@ Vue.component('right-content', {
                             </div>
                             
                             <div class="description">
-                                <h3>Price: Rp. {{item.price}}</h3>
+                                <h3>Price: Rp. {{item.price.toLocaleString()}}</h3>
                             </div>
                         </div>
                     <div class="extra content">
@@ -313,7 +313,7 @@ Vue.component('right-content', {
                                     <td>{{result._id}}</td>
                                     <td>{{result.createdAt.slice(0,10)}}</td>
                                     <td>{{result.customerId.name}}</td>
-                                    <td>{{result.paymentTotal}}</td>
+                                    <td>Rp. {{ Number(result.paymentTotal).toLocaleString() }}</td>
                                     <td > <a href="#" @click="detailTrx(result._id)">detail</a> </td>
                                 </tr>
                             </table>
@@ -406,7 +406,7 @@ Vue.component('right-content', {
                                     stock: {{detailStock}}
                                 </div>
                                 <div class="field" style="font-size:20px">
-                                    Price: Rp. {{detailPrice}}
+                                    Price: Rp. {{detailPrice.toLocaleString()}}
                                 </div>
                             </div>
                             <div class="extra content">
@@ -483,7 +483,7 @@ Vue.component('right-content', {
             <!--  -->
 
             <!-- modal detail trx -->
-            <div class="ui small modal" id="modalDetailtrx" style="padding:50px;">
+            <div class="ui large modal" id="modalDetailtrx" style="padding:50px;">
                 <div class="ui header">
                     Transaction No : {{trxDetail._id}}
                 </div>
@@ -533,14 +533,14 @@ Vue.component('right-content', {
                                 <tr v-for="item in trxDetail.items">
                                     <td>{{item.name}}</td>
                                     <td>{{item.qty}}</td>
-                                    <td>{{item.price}}</td>
-                                    <td>{{item.subTotal}}</td>
+                                    <td>Rp. {{item.price.toLocaleString()}}</td>
+                                    <td>Rp. {{item.subTotal.toLocaleString()}}</td>
                                 </tr>
                                 <tr>
                                     <td colspan="3">
                                         TOTAL
                                     </td>
-                                    <td>{{trxTtl}}</td>
+                                    <td>Rp. {{trxTtl.toLocaleString()}}</td>
                                 </tr>
                             </table>
                         </div>

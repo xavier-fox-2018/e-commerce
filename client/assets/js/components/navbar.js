@@ -1,7 +1,7 @@
 Vue.component('nav-bar', {
     data: function(){
         return {
-            host: 'http://localhost:3000',
+            host: 'https://ecom-server.ndiw.online',
             regisName: '',
             regisEmail: '',
             regisPassword: '',
@@ -212,7 +212,7 @@ Vue.component('nav-bar', {
             <div class="ui fixed inverted menu" style="background-color: darkslategrey">
                 <div class="ui container">
                     <div class="ui item ">
-                        <h3>LOGO</h3>
+                        <h3>NgopsPedia</h3>
                     </div>
                     <div class="ui two wide column item">
                         <div class="ui simple dropdown ">
