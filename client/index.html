@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <!-- Bootstrap CSS -->
+    <script defer src="https://use.fontawesome.com/releases/v5.5.0/js/all.js" integrity="sha384-GqVMZRt5Gn7tB9D9q7ONtcp4gtHIUEW/yG7h98J7IpE3kpi+srfFyyB/04OV6pG0" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>SukaLapar</title>
+    
+</head>
+<body class="mt5">
+    <div class="vue" id="app">
+        <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-danger">
+            <div class="container">
+                <a class="navbar-brand" href="#">{{ navTitle }} <i class="fas fa-hippo"></i> </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <!-- <div class="navbar-nav">
+                        <a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
+                        <a class="nav-item nav-link" href="#">Contact</a>
+                    </div> -->
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-danger ml-5 dropdown-toggle" aria-label="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Category
+                            </button>
+                            <div class="dropdown-menu" v-for="category in categories">
+                                <a class="dropdown-item" href="#">{{ category.name }}</a>
+                                
+                                <!-- <div role="separator" class="dropdown-divider"></div> -->
+                                <a class="dropdown-item" href="#">Lihat Selengkapnya</a>
+                            </div>
+                        </span>
+                        <input class="form-control mr-sm-5" type="search" placeholder="Search" v-model="search" aria-label="Search">
+                        
+                    </div>
+                </div>
+                <div class="panel">
+                    <button type="button" v-if="totalItem === 0" class="btn btn-outline-dark mr-2" id="myCart"> Cart <i class="fas fa-shopping-cart"></i> </button>
+                    <button type="button" v-else="" class="btn btn-outline-dark mr-2" id="myCart"> Cart ({{ totalItem | 0 }}) <i class="fas fa-shopping-cart"></i> </button>
+                    <button type="button" v-if="isLogin === false"class="btn btn-dark mr-2" id="myLogin">Login</button>
+                    <button type="button" v-if="isLogin === false"class="btn btn-dark" id="mySignup">SignUp</button>
+                    <button type="button" v-if="isLogin === true"class="btn btn-dark" v-on:click="logout" id="logout">SignOut</button>
+                    
+                </div>
+            </div>
+        </nav>
+        <div class="jumbotron jumbotron-fluid mt-5">
+            <div class="container">
+                <h1 class="display-4" width=20%> {{ navTitle }} <i class="fas fa-hippo"></i></h1>
+                <p class="lead">Makan Online Tidak Aman dan Tidak Nyaman</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <form class="col-md-10 center" v-show="isAdmin === true">
+                        <div class="form-group">
+                             <i class="fas fa-align-center">Add Category</i>
+                            <input type="text" class="form-control" v-model="title" placeholder="Category Name">
+                        </div>
+                        <button type="button" v-on:click="addCategory" class="btn btn-dark btn-sm mb-3">Add</button>
+                    </form>  
+                    
+                    <div class="card mt-3" v-show="isAdmin === true" style="width: 18rem;">
+                            <div class="card-header">
+                                <h5>Admin Panel</h5>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <a href="#" v-on:click="cekLogin" class="list-group-item"> Transaction </a>
+                                <a href="#" class="list-group-item"> List Product </a>
+                                <a href="#" class="list-group-item"> Add Promo </a>
+                            </ul>
+                        </div>
+                    <div class="card mt-4" style="width: 18rem;">
+                        <div class="card-header">
+                            <h5>Category</h5>
+                        </div>
+                        <a href="" class="list-group-item " v-on:click.prevent="getAllProduct"> All Product  </a>
+                        <ul class="list-group list-group-flush" v-for="category in categories" >
+                            <a href="" class="list-group-item" v-on:click.prevent="filterByCategory(category._id)" > {{ category.name }}  </a>
+                        </ul>
+                    </div>
+                    
+                </div>
+
+
+                <div class="col-md-8">
+                    <!-- form add data product -->
+                    <div id="row">                        
+                        <div id="col-md-4">
+                            <form v-show="isAdmin === true">
+                                <div class="form-group"> 
+                                    
+                                        <!-- addpic -->
+                                    <!-- <div>
+                                        <label>Picture</label>
+                                        <input type="file" class="form-control" ref="file">
+                                        <button class="btn btn-warning mt-2" v-on:click.prevent="uploadImage">Upload</button>
+                                    </div> -->
+                                    <!-- addpic -->
+                                    <label for="colFormLabelSm" class="col-sm-10 ml-5 col-form-label col-form-label-sm">Product Name:</label>
+                                    <div class="col-sm-10 ml-5">
+                                        <input type="text" class="form-control form-control-sm"  v-model="productName" placeholder="Product Name">
+                                    </div>
+                                    <label for="colFormLabelSm" class="col-sm-10 ml-5 col-form-label col-form-label-sm">Price:</label>
+                                    <div class="col-sm-10 ml-5">
+                                        <input type="number" class="form-control form-control-sm"  v-model="price" placeholder="Price">
+                                    </div>
+                                    <label for="colFormLabelSm" class="col-sm-10 ml-5 col-form-label col-form-label-sm">Stock:</label>
+                                    <div class="col-sm-10 ml-5">
+                                        <input type="number" class="form-control form-control-sm" v-model="stock" placeholder="Stock">
+                                    </div>
+                                    <label for="colFormLabelSm" class="col-sm-10 ml-5 col-form-label col-form-label-sm">Picture:</label>
+                                    <div class="col-sm-10 ml-5">
+                                        <input type="text" class="form-control form-control-sm" v-model="img" placeholder="picture">
+                                    </div>
+                                    <label for="colFormLabelSm" class="col-sm-10 ml-5 col-form-label col-form-label-sm">Category:</label>
+                                    <div class="col-sm-10 ml-5">
+                                        <select class="form-control form-control-sm" v-model="selected" >
+                                            <option v-for="category in categories" v-bind:value="category._id"> {{ category.name }}  </option>
+                                        </select>
+                                    </div>
+                                    <label for="colFormLabelSm" class="col-sm-10 ml-5 col-form-label col-form-label-sm">Description:</label>
+                                    <div class="col-sm-10 ml-5">
+                                        <input type="text" class="form-control form-control-sm mb-4" id="description" v-model="description" placeholder="Description">
+                                        
+                                        <input type="button" class="btn btn-dark btn-block mb-5" v-on:click="addProduct" value="Add Product">
+                                    </div>
+                                           
+                                </div>
+                                
+                            </form>
+                            
+                        </div>
+                        
+                    </div>
+                    <!-- form add data product -->
+                    <div class="row">
+                        <div class="col-md-4 mt-4" v-for="product in searchProducts" style="margin-bottom:15px;">
+                            <div class="card" >
+                                <img class="card-img-top" v-bind:src="product.img" alt="Card image cap">
+                                <div class="card-body ">
+                                    <p class="card-text"> {{ product.name }}  </p>
+                                    <small class="text-muted"> Rp. {{  product.price }}</small><br>
+                                    <small class="text-muted">Quantity:&nbsp; &nbsp;<input type="number" min="1" class="form-sm text-center" id="qty"  value="1"></small> <br>
+                                    <small class="text-muted">Stock:</small><small class="text-muted"> {{ product.stock }} </small><br>
+                                    <small class="text-muted">Desc:</small><small class="text-muted"> {{ product.description }} </small>
+                                </div>
+                                <div class="card-footer center">
+                                    <button type="button" v-on:click="addCart(product)" v-show="isAdmin === false" class="btn btn-dark btn-sm ml-5" v-if="product.stock !== 0">Add Cart</button> 
+                                    <button type="button" class="btn btn-dark btn-sm ml-4" v-else="" disabled>Add Cart</button> 
+                                    <button type="button" class="btn btn-dark btn-sm ml-4" v-show="isAdmin === true" @click="toEdit(product._id)" data-target="#editProduct" data-toggle="modal" >Edit</button> 
+                                    <button type="button" v-on:click="deleteProduct(product._id)" v-show="isAdmin === true" class="btn btn-danger btn-sm ml-3">Delete</button> 
+                                </div>
+                            </div>
+                        </div>
+                        <!-- by category -->
+                        <div class="col-md-4" v-show="byCategory.length !== 0" v-for="product in byCategory" style="margin-bottom:15px;">
+                            <div class="card" >
+                                <img class="card-img-top" v-bind:src="product.img" alt="Card image cap">
+                                <div class="card-body ">
+                                    <p class="card-text"> {{ product.name }}  </p>
+                                    <small class="text-muted"> Rp. {{  product.price }}</small><br>
+                                    <small class="text-muted">Quantity:&nbsp; &nbsp;<input type="number" min="1" class="form-sm text-center" id="qty"  value="1"></small> <br>
+                                    <small class="text-muted">Stock:</small><small class="text-muted"> {{ product.stock }} </small><br>
+                                    <small class="text-muted">Desc:</small><small class="text-muted"> {{ product.description }} </small>
+                                </div>
+                                <div class="card-footer center">
+                                    <button type="button" v-on:click="addCart(product)" v-show="isAdmin === false" class="btn btn-primary btn-sm ml-5" v-if="product.stock !== 0">Add Cart</button> 
+                                    <button type="button" class="btn btn-primary btn-sm ml-4" v-else="" disabled>Add Cart</button> 
+                                    <button type="button" class="btn btn-dark btn-sm ml-4" v-show="isAdmin === true">Edit</button> 
+                                    <button type="button" v-on:click="deleteProduct(product._id)" v-show="isAdmin === true" class="btn btn-danger btn-sm ml-3">Delete</button> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Edit -->
+        <div class="modal fade" id="editProduct" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Update Data Product</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="formGroupExampleInput">Product Name</label>
+                                <input type="text" class="form-control" v-model="productName">
+                            </div>
+                            <div class="form-group">
+                                <label for="formGroupExampleInput2">Price</label>
+                                <input type="number" class="form-control" v-model="price">
+                            </div>
+                            <div class="form-group">
+                                <label for="formGroupExampleInput2">Stock</label>
+                                <input type="number" class="form-control"  v-model="stock">
+                            </div>
+                            <div class="form-group">
+                                <label for="formGroupExampleInput2">Category</label>
+                                <select class="form-control form-control-sm" v-model="selected" >
+                                    <option v-for="category in categories" v-bind:value="category._id"> {{ category.name }}  </option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="formGroupExampleInput2">Description</label>
+                                <input type="text" class="form-control"  v-model="description">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-dark" @click="updateData(idcat)">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Login-->
+        <div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" style="padding:35px 50px;">
+                        <h4><span class="glyphicon glyphicon-lock"></span>Login</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body" style="padding:40px 50px;">
+                        <form role="form">
+                            <div class="form-group">
+                                <label for="email"><span class="glyphicon glyphicon-user"></span> Email</label>
+                                <input type="text" class="form-control" placeholder="Enter email" v-model='email'>
+                            </div>
+                            <div class="form-group">
+                                <label for="psw"><span class="glyphicon glyphicon-eye-open"></span> Password</label>
+                                <input type="password" class="form-control" placeholder="Enter password" v-model='password'>
+                            </div>
+                            <div class="checkbox">
+                                <label><input type="checkbox" value=" checked">Remember me</label>
+                            </div>
+                            <button type="button" v-on:click.prevent="signin" class="btn btn-dark btn-block"></span> Login</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-dark btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span>
+                        Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SignUp Register -->
+        <div class="modal fade" id="signup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header" style="padding:35px 50px;">
+                        <h4><span class="glyphicon glyphicon-lock"></span>Sign Up</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+            
+                    <div class="modal-body" style="padding:40px 50px;">
+                        <form role="form">
+                            <div class="form-group">
+                                <label for="usrname"><span class="glyphicon glyphicon-user"></span> Full Name</label>
+                                <input type="text" class="form-control" id="name" v-model="signName" placeholder="Full Name">
+                            </div>
+                            <div class="form-group">
+                                <label for="psw"><span class="glyphicon glyphicon-eye-open"></span> Email</label>
+                                <input type="text" class="form-control" id="email" placeholder="Email" v-model="signEmail">
+                            </div>
+                            <div class="form-group">
+                                <label for="psw"><span class="glyphicon glyphicon-eye-open"></span> Password</label>
+                                <input type="password"  class="form-control" id="password" placeholder="Password" v-model="signPassword" >
+                            </div>
+                            <div class="checkbox">
+                                <label><input type="checkbox" value="" checked>Remember me</label>
+                            </div>
+                                <input type="submit" class="btn btn-dark btn-block" v-on:click="signup" value="Sign Up"><span class="glyphicon glyphicon-off"></span>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="submit" class="btn btn-dark btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span>
+                        Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shooping Cart -->
+        <div class="modal fade bd-example-modal-lg" id="modalCart" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Shooping Cart</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- <div class="container"> -->
+                            <table id="cart" class="table table-hover table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th style="width:10%">Product</th>
+                                        <th style="width:10%">Price</th>
+                                        <th style="width:8%">Quantity</th>
+                                        <th style="width:22%" class="text-center">Subtotal</th>
+                                        <th style="width:10%"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-if="carts.length > 0" v-for="cart in carts">
+                                        <td data-th="Product" >
+                                            <div class="row">
+                                                <div class="col-sm-10" v-if="carts.length !== 0" > {{ cart.name }} </div>
+                                                <p v-else=""> ???? </p>
+                                            </div>
+                                        <td data-th="Price">  {{ cart.price }} </td>
+                                        <td data-th="Quantity">{{ cart.quantity }}</td>
+                                        <td data-th="Subtotal" class="text-center"> {{ cart.price * cart.quantity }} </td>
+                                        <td class="actions" data-th="">
+                                            <button class="btn btn-danger btn-sm" v-show="cart.quantity > 0" v-on:click="removeFromCart(cart)"><i class="far fa-trash-alt"></i></button>
+                                        </td>      
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr class="visible-xs">
+    
+                                    </tr>
+                                    <tr>
+                                        <td><a href="#" class="btn btn-warning"><i class="fas fa-hand-point-left"></i> Continue Shopping</a></td>
+                                        <td colspan="2" class="hidden-xs"></td>
+                                        <td class="hidden-xs text-center"><strong>Total {{ total }} </strong></td>
+                                        <td><a href="#" class="btn btn-success btn-block">Checkout <i class="fas fa-hand-point-right"></i></a></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        <!-- </div> -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+                
+                </div>
+            </div>
+        </div>
+            
+        
+        <footer class="bg-danger text-white mt-5">
+            <div class="container">
+                <div class="row pt-3">
+                    <div class="col text-center">
+                        <p>Copyright &copy;arul 2018</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        
+    </div>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="/script/vue.js"></script>
+    <script src="/script/script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
+    
+</body>
+</html>
+
+
+
+
+
