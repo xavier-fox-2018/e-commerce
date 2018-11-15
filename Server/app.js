@@ -5,10 +5,6 @@ const cors = require('cors')
 const app = express()
 // const Twitter = require('twitter-node-client').Twitter
 const indexRouter   = require('./routers/index')
-const userRouter = require('./routers/user')
-const productRouter = require('./routers/product')
-const categoryRouter = require('./routers/category')
-const cartRouter = require('./routers/cart')
 
 // mongoose.connect('mongodb://localhost:27017/ecommerce', { useNewUrlParser: true });
 
@@ -28,10 +24,6 @@ app.use(express.json())
 app.use(express.urlencoded({extended : false}))
 
 app.use('/', indexRouter)
-app.use('/user', userRouter)
-app.use('/product', productRouter)
-app.use('/category', categoryRouter)
-app.use('/cart', cartRouter)
 
 
 

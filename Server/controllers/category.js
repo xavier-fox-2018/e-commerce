@@ -7,12 +7,22 @@ module.exports = {
 
     Category.find()
       .then((categories) => {
+        let count = 0;
+        let result = [];
+        categories.forEach(category => {
+          if ( count < 5 ) {
+            result.push(category)
+          }
+          count++
+        })
         res.status(200).json({
-          categories
+          result,
+          message: `All selected categories found`
         })
       }).catch((err) => {
         res.status(500).json({
-          err
+          err,
+          message: `Server can't show categories`
         })
       });
   },

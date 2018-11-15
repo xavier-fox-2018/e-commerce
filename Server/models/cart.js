@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 var cartSchema = new Schema({
   name : {
     type: String,
+    default: [],
     required: [true, 'Cart name is required']
   },
   user: {type: Schema.Types.ObjectId, ref: 'User'},

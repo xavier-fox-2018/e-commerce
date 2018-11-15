@@ -39,6 +39,12 @@ module.exports = {
         })
       });
     
+  },
+
+  update: function(req,res) {
+    console.log('masuk sini lah update');
+    // console.log('masuk sini', req.body);
+    // console.log('masuk sini headers', req.headers);
   }
 
 }

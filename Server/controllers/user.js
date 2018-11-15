@@ -152,11 +152,10 @@ module.exports = {
             email: req.body.email
         })
         .then((user) => {
-            // console.log('ini user _id', user._id);
-            // console.log(user);
             if (bcrypt.compareSync(req.body.password, user.password) === true ) {
                 const token = jwt.sign({user}, process.env.JWT_TOKEN)
                 res.status(201).json({
+                    name: user.name,
                     email: user.email,
                     carts: user.carts,
                     role: user.role.toLowerCase(),
@@ -194,6 +193,7 @@ module.exports = {
             //   console.log('ini user', user);
             const token = jwt.sign({user}, process.env.JWT_TOKEN)
             res.status(200).json({
+                name: user.name,
                 email: user.email,
                 role: user.role.toLowerCase(),
                 token,
@@ -240,14 +240,11 @@ module.exports = {
     },
 
     getUserData: function(req,res) {
-        // console.log('dapet email dari client', req.headers);
-        // console.log('ini headers carts', req.headers.carts);
         User.updateOne({email: req.params.email},
         {
             carts: req.headers.carts
         })
         .then((user) => {
-            // user.carts = req.headers.carts
             console.log('ini user', user);
             res.status(200).json({
                 user
@@ -259,9 +256,5 @@ module.exports = {
                 message: `you can't access the carts data`
             })
         })
-    },
-
-    updateCart: function(req,res) {
-        console.log('masuk update cart');
     }
 }
