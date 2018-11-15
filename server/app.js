@@ -8,7 +8,7 @@ const cors = require('cors')
 const indexRouter = require('./routes/index');
 const mongoose = require('mongoose')
 const app = express();
-const database = process.env.DATABASE
+const database = 'mongodb://hacktiv8:hacktiv8@ds255403.mlab.com:55403/ecommerce'
 
 mongoose.connect(database)
 const db = mongoose.connection;
