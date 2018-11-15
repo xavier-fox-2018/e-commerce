@@ -1,0 +1,34 @@
+body {
+  /* background-image: url('https://thumbs.dreamstime.com/b/royal-abstract-gold-seamless-pattern-luxury-oriental-style-black-background-can-be-used-wallpaper-wrapping-textile-web-101145970.jpg') */
+}
+
+a {
+  cursor: pointer;
+}
+
+.link.cards {
+  font-size: 14px;
+}
+
+.link.cards img {
+  width: 200px;
+  min-height: 200px;
+
+}
+
+.link:hover {
+  cursor: pointer;
+  color: darkblue;
+}
+
+.main {
+  margin-top: 70px;
+}
+
+#logo {
+  background-image: url('https://thehungryjpeg.com/img/products/a0fe62c34e8d39d30e032644951fda860f0719e5.jpg');
+  height: 35px;
+  width: 50px;
+  background-size: contain;
+  background-repeat: no-repeat;
+}

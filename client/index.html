@@ -1,0 +1,1774 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="google-signin-client_id" content="43340400785-g34b4gvre9nn2e24kq4ogn2074p5fda4.apps.googleusercontent.com">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.js"></script>
+
+  <script src="http://cdn.jsdelivr.net/jquery.glide/1.0.6/jquery.glide.min.js"></script>
+  <title>Store-Ree</title>
+  <link rel="stylesheet" href="./style.css" class="rel">
+</head>
+
+<body>
+  <div id="app">
+    <!-- NAVBAR -->
+    <div class="ui inverted segment ">
+      <div class="ui inverted segment secondary pointing top fixed menu" style="background-color:black;">
+        <a class=" blue item">
+          <span id="logo"></span>
+        </a>
+        <a class=" blue item" @click='goHome'>
+          Home
+        </a>
+        <a class="blue item" v-if='!isAdmin' @click='showTransactionHistory = true'>
+          Transactions History
+        </a>
+        <div class="center menu">
+
+        </div>
+        <div class="right menu">
+          <div class="item">
+            <div class="active user" v-if='isLogin && !isAdmin'>
+              Hi {{ activeUser }}, Happy Shopping..
+            </div>
+            <div class="active user" v-if='isLogin && isAdmin'>
+              Hello {{ activeUser }}, Nice to see you again..
+            </div>
+          </div>
+          <div class="item" v-if='isLogin && isAdmin'>
+            <div class="ui button" @click='goToAdminPage'>Admin Page</div>
+          </div>
+          <div class="item">
+            <div class="ui icon input">
+              <input type="text" placeholder="Search..." v-model='query' @keyup='searchProduct'>
+              <i class="search link icon"></i>
+            </div>
+          </div>
+          <div class="item" v-if='isLogin'>
+            <div class="ui animated fade button" @click='cartPage'>
+              <div class="visible content">
+                <i class="cart icon"></i>
+                <a class="ui teal circular label">{{ cart.length }}</a>
+              </div>
+              <div class="hidden content">
+                Cart
+              </div>
+            </div>
+          </div>
+          <a class="ui item" v-if="isLogin">
+            <div class="ui vertical animated button mini" @click='logout'>
+              <div class="visible content">
+                <i class="logout icon"></i>
+              </div>
+              <div class="hidden content">
+                Logout
+              </div>
+            </div>
+          </a>
+          <a class="ui item" v-else>
+            <div class="ui animated button mini" onclick="$('.ui.modal.login').modal('show')">
+              <div class="visible content">
+                <i class="sign in icon"></i>
+              </div>
+              <div class="hidden content">
+                Login
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+    <!-- / NAVBAR -->
+
+    <!-- ADMIN PAGE -->
+    <div class="ui admin page container" v-if='showAdminPage' style="margin-top:70px;">
+      <div id="top-admin"><a href="#adm-list-products">List of Products</a> </div>
+      <h1>Transactions Report</h1>
+      <div class="ui button orange" @click='transactionsReport'>See Transactions Report</div>
+      <div class="ui">
+        <div class="ui row ">Date: <input type="date" v-model='begTransDate'> - <input type="date" v-model='endTransDate'>
+          <div class="ui button" @click='filterTransReport'>Filter</div>
+        </div>
+        <div class="ui row ">
+          <table class="ui celled selectable table">
+            <thead>
+              <tr>
+                <th>Transaction No.</th>
+                <th>Date</th>
+                <th>Username</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for='trans in allTransactions'>
+                <td>TRX-{{trans._id}}</td>
+                <td>{{ getNormalDateFormat(trans.createdAt) }}</td>
+                <td>{{ trans.user.username }}</td>
+                <td>$ {{ formatMoney(trans.grandTotal) }}</td>
+                <td><a @click='transactionDetail(trans)'>DETAILS</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <hr>
+        <div class="detail transaction" v-if='showDetailTransaction'>
+          Transaction No: TRX-{{detailTrans._id}} <br>
+          Date: {{getNormalDateFormat(detailTrans.createdAt)}} <br>
+          Customer: {{detailTrans.user.username}} <br>
+          Items bought: <br>
+          <table class="ui table">
+            <thead>
+              <th>Product name</th>
+              <th>Quantity</th>
+              <th>@Price</th>
+              <th>SubTotal</th>
+            </thead>
+            <tbody>
+              <tr v-for='item in detailTrans.itemList'>
+                <td>{{item.item.name}}</td>
+                <td>{{item.qty}}</td>
+                <td>$ {{formatMoney(item.item.price)}}</td>
+                <td>$ {{formatMoney(item.qty * item.item.price)}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <hr>
+        </div>
+        <h3>Items Report</h3>
+        <div class="month">
+          <div class="field">
+            <select class="ui search dropdown" name="filter-month" v-model='filterMonthItem'>
+              <option value="">Month</option>
+              <option value="1">January</option>
+              <option value="2">February</option>
+              <option value="3">March</option>
+              <option value="4">April</option>
+              <option value="5">May</option>
+              <option value="6">June</option>
+              <option value="7">July</option>
+              <option value="8">August</option>
+              <option value="9">September</option>
+              <option value="10">October</option>
+              <option value="11">November</option>
+              <option value="12">December</option>
+            </select>
+          </div>
+        </div>
+        <div class="year">
+          Year: <input type="number" min="2018" max="9999" v-model='filterYearItem'>
+        </div>
+        <div class="ui button" @click='filterItemsDate'>Filter</div>
+        <table class="ui celled selectable table">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Product Name</th>
+              <th>Total Sold</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for='(item, i) in productsSold'>
+              <td>{{i+1}}</td>
+              <td>{{item.name}}</td>
+              <td>{{item.quantity}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <hr>
+      <h1 id="adm-list-products">List of Products</h1>
+      <div><a href="#">Back to top</a></div>
+      <div class="ui button green" @click='addProductForm'>Create New Product</div>
+      <div class="ui mini button teal" @click='createCategory = true'>Create New Category</div>
+      <div class="ui field" v-if='createCategory'>
+        <input type="text" v-model='newCategory'>
+        <input type="button" value="Add Category" @click='addNewCategory'>
+      </div>
+      <table class="ui celled selectable inverted table">
+        <thead class="ui">
+          <tr>
+            <th>Category</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for='(product, index) in products'>
+            <td>{{ product.category }}</td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.description }}</td>
+            <td>{{ formatMoney(product.price) }}</td>
+            <td>{{ product.quantity }}</td>
+            <td>
+              <div class="ui button primary tiny"><i class="ui edit icon" @click='editProductForm(product)'>Edit</i></div>
+              <div class="ui button red tiny"><i class="ui trash icon" @click='deleteProductForm(product._id)'>Del</i></div>
+            </td>
+          </tr>>
+        </tbody>
+      </table>
+      <!-- Create Modal -->
+      <div class="ui modal create">
+        <i class="close icon" id="create-close"></i>
+        <div class="header" v-if='!editForm'>
+          Creating Product Form
+        </div>
+        <div class="header" v-else>
+          Editing Product Form
+        </div>
+        <div class="content">
+          <form class="ui large form">
+            <div class="ui stacked segment">
+              <div class="field">
+                <label for="">Product Image:</label>
+                <div class="ui left icon input">
+                  <input type="text" placeholder="Image Url" v-model='productImage'>
+                </div>
+              </div>
+              <div class="field">
+                <label for="">Upload Product Image:</label>
+                <div class="ui left icon input">
+                  <input id="imgFile" type="file" accept="image/*" ref="file" @change="uploadImage" />
+                </div>
+              </div>
+              <div class="field">
+                <label for="">Product Name:</label>
+                <div class="ui left icon input">
+                  <input type="text" name="name" placeholder="Product Name" v-model='productName'>
+                </div>
+              </div>
+              <div class="field">
+                <label for="category">Category:</label>
+                <div class="ui left icon input">
+                  <select name="category" v-model='productCategory'>
+                    <option v-for='cat in categories' :value="cat.category.toLowerCase()">{{cat.category}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field">
+                <label for="description">Description:</label>
+                <div class="ui left icon input">
+                  <textarea name="description" id="" cols="10" rows="5" v-model='productDescription'></textarea>
+                </div>
+              </div>
+              <div class="field">
+                <label for="">Product Price:</label>
+                <div class="ui left icon input">
+                  <input type="number" name="price" placeholder="$ Price" min="0" v-model='productPrice'>
+                </div>
+              </div>
+              <div class="field">
+                <label for="">Product Quantity:</label>
+                <div class="ui left icon input">
+                  <input type="number" name="quantity" placeholder="Quantity" min="0" v-model='productQuantity'>
+                </div>
+              </div>
+              <notif-msg :msg='msg' :show-msg='showMsg' :show-err='showErr'></notif-msg>
+              <div class="ui fluid large teal submit button" @click='addProduct' v-if='!editForm'>Add</div>
+              <div class="ui fluid large teal submit button" @click='editProduct' v-else>Edit</div>
+            </div>
+            <div class="ui error message"></div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Delete Modal -->
+      <div class='ui tiny modal delete'>
+        <div class="header">Delete your product</div>
+        <div class="content">
+          <h1>Are You Sure Want To Delete This Product ??</h1>
+          <p>the product you deleted will not be able to be recovered.</p>
+        </div>
+        <div class="actions">
+          <div class="ui approve yellow button" @click='deleteProduct(productId)'>Yes, Delete!</div>
+          <div class="ui red deny cancel button">Cancel</div>
+        </div>
+      </div>
+      <!--  -->
+    </div>
+    <!-- / ADMIN PAGE -->
+
+    <div class="see details" v-if='showDetailsPage' style="margin-top:70px;">
+      <div class="ui container">
+        <h1>{{productName}}</h1>
+        <p v-if='productReviews[0]'>{{productReviews.length}} customer reviews</p>
+        <img :src="productImage" alt="">
+        <h3>About the product:</h3><br>
+        {{productDescription}}<br>
+        Price: $ {{formatMoney(productPrice)}}<br>
+        Avalible Stock: {{productQuantity}} units<br>
+        <div v-if='productReviews[0]'>
+          Rating: {{calculateRating(productReviews) }} / 5
+        </div>
+        <hr>
+        <br><br>
+        <h1>Customer Review & Rating</h1>
+        <h3>Add new Review & Rating</h3>
+        <h5>Give Rating:</h5><br>
+        <notif-msg :msg='msg' :show-err='showErr' :show-msg='showMsg'></notif-msg>
+        <input type="number" min='1' max="5" placeholder="Give rating 1-5" name="" id="" v-model='rating'><br>
+        <textarea name="" id="" cols="50" rows="5" v-model='reviewMsg'></textarea><br>
+        <div class="ui button" @click='addNewReview'>Add Review</div>
+        <hr>
+        <br>
+        <div class="ui ten wide segment" v-if='productReviews[0]' v-for='review in productReviews'>
+          <h6>User: {{review.user.username}}</h6><br>
+          <p>{{ review.message}}</p><br>
+          <p>Rating: {{review.rating}}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== CART Page ==================== -->
+    <div class="cart page" v-if='showCartPage' style="margin-top:70px; margin-left:10px; margin-right:10px;">
+      <div id="cart-page" v-if='!shippingPage && !paymentPage'>
+        <div class="ui grid">
+          <div class="ui twelve wide column">
+            <h3>Shopping Cart:</h3>
+            <div class="ui row grid">
+              <div class="ui ten wide column"></div>
+              <div class="ui three wide column">Price</div>
+              <div class="ui three wide column">Quantity</div>
+            </div>
+            <hr>
+            <div class="ui row grid" v-for='item in uniqueCart'>
+              <div class="ui four wide column">
+                <img :src="item.image" style="height:150px; width:200px;">
+              </div>
+              <div class="ui six wide column">
+                <h5>{{ item.name }}</h5>
+                <span style="color: blue; cursor:pointer;" @click='removeFromCart(item)'>Remove from Cart</span>
+                <!-- delete,save,later -->
+              </div>
+              <div class="ui three wide column">
+                ${{ formatMoney(item.price) }}
+              </div>
+              <div class="ui three wide column">
+                <span>{{ countItemInCart(cart, item._id) }}</span> items selected. <br>
+                select to change quantity:
+                <select name="qty" id="qty" class="ui search dropdown" @change="onChange(item, countItemInCart(cart, item._id))"
+                  v-model="key">
+                  <option value=""></option>
+                  <option v-for='i of item.quantity' :value="i">{{i}}</option>
+                </select>
+              </div>
+            </div>
+            <hr>
+            <div class="ui row grid">
+              <div class="ui thirteen wide column"></div>
+              <div class="ui three wide column">
+                <h3>SubTotal ({{cart.length}} items): ${{formatMoney(grandTotalCart(cart))}}</h3>
+              </div>
+              <small>The price and availability of items at Store-Ree.com are subject to change. The Cart is a
+                temporary
+                place to store a list of your items and reflects each item's most recent price.
+
+                Do you have a gift card or promotional code? We'll ask you to enter your claim code when it's time to
+                pay.
+
+                <small><br><br>
+            </div>
+          </div>
+          <div class="ui four wide column">
+            <div class="ui segment" id="example1">
+              <div class="ui sticky" style="width: 272px !important; height: 262.531px !important; left: -1.5px;">
+                <div class="ui card">
+                  <div class="ui content">
+                    <div class="ui header">SubTotal ({{cart.length}} items): <span style="color:maroon">${{formatMoney(grandTotalCart(cart))}}</span></div>
+                  </div>
+                  <hr>
+                  <div class="ui orange fluid button" @click='shippingPage = true'>Proceed to checkout</div>
+                  <!-- <div class="ui orange fluid button" @click='checkout(cart)'>Proceed to checkout</div> -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Shipping page -->
+      <div id="shipping-page" v-if='!paymentPage && shippingPage'>
+        <order-steps :shipping='shippingPage' :payment='paymentPage' :confirm='confirmationPage'></order-steps>
+        <p><a @click='shippingPage=false'>Go back to Cart</a></p>
+        <h1>Add shipping address</h1>
+        <small>*Be sure to click "Ship to this address" when done.</small>
+        <form class="ui form ">
+          <h4 class="ui dividing header">Shipping Information</h4>
+          <div class="field">
+            <label>Name</label>
+            <div class="two fields">
+              <div class="twelve wide field">
+                <input type="text" name="shipping[first-name]" placeholder="Full Name of receiver" v-model='receiver'>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Full Address</label>
+            <div class="fields">
+              <div class="twelve wide field">
+                <input type="text" name="shipping[address]" placeholder="Street Address, P.O. Box, company name, Apartment, building no. etc."
+                  v-model='address'>
+              </div>
+            </div>
+          </div>
+          <notif-msg :msg='msg' :show-msg='showMsg' :show-err='showErr'></notif-msg>
+          <div class="ui  orange button" @click='checkAddress'>Shipping to this address</div>
+        </form>
+      </div>
+      <!-- Payment page -->
+      <div id="payment-page" v-if='paymentPage && !confirmationPage'>
+        <order-steps :shipping='shippingPage' :payment='paymentPage' :confirm='confirmationPage'></order-steps>
+        <p><a @click='paymentPage=false'>Go back to Shipping</a></p>
+        <h4 class="ui dividing header">Billing Information</h4>
+        <form class='ui form'>
+          <div class="field">
+            <label>Card Type</label>
+            <select class="ui search selection dropdown" id="search-card" v-model='creditCard'>
+              <option value="Mastercard">Mastercard</option>
+              <option value="Visa">Visa</option>
+              <option value="American Express">American Express</option>
+              <option value="Discover">Discover</option>
+            </select>
+          </div>
+          <div class="fields">
+            <div class="seven wide field">
+              <label>Card Number</label>
+              <input type="text" name="card" maxlength="16" placeholder="Card #" v-model='creditCardNum'>
+            </div>
+            <div class="three wide field">
+              <label>CVC</label>
+              <input type="text" name="cvc" maxlength="3" placeholder="CVC">
+            </div>
+            <div class="six wide field">
+              <label>Expiration</label>
+              <div class="two fields">
+                <div class="field">
+                  <select class="ui fluid search dropdown" name="expire-month">
+                    <option value="">Month</option>
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <input type="text" name="expire-year" maxlength="4" placeholder="Year">
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <h4 class="ui dividing header">Have any Coupon ?</h4>
+        <notif-msg :msg='msg' :show-msg='showMsg' :show-err='showErr'></notif-msg>
+        <div class="ui segment">
+          <div class="field">
+            <input type="text" name="" id="" placeholder="e.g. FreeOngkir123" v-model='coupon'>
+            <button class="ui tiny pink button" @click=checkCoupon>Check Coupon</button>
+          </div>
+        </div>
+        <div class="ui orange button" tabindex="0" @click='confirmationPage = true'>Submit Order</div>
+      </div>
+      <!-- Confirmation page -->
+      <div id="confirm-page" v-if='confirmationPage'>
+        <order-steps :shipping='shippingPage' :payment='paymentPage' :confirm='confirmationPage'></order-steps>
+        <p><a @click='confirmationPage=false'>Go back to Billing</a></p>
+        <h1>Review Your Order</h1>
+        <div class="ui grid">
+          <div class="ui eleven wide column">
+            <div class="ui row grid segment">
+              <div class="ui eight wide column">
+                <div><strong>Shipping address</strong></div>
+                <div>{{activeUser}} / {{receiver}}</div>
+                <div>{{address}}</div>
+              </div>
+              <div class="ui four wide column">
+                <div><strong>Payment method</strong></div>
+                <div>{{creditCard}}</div>
+                <div>With CC no. ending -xx{{creditCardNum.slice(12)}}</div>
+              </div>
+              <div class="ui four wide column">
+                <div><strong>Coupon Used</strong></div>
+                <div>{{coupon}}</div>
+                <span v-if='coupon != 0'>You are eligible to have {{discount}}% discount (exc. shipping fee)</span>
+                <span v-else>You dont use any coupon for this transaction</span>
+              </div>
+            </div>
+            <div class="ui row segment" v-for='item in uniqueCart'>
+              <div class="ui row">
+                <div class="ui six wide column">
+                  <img :src="item.image" style="height:150px; width:200px;">
+                </div>
+                <div class="ui ten wide column">
+                  <div>{{item.name}}</div>
+                  <div>$ {{formatMoney(item.price)}}</div>
+                  <div>Qty: {{ countItemInCart(cart, item._id) }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui five wide column segment">
+            <div class="ui fluid orange button" @click='checkout(grandTotalCart(cart))'>Confirm your order</div>
+            <h5>Order Summary</h5>
+            <hr>
+            <table class="ui single line fluid table">
+              <tbody>
+                <tr>
+                  <td>Items:</td>
+                  <td>$ {{ formatMoney(grandTotalCart(cart)) }}.00</td>
+                </tr>
+                <tr v-if='discount' style="color: indianRed;">
+                  <td><span>Discount:</span></td>
+                  <td><span>-$ {{ formatMoney(grandTotalCart(cart) * discount / 100)}}.00</span></td>
+                </tr>
+                <tr>
+                  <td>Shipping & handling:</td>
+                  <td>$ 0.00</td>
+                </tr>
+              </tbody>
+            </table>
+            <hr>
+            <h3 style="color:orangered; font-style:oblique;">Order Total: $ {{
+              formatMoney(grandTotalTransaction(grandTotalCart(cart)))}}.00</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- //  ==== CART Page ======= //-->
+
+    <!-- Transaction History Page -->
+    <div class="transaction history" v-if='showTransactionHistory' style="margin-top:70px;">
+      <div class="ui grid container segment">
+        <div class="ui row ">
+          <table class="ui celled selectable table">
+            <thead>
+              <tr>
+                <th>Transaction No.</th>
+                <th>Date</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for='trans in allTransactions'>
+                <td>TRX-{{trans._id}}</td>
+                <td>{{ getNormalDateFormat(trans.createdAt) }}</td>
+                <td>$ {{ formatMoney(trans.grandTotal) }}</td>
+                <td><a @click='historyDetail = true, transactionDetail(trans)'>DETAILS</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ui row" v-if='historyDetail'>
+          <div class="ui tiny button" @click=''>Show Details</div>
+          Transaction No: TRX-{{detailTrans._id}} <br>
+          Date: {{getNormalDateFormat(detailTrans.createdAt)}} <br>
+          Items bought: <br>
+          <table class="ui table">
+            <thead>
+              <th>Product name</th>
+              <th>Quantity</th>
+              <th>@Price</th>
+              <th>SubTotal</th>
+            </thead>
+            <tbody>
+              <tr v-for='item in detailTrans.itemList'>
+                <td>{{item.item.name}}</td>
+                <td>{{item.qty}}</td>
+                <td>$ {{formatMoney(item.item.price)}}</td>
+                <td>$ {{formatMoney(item.qty * item.item.price)}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <hr>
+        </div>
+      </div>
+    </div>
+    <!-- // Transaction History Page // -->
+
+    <!-- MAIN-AREA -->
+    <div class="main" v-if='!showAdminPage && !showDetailsPage && !showCartPage && !showTransactionHistory'>
+
+      <!-- banner -->
+      <div class="ui images slideshow">
+        <img src="https://images-na.ssl-images-amazon.com/images/G/01/amazonglobal/images/Fuji/hero/ipruden_2018-06-19T17-31_aa9f95_1121796_us_ags_gw_hero_newcopy_PW_HERO_M_ClassicStyle_1x._CB475587998_.jpg"
+          alt="">
+      </div>
+      <!-- / banner -->
+
+      <div class="ui grid main-container" style="margin:0 1%;">
+        <!-- SIDE-BAR -->
+        <div class="ui three wide column segment">
+          <h3 class="">Refine by</h3>
+          <h4>Categories</h4>
+          <select class="ui search selection dropdown" id="search-select" v-model='category'>
+            <option v-for='cat in categories' :value="cat.category">{{cat.category}}</option>
+          </select>
+          <div class="ui small teal button" @click='getFilterProducts'>Filter</div>
+          <h4 class="">Release Date</h4>
+          <ul class="" style="list-style-type:none">
+            <div aria-live="polite" class="">
+              <li>
+                <span class="">
+                  <a class="" @click='filterReleaseDate(30)'>
+                    <span class="">Last 30 days</span>
+                  </a>
+                </span>
+              </li>
+              <li>
+                <span class="">
+                  <a class="" @click='filterReleaseDate(90)'>
+                    <span class="">Last 90 days</span>
+                  </a>
+                </span>
+              </li>
+            </div>
+          </ul>
+          <h4 class="">Avg. Customer Review</h4>
+          <ul><a @click='filterRating(4)'><i class="ui star yellow icon"></i><i class="ui star yellow icon"></i><i class="ui star yellow icon"></i><i
+                class="ui star yellow icon"></i><i class="ui star icon"></i> 4 Stars & Up</a></ul>
+          <ul><a @click='filterRating(3)'><i class="ui star yellow icon"></i><i class="ui star yellow icon"></i><i class="ui star yellow icon"></i><i
+                class="ui star icon"></i><i class="ui star icon"></i> 3 Stars & Up</a></ul>
+          <ul><a @click='filterRating(2)'><i class="ui star yellow icon"></i><i class="ui star yellow icon"></i><i class="ui star icon"></i><i
+                class="ui star icon"></i><i class="ui star icon"></i> 2 Stars & Up</a></ul>
+          <ul><a @click='filterRating(1)'><i class="ui star yellow icon"></i><i class="ui star icon"></i><i class="ui star icon"></i><i
+                class="ui star icon"></i><i class="ui star icon"></i> 1 Stars & Up</a></ul>
+          <h4 class="">Price<small> (in USD Million)</small></h4>
+          <ul class="" style="list-style-type:none">
+            <div aria-live="" class="">
+              <li><span class=""><a class="" @click='filterRangePrice(0,10)'><span class="">Under $10 M</span></a></span></li>
+              <li><span class=""><a class="" @click='filterRangePrice(10,50)'><span class="">$10 M to $50 M</span></a></span></li>
+              <li><span class=""><a class="" @click='filterRangePrice(50,100)'><span class="">$50 M to $100 M</span></a></span></li>
+              <li><span class=""><a class="" @click='filterRangePrice(100,500)'><span class="">$100 M to $500 M</span></a></span></li>
+              <li><span class=""><a class="" @click='filterRangePrice(500,99999)'><span class="">$500 M & Above</span></a></span></li>
+            </div>
+          </ul>
+          <div class="ui form">
+            <label for="">Range:</label>
+            <div class="three fields">
+              <div class="field">
+                <input type="text" placeholder="$Min" v-model='minPrice'>
+              </div>
+              <div class="field">
+                <input type="text" placeholder="$Max" v-model='maxPrice'>
+              </div>
+              <div class="ui button mini" @click='filterRangePrice(minPrice,maxPrice)'>
+                Go
+              </div>
+            </div>
+            <div class="ui fluid yellow button" @click='getAllProducts'>Clear all filter</div>
+          </div>
+        </div>
+        <!-- / SIDE_BAR -->
+
+        <!-- +++++++++++++++++++ CARDS +++++++++++++++++++++ -->
+        <div class="ui twelve wide column">
+          <div class="ui link cards">
+            <div class="card" v-for='product in products'>
+              <div class="image" @click='seeDetails(product)' data-inverted="" data-tooltip="click to see details"
+                data-position='bottom center'>
+                <img :src="product.image">
+              </div>
+              <div class="content">
+                <a href="#" @click='seeDetails(product)'>
+                  <div class="header">{{ product.name }}</div>
+                </a>
+                <div class="meta">
+                  <a>{{ product.category }}</a>
+                </div>
+                <div class="description" v-if='calculateRating(product.reviews)>0'>
+                  <i class="ui yellow star icon"></i>
+                  Rating: 
+                  {{ calculateRating(product.reviews) }} / 5
+                </div>
+                <div v-else>Unrated</div>
+              </div>
+              <div class="extra content">
+                <span class="right floated" v-if='product.quantity != 0' style="color: black">
+                  Stock: {{ product.quantity }}
+                </span>
+                <span class="right floated" v-else style="color: red;">
+                  Out of Stock
+                </span>
+                <span style="color: black">
+                  <i class="dollar icon" style="color: green"></i>
+                  {{ formatMoney(product.price) }}
+                </span>
+                <div class="cart" v-if='!isAdmin && isLogin && product.quantity > countItemInCart(cart, product._id)'
+                  @click='addToCart(product)' :id="product._id">
+                  <span>
+                    <br>
+                    <div class="ui mini orange bottom attached button">Add to Cart</div>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- / MAIN-AREA -->
+
+    <!-- Login Modal -->
+    <div class="ui modal login">
+      <i class="close icon" id="close-login"></i>
+      <div class="ui" style="margin: 20px 0;">
+        <div class="ui middle aligned center aligned grid">
+          <div class="ui ten wide column">
+            <h2 class="ui teal image header">
+              <div class="content">
+                Log-in to your account
+              </div>
+            </h2>
+            <form class="ui form">
+              <div class="ui stacked segment">
+                <div class="field">
+                  <div class="ui left icon input">
+                    <i class="mail icon"></i>
+                    <input type="text" name="email" placeholder="E-mail address" v-model='email' autofocus>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="ui left icon input">
+                    <i class="lock icon"></i>
+                    <input type="password" name="password" placeholder="Password" v-model='password'>
+                  </div>
+                </div>
+                <div class="ui green message" v-if='showMsg'>{{ msg }}</div>
+                <div class="ui red message" v-if='showErr'>{{ msg }}</div>
+                <div class="ui fluid large teal submit button" @click='login'>Login</div>
+              </div>
+
+              <div class="ui error message"></div>
+
+            </form>
+
+            <div class="ui message">
+              New to us? <a href="#" onclick="$('.ui.modal.register').modal('show')">Sign Up</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Register Modal -->
+    <div class="ui modal register">
+      <i class="close icon"></i>
+      <div class="header">
+        Registration Form
+      </div>
+      <div class="content">
+        <form class="ui large form">
+          <div class="ui stacked segment">
+            <div class="field">
+              <div class="ui left icon input">
+                <i class="user icon"></i>
+                <input type="text" name="username" placeholder="Username" v-model='username'>
+              </div>
+            </div>
+            <div class="field">
+              <div class="ui left icon input">
+                <i class="mail icon"></i>
+                <input type="text" name="email" placeholder="E-mail address" v-model='email'>
+              </div>
+            </div>
+            <div class="field">
+              <div class="ui left icon input">
+                <i class="lock icon"></i>
+                <input type="password" name="password" placeholder="Password" v-model='password'>
+              </div>
+            </div>
+            <notif-msg :msg='msg' :show-msg='showMsg' :show-err='showErr'></notif-msg>
+            <div class="ui fluid large teal submit button" @click='register'>Register</div>
+          </div>
+          <div class="ui error message"></div>
+        </form>
+      </div>
+      <div class="ui message">
+        Already registered ? please log in <a onclick="$('.ui.modal.login').modal('show')">Here</a>
+      </div>
+    </div>
+
+
+  </div> <!-- / END OF APP VUE-->
+
+  <!-- SCRIPTS: -->
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="./scriptUI.js"></script>
+
+  <script>
+    Vue.component('notif-msg', {
+      props: ['msg', 'showMsg', 'showErr'],
+      template: ` <div class="ui green message" v-if='showMsg'>{{ msg }}</div>
+              <div class="ui red message" v-else-if='showErr'>{{ msg }}</div>`
+    })
+
+    Vue.component('order-steps', {
+      props: ['shipping', 'payment', 'confirm'],
+      template: `<div class="ui ordered steps" v-if='shipping || payment || confirm'>
+          <div class="step" :class='{active: shipping && !payment, completed: payment}'>
+            <i class="truck icon"></i>
+            <div class="content">
+              <div class="title">Shipping</div>
+              <div class="description">Choose your shipping options</div>
+            </div>
+          </div>
+          <div class="step" :class='{active: payment && !confirm, completed: confirm}'>
+            <i class="payment icon"></i>
+            <div class="content">
+              <div class="title">Billing</div>
+              <div class="description">Enter billing information</div>
+            </div>
+          </div>
+          <div class="step" :class='{active: confirm}'>
+            <i class="info icon"></i>
+            <div class="content">
+              <div class="title">Confirm Order</div>
+              <div class="description">Verify order details</div>
+            </div>
+          </div>
+        </div>`
+    })
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/5.5.7/firebase.js"></script>
+  <script>
+    var host = 'http://localhost:3000'
+    // var host = 'https://store-ree.agungatidhira.tech'
+    var app = new Vue({
+      el: '#app',
+      data: {
+        isLogin: false,
+        isAdmin: false,
+        activeUser: '',
+        showAdminPage: false,
+        showDetailsPage: false,
+        showCartPage: false,
+        showTransactionsReport: false,
+        username: '',
+        email: '',
+        password: '',
+        msg: '',
+        showMsg: false,
+        showErr: false,
+        categories: [],
+        products: [],
+        cart: [],
+        uniqueCart: [],
+        productId: '',
+        productImage: '',
+        productName: '',
+        productCategory: '',
+        productDescription: '',
+        productPrice: 0,
+        productQuantity: 0,
+        productReviews: [],
+        editForm: false,
+        key: '',
+        shippingPage: false,
+        paymentPage: false,
+        payment: false,
+        confirmationPage: false,
+        receiver: '',
+        address: '',
+        creditCard: '',
+        creditCardNum: '',
+        coupon: '',
+        discount: 0,
+        total: 0,
+        allTransactions: [],
+        showDetailTransaction: false,
+        detailTrans: null,
+        showTransactionHistory: false,
+        productsSold: [],
+        begTransDate: '',
+        endTransDate: '',
+        filterYearItem: '',
+        filterMonthItem: '',
+        historyDetail: false,
+        category: '',
+        query: '',
+        uploadFile: '',
+        createCategory: false,
+        newCategory: '',
+        rating: 0,
+        reviewMsg: '',
+        minPrice: 0,
+        maxPrice: 0
+      },
+      watch: {
+        showErr: function (newVal, oldVal) {
+          if (newVal == true) {
+            setTimeout(function () {
+              app.showErr = false
+            }, 2500)
+          }
+        },
+        showMsg: function (newVal, oldVal) {
+          if (newVal == true) {
+            setTimeout(function () {
+              app.showMsg = false
+            }, 2500)
+          }
+        },
+        showTransactionHistory: function(newVal, oldVal) {
+          if(newVal) {
+            this.showCartPage =false
+            this.showDetailsPage =false
+          }
+        }
+      },
+      created() {
+        if (localStorage.getItem('token')) {
+          this.isLogin = true
+          this.activeUser = localStorage.getItem('username')
+          this.getUserCart()
+        }
+        if (localStorage.getItem('admin')) {
+          this.isAdmin = true
+          localStorage.getItem('adminPage') ? this.showAdminPage = true : this.showAdminPage = false
+        }
+        this.getAllProducts()
+        this.getCategories()
+        this.checkCouponEligble()
+        this.transactionHistory()
+      },
+      computed: {
+        productToReviewed() {
+          return this.productReviews
+        }
+      },
+      methods: {
+        register() {
+          let data = {
+            username: this.username,
+            email: this.email,
+            password: this.password
+          }
+          axios.post(`${host}/users/register`, data)
+            .then((result) => {
+              app.msg = 'Register success'
+              app.showMsg = true
+              app.email = '', app.password = '', app.username = ''
+            }).catch((err) => {
+              app.msg = err.response.data.message
+              app.showErr = true
+            });
+        },
+        login() {
+          this.clearNotif()
+          let data = {
+            email: this.email,
+            password: this.password
+          }
+          axios.post(`${host}/users/login`, data)
+            .then((result) => {
+              app.msg = 'Login success'
+              app.showMsg = true
+              localStorage.setItem('token', result.data.token)
+              localStorage.setItem('username', result.data.username)
+              localStorage.setItem('userId', result.data.userId)
+              if (result.data.admin) {
+                localStorage.setItem('admin', result.data.admin)
+                app.isAdmin = true
+              } else {
+                app.isAdmin = false
+              }
+              app.activeUser = localStorage.getItem('username')
+              app.isLogin = true
+              app.email = '', app.password = ''
+              setInterval(function () {
+                document.getElementById('close-login').click()
+              }, 900)
+            }).catch((err) => {
+              app.msg = err.response.data.message || err.response.data.error
+              app.showErr = true
+            });
+        },
+        logout() {
+          localStorage.clear()
+          this.activeUser = ''
+          this.isLogin = false
+          this.clearNotif()
+        },
+        dateFormat(date) {
+          return date
+        },
+        getFilterProducts() {
+          this.products = []
+          if (this.category) {
+            axios.get(`${host}/products/search/category/${this.category.toLowerCase()}`)
+              .then((result) => {
+                result.data.forEach(item => {
+                  if (!item.isDelete) {
+                    app.products.push(item)
+                  }
+                })
+              }).catch((err) => {
+                console.log(err)
+                app.getAllProducts()
+              });
+          }
+        },
+        searchProduct() {
+          app.products = []
+          if (this.query === "") {
+            this.getAllProducts()
+          } else {
+            axios.get(`${host}/products`, {
+                headers: {
+                  authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+              })
+              .then((result) => {
+                app.products = []
+                result.data.forEach(item => {
+                  if (!item.isDelete) {
+                    let name = item.name.toLowerCase()
+                    if (name.indexOf(app.query.toLowerCase()) !== -1) {
+                      app.products.push(item)
+                    }
+                  }
+                })
+              }).catch((err) => {
+                console.log(err)
+              });
+          }
+        },
+        getCategories() {
+          this.categories = []
+          axios.get(`${host}/categories`)
+            .then((result) => {
+              app.categories = result.data
+              let category = $('#category-menu').dropdown('get value')
+              console.log('category', category)
+            }).catch((err) => {
+              console.log(err)
+            });
+        },
+        getAllProducts() {
+          this.products = []
+          axios.get(`${host}/products`)
+            .then((result) => {
+              result.data.forEach(product => {
+                if (!product.isDelete) {
+                  app.products.push(product)
+                }
+              })
+            }).catch((err) => {
+              console.log(err)
+            });
+        },
+        addProductForm() {
+          this.clearState()
+          $('.ui.modal.create').modal('show')
+        },
+        getProductData() {
+          let data = {
+            image: this.productImage,
+            name: this.productName,
+            category: this.productCategory,
+            description: this.productDescription,
+            price: this.productPrice,
+            quantity: this.productQuantity,
+            reviews: this.productReviews || []
+          }
+          return data
+        },
+        setProductData(product) {
+          console.log('selected product', product)
+          this.productImage = product.image || 'https://via.placeholder.com/150'
+          this.productName = product.name
+          this.productCategory = product.category
+          this.productDescription = product.description
+          this.productPrice = product.price
+          this.productQuantity = product.quantity
+          this.productId = product._id
+          this.productReviews = product.reviews
+        },
+        addNewCategory() {
+          let data = {
+            category: this.newCategory
+          }
+          axios.post(`${host}/categories`, data, {
+              headers: {
+                authorization: `Bearer ${localStorage.getItem('token')}`
+              }
+            })
+            .then((result) => {
+              console.log(result)
+              app.getCategories()
+            }).catch((err) => {
+              console.log(err)
+            });
+        },
+        addProduct() {
+          let data = this.getProductData()
+          app.products = []
+          // console.log('add product:', data)
+          axios.post(`${host}/products`, data, {
+              headers: {
+                authorization: `Bearer ${localStorage.getItem('token')}`
+              }
+            })
+            .then((result) => {
+              app.getAllProducts()
+              document.getElementById('create-close').click()
+            }).catch((err) => {
+              console.log(err)
+            });
+        },
+        editProductForm(product) {
+          this.setProductData(product)
+          this.editForm = true
+          $('.ui.modal.create').modal('show')
+        },
+        editProduct() {
+          let data = this.getProductData()
+          axios.put(`${host}/products/${app.productId}`, data, {
+              headers: {
+                authorization: `Bearer ${localStorage.getItem('token')}`
+              }
+            })
+            .then((result) => {
+              app.products = []
+              app.getAllProducts()
+              document.getElementById('create-close').click()
+            }).catch((err) => {
+              console.log(err)
+            });
+        },
+        deleteProductForm(productId) {
+          this.productId = productId
+          $('.ui.modal.delete').modal('show')
+        },
+        deleteProduct(productId) {
+          axios.put(`${host}/products/${productId}`, {
+              isDelete: true
+            }, {
+              headers: {
+                authorization: `Bearer ${localStorage.getItem('token')}`
+              }
+            })
+            .then((result) => {
+              app.products = []
+              app.getAllProducts()
+            }).catch((err) => {
+              console.log(err)
+            });
+        },
+        clearNotif() {
+          this.msg = ''
+          this.showMsg = false
+          this.showErr = false
+        },
+        clearState() {
+          this.username = ''
+          this.email = ''
+          this.password = ''
+          this.productId = ''
+          this.productImage = ''
+          this.productName = ''
+          this.productCategory = ''
+          this.productDescription = ''
+          this.productPrice = 0
+          this.productQuantity = 0
+          this.editForm = false
+        },
+        addToCart(product) {
+          this.setProductData(product)
+          this.productQuantity = product.quantity - 1
+          this.cart.push(product)
+          this.getUniqueCart(this.cart)
+          let counter = this.countItemInCart(this.cart, product._id)
+          if (counter > product.quantity) {
+            $(`#${product._id}`).hide()
+          } else {
+            axios.post(`${host}/carts`, {
+                user: localStorage.getItem('userId'),
+                products: product._id
+              })
+              .then((result) => {
+                console.log('success added item to cart')
+              }).catch((err) => {
+                console.log(err)
+              });
+          }
+        },
+        removeFromCart(item) {
+          axios.put(`${host}/carts/remove`, {
+              user: localStorage.getItem('userId'),
+              products: item._id
+            })
+            .then((result) => {
+              app.getUserCart()
+              app.products = []
+              app.getAllProducts()
+            }).catch((err) => {
+              console.log(err)
+            });
+        },
+        onChange(item, oldQty) {
+          let newQty = this.key
+          let range = newQty - oldQty
+          if (range > 0) {
+            app.productQuantity = item.quantity - range
+            for (let i = 0; i < range; i++) {
+              axios.post(`${host}/carts`, {
+                  user: localStorage.getItem('userId'),
+                  products: item._id
+                })
+                .then((result) => {
+                  app.getUserCart()
+                  app.products = []
+                  app.getAllProducts()
+                  app.key = ''
+                }).catch((err) => {
+                  console.log(err)
+                });
+            }
+          } else {
+            range = oldQty - newQty
+            app.productQuantity = item.quantity + range
+            for (let i = 0; i < range; i++) {
+              axios.put(`${host}/carts/quantity`, {
+                  user: localStorage.getItem('userId'),
+                  products: item._id
+                })
+                .then((result) => {
+                  app.products = []
+                  app.getAllProducts()
+                  app.getUserCart()
+                  app.key = ''
+
+                }).catch((err) => {
+                  console.log(err)
+                });
+            }
+          }
+        },
+        getUniqueCart(cart) {
+          this.uniqueCart = []
+          const uniqFilterAccordingToProp = function (prop) {
+            if (prop)
+              return (ele, i, arr) => arr.map(ele => ele[prop]).indexOf(ele[prop]) === i
+            else
+              return (ele, i, arr) => arr.indexOf(ele) === i
+          }
+          this.uniqueCart = cart.filter(uniqFilterAccordingToProp('_id'))
+        },
+        getUserCart() {
+          axios.get(`${host}/carts`, {
+              headers: {
+                authorization: `Bearer ${localStorage.getItem('token')}`
+              }
+            })
+            .then((result) => {
+              if (result.data.length > 0) {
+                app.cart = result.data[0].products
+                app.getUniqueCart(app.cart)
+              } else {
+                app.cart = []
+                app.uniqueCart = []
+              }
+            }).catch((err) => {
+              console.log('error in getting user cart:', err)
+            });
+        },
+        goToAdminPage() {
+          this.showAdminPage ? this.showAdminPage = false : this.showAdminPage = true
+          localStorage.setItem('adminPage', true)
+        },
+        goHome() {
+          if (this.showAdminPage) this.showAdminPage = false;
+          localStorage.removeItem('adminPage')
+          if (this.showDetailsPage) this.showDetailsPage = false
+          if (this.showCartPage) this.showCartPage = false
+          if (this.showTransactionHistory) this.showTransactionHistory = false
+          this.confirmationPage = false, this.shippingPage = false
+          app.products = []
+          this.getAllProducts()
+        },
+        seeDetails(product) {
+          this.setProductData(product)
+          this.showDetailsPage ? this.showDetailsPage = false : this.showDetailsPage = true
+        },
+        cartPage() {
+          !this.showCartPage ? this.showCartPage = true : this.showCartPage = true
+          $('.ui.sticky').sticky({
+            context: '#example1'
+          });
+        },
+        grandTotalCart(cart) {
+          let total = 0
+          cart.forEach(item => {
+            total += item.price
+          })
+          return total
+        },
+        countItemInCart(cart, itemId) {
+          let count = 0
+          this.cart.forEach(i => {
+            if (i._id === itemId) {
+              count++
+            }
+          })
+          return count
+        },
+        grandTotalTransaction(total) {
+          if (this.discount) {
+            return total - (total * this.discount / 100)
+          } else {
+            return total
+          }
+        },
+        checkAddress() {
+          if(!this.address) {
+            this.msg = 'Please fill in the form correctly'
+            this.showErr = true
+          } else {
+            this.paymentPage = true
+          }
+        },
+        checkCoupon() {
+          this.clearNotif()
+          axios.get(`${host}/coupons/${app.coupon}`, {
+              headers: {
+                authorization: `Bearer ${localStorage.getItem('token')}`
+              }
+            })
+            .then((result) => {
+              app.showErr = false
+              app.msg = `Yeay.. you are eligible to have ${result.data.discount}% discount (exc. shipping fee) `
+              app.showMsg = true
+              app.discount = result.data.discount
+            }).catch((err) => {
+              app.coupon = 'No coupon used'
+              app.showMsg = false
+              app.msg = err.response.data.message || err.response.data.error ||
+                'Sorry, Coupon Code is incorrect!'
+              app.showErr = true
+            });
+
+        },
+        checkout(total) {
+          // nanti adad payment method dan shipping method
+          let itemList = [],
+            obj;
+          this.uniqueCart.forEach(item => {
+            obj = {}
+            obj.item = item._id
+            obj.qty = this.countItemInCart(this.cart, item._id)
+            itemList.push(obj)
+          })
+
+          let data = {
+            itemList: itemList,
+            grandTotal: this.grandTotalTransaction(total),
+            address: this.address
+          }
+          // create transaction then delete from cart
+          axios.post(`${host}/transactions`, data, {
+              headers: {
+                authorization: `Bearer ${localStorage.getItem('token')}`
+              }
+            })
+            .then((result) => {
+              app.clearCart()
+            }).catch((err) => {
+              console.log(err)
+            });
+        },
+        clearCart() {
+          axios.delete(`${host}/carts`, {
+              headers: {
+                authorization: `Bearer ${localStorage.getItem('token')}`
+              }
+            })
+            .then((result) => {
+              app.updateProductQty()
+              app.getUserCart()
+              app.goHome()
+            }).catch((err) => {
+              console.log(err)
+            });
+        },
+        updateProductQty() {
+          this.uniqueCart.forEach(item => {
+            let newQty = item.quantity - this.countItemInCart(this.cart, item._id)
+            axios.put(`${host}/products/checkout/${item._id}`, {
+                quantity: newQty
+              }, {
+                headers: {
+                  authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+              })
+              .then((result) => {}).catch((err) => {
+                console.log(err)
+              });
+          })
+
+        },
+        transactionsReport() {
+          app.allTransactions = []
+          axios.get(`${host}/transactions`, {
+              headers: {
+                authorization: `Bearer ${localStorage.getItem('token')}`
+              }
+            })
+            .then((result) => {
+              app.allTransactions = result.data
+              app.getAllProductsSold()
+            }).catch((err) => {
+              console.log('error get transac', err)
+            });
+        },
+        getAllProductsSold() {
+          app.productsSold = []
+          let array = [],
+            arr1 = [],
+            arr2 = [],
+            arrNew = []
+          app.allTransactions.forEach(trans => {
+            trans.itemList.forEach(item => {
+              let obj = {}
+              obj.name = item.item.name
+              obj.quantity = item.qty
+              obj.date = trans.createdAt
+              array.push(obj)
+            })
+          })
+          arr2 = this.getUnique(array)
+          for (let i = 0; i < arr2.length; i++) {
+            let obj = {}
+            obj.name = arr2[i].name
+            obj.quantity = 0
+            obj.date = arr2[i].date
+            arrNew.push(obj)
+          }
+          arr = []
+          app.allTransactions.forEach(trans => {
+            trans.itemList.forEach(item => {
+              let obj = {}
+              obj.name = item.item.name
+              obj.quantity = item.qty
+              obj.date = trans.createdAt
+              arr.push(obj)
+            })
+          })
+          for (let i = 0; i < arr.length; i++) {
+            for (let j = 0; j < arrNew.length; j++) {
+              if (arr[i].name == arrNew[j].name) {
+                arrNew[j].quantity += arr[i].quantity
+              }
+            }
+          }
+          app.productsSold = arrNew
+        },
+        getUnique(arr1) {
+          const uniqFilterAccordingToProp = function (prop) {
+            if (prop) {
+              return (ele, i, arr) => arr.map(ele => ele[prop]).indexOf(ele[prop]) === i
+            } else {
+              return (ele, i, arr) => arr.indexOf(ele) === i
+            }
+          }
+          return arr1.filter(uniqFilterAccordingToProp('name'))
+        },
+        transactionDetail(trans) {
+          this.detailTrans = trans
+          app.showDetailTransaction = true
+        },
+        filterTransReport() {
+          let beg = this.begTransDate,
+            end = this.endTransDate
+          let arr = []
+          app.allTransactions = []
+          axios.get(`${host}/transactions`, {
+              headers: {
+                authorization: `Bearer ${localStorage.getItem('token')}`
+              }
+            })
+            .then((result) => {
+              result.data.forEach(trans => {
+                if (trans.createdAt <= end && trans.createdAt >= beg) {
+                  arr.push(trans)
+                }
+              })
+              this.allTransactions = arr
+            }).catch((err) => {
+              console.log('error get transac', err)
+            });
+
+        },
+        filterItemsDate() {
+          this.getAllProductsSold(pass)
+          let year = this.filterYearItem,
+            month = this.filterMonthItem
+          let newArr = []
+          this.productsSold.forEach(item => {
+            let itemMonth = new Date(item.date).getMonth() + 1
+            let itemYear = new Date(item.date).getFullYear()
+            if (itemMonth == month && itemYear == year) {
+              newArr.push(item)
+            }
+          })
+          this.productsSold = newArr
+        },
+        filterRating(rating) {
+          this.products = []
+          axios.get(`${host}/products/filter?rating=${rating}`)
+          .then((result) => {
+            app.products = result.data
+          }).catch((err) => {
+            console.log(err.response)
+            app.getAllProducts()
+          });
+        },
+        filterReleaseDate(days) {
+          this.products = []
+          axios.get(`${host}/products/filter?days=${days}`)
+          .then((result) => {
+            result.data.forEach(item=>{
+              if(!item.isDelete) {
+                app.products.push(item)
+              }
+            })
+          }).catch((err) => {
+            console.log(err.response)
+            app.getAllProducts()
+          });
+        },
+        filterRangePrice(pricefrom, priceto) {
+          let from = pricefrom * 1000000
+          let to = priceto * 1000000
+          this.products = []
+          axios.get(`${host}/products/filter?pricefrom=${from}&priceto=${to}`)
+          .then((result) => {
+            result.data.forEach(item=>{
+              if(!item.isDelete) {
+                app.products.push(item)
+              }
+            })
+          }).catch((err) => {
+            console.log(err.response)
+            app.getAllProducts()
+          });
+        },
+        generateCoupon() {
+          let alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+          let num = '1234567890'
+          let coupon = []
+          for (let i = 0; i < 5; i++) {
+            let idxA = Math.floor(Math.random() * alpha.length)
+            coupon.push(alpha[idxA])
+          }
+          for (let i = 0; i < 3; i++) {
+            let idxB = Math.floor(Math.random() * num.length)
+            coupon.push(num[idxB])
+          }
+          return coupon.join('')
+        },
+        checkCouponEligble() {
+          if(localStorage.getItem('admin')) {
+          } else if(localStorage.getItem('token')){
+            let coupon = this.generateCoupon()
+            let discount = Math.floor((Math.random()*20) + 10) 
+            axios.get(`${host}/transactions/${localStorage.getItem('userId')}`, {
+                headers: {
+                  authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+              })
+              .then((result) => {
+                if (result.data.length >= 3) {
+                  axios.post(`${host}/coupons`,{code:coupon, discount:discount}, {
+                    headers: {
+                      authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                  }).then((result) => {
+                    setTimeout(function() {
+                      alert(`Congratulation you got coupon ${discount}%, Coupon:"${coupon}"
+                      due to you have made 3 or more transactions`)
+                    }, 3500)
+                  }).catch((err) => {
+                  });
+                }
+              }).catch((err) => {
+              });
+          }
+        },
+        transactionHistory() {
+          axios.get(`${host}/transactions/${localStorage.getItem('userId')}`, {
+              headers: {
+                authorization: `Bearer ${localStorage.getItem('token')}`
+              }
+            })
+            .then((result) => {
+              app.allTransactions = result.data
+            }).catch((err) => {
+
+            });
+        },
+        uploadImage(event) {
+          var config = {
+            apiKey: "AIzaSyAYSICfKbNC3nBRR7TYij03ouvGJPzj-lc",
+            authDomain: "meme-maker-85b8e.firebaseapp.com",
+            databaseURL: "https://meme-maker-85b8e.firebaseio.com",
+            projectId: "meme-maker-85b8e",
+            storageBucket: "meme-maker-85b8e.appspot.com",
+            messagingSenderId: "130978255041"
+          };
+          firebase.initializeApp(config);
+
+          let storage = firebase.storage()
+
+          this.uploadFile = event.target.files[0]
+          let file = event.target.files[0]
+          // console.log(this.uploadFile);
+          storageRef = storage.ref('productImage/' + file.name)
+
+          // upload file
+          var task = storageRef.put(file)
+
+          // monitor upload
+          task.on('state_changed',
+            function progress(snapshot) {
+              var percentage = snapshot.bytesTransferred / snapshot.totalBytes
+            },
+            function error(err) {
+              console.log(err)
+            },
+            function complete() {
+              console.log('upload complete')
+              app.downloadImageUrl(storage)
+            }
+          )
+        },
+        downloadImageUrl(storage) {
+          this.productImage = ''
+          var imgRef = storage.ref('productImage/' + this.uploadFile.name)
+          imgRef.getDownloadURL()
+            .then((result) => {
+              console.log('url donwload:', result)
+              app.productImage = result
+            }).catch((err) => {
+              console.log(err)
+            });
+        },
+        addNewReview() {
+          let review = this.reviewMsg,
+            rating = Number(this.rating)
+          let eligible = false,
+            hasReviwed = false
+          let data = {
+            product: this.productId,
+            user: localStorage.getItem('userId'),
+            message: review,
+            rating: rating
+          }
+          let arrItem = []
+          this.allTransactions.forEach(trans => {
+            trans.itemList.forEach(item => {
+              arrItem.push(item.item._id)
+            })
+          })
+          arrItem.forEach(id => {
+            if (id === data.product) {
+              eligible = true
+            }
+          })
+          this.productReviews.forEach(review => {
+            if (review.user === localStorage.getItem('userId')) {
+              eligible = false
+              hasReviwed = true
+            }
+          })
+          if (eligible) {
+            app.showErr = false
+            axios.post(`${host}/reviews`, data, {
+                headers: {
+                  authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+              })
+              .then((result) => {
+                app.getAllProducts()
+                setTimeout(function() {
+                  let data = app.getProductData()
+                  app.showDetailsPage = false
+                  app.seeDetails(data)
+                }, 300)
+              }).catch((err) => {
+                console.log(err.response)
+              });
+          } else if (!hasReviwed) {
+            app.msg = 'You must buy this item to be able to give rating and review'
+            app.showErr = true
+          } else {
+            app.msg = 'You\'ve already give a rating and review'
+            app.showErr = true
+          }
+        },
+        calculateRating(product) {
+          console.log('calculat rating:', product)
+          if (product.length < 1) return 0;
+          let total = 0;
+          let len = product.length
+          product.forEach(user => {
+            total += user.rating
+          })
+          return (total / len).toFixed(1)
+        },
+        formatMoney(amount, decimalCount = 0, decimal = ".", thousands = ",") {
+          try {
+            decimalCount = Math.abs(decimalCount);
+            decimalCount = isNaN(decimalCount) ? 2 : decimalCount;
+
+            const negativeSign = amount < 0 ? "-" : "";
+
+            let i = parseInt(amount = Math.abs(Number(amount) || 0).toFixed(decimalCount)).toString();
+            let j = (i.length > 3) ? i.length % 3 : 0;
+
+            return negativeSign + (j ? i.substr(0, j) + thousands : '') + i.substr(j).replace(/(\d{3})(?=\d)/g,
+              "$1" + thousands) + (decimalCount ? decimal + Math.abs(amount - i).toFixed(decimalCount).slice(2) :
+              "");
+          } catch (e) {
+            console.log(e)
+          }
+        },
+        getNormalDateFormat(oldDate) {
+          let date = new Date(oldDate)
+          var month_names = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+          ];
+
+          var day = date.getDate();
+          var month_index = date.getMonth();
+          var year = date.getFullYear();
+
+          return "" + day + " " + month_names[month_index] + " " + year;
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
