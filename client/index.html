@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- vue -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <!-- semantic -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+    <!-- axios -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+
+
+    <title>ecommerce</title>
+</head>
+
+<body>
+    <div id="app">
+
+        <!-- navbar -->
+        <nav-bar :get-all-items="getAllItems" :get-user-data="getUserData" :get-item-category="getItemCategory" :search-item="searchItem" :get-category="getCategory" :categories="categories" :user="user" :back-first="backFirst"></nav-bar>
+        <!-- akhir navbar -->
+
+        <!-- banner -->
+        <banner-page></banner-page>
+        <!-- akhir banner -->
+
+        <!-- content -->
+        <div class="ui grid segment" style="min-height:800px">
+
+            <!-- kiri -->
+            <div class="ui three wide column " v-if="user">
+                <left-content :get-category="getCategory" :categories="categories" :get-all-items="getAllItems" :user="user" :report-trx="reportTrx" :report="report" :item-report="itemReport" :itemrep="itemrep"></left-content>
+            </div>
+            <!-- akhir kiri -->
+
+            <!-- kanan -->
+            <div class="ui thirteen wide column ">
+                <right-content :get-all-items="getAllItems" :get-user-data="getUserData" :user="user" :get-category="getCategory" :categories="categories" :items="items" :report-trx="reportTrx" :report="report" :item-report="itemReport" :itemrep="itemrep"></right-content>
+            </div>
+            <!-- akhir kanan -->
+
+        </div>
+        <!--  -->
+
+    </div>
+
+    <!-- Vue Component -->
+    <script src="./assets/js/components/navbar.js"></script>
+    <script src="./assets/js/components/leftcontent.js"></script>
+    <script src="./assets/js/components/rightcontent.js"></script>
+    <script src="./assets/js/components/bannerpage.js"></script>
+
+    <!-- Vue Parent -->
+    <script src="./assets/js/page/index.js"></script>
+
+
+</body>
+
+</html>
