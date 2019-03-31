@@ -1,0 +1,14 @@
+/* navbar */
+/* gmn override color di bootstrap?? */
+
+#navbarBGColor {
+    background-color: #1D3557 !important;
+}
+
+.navbarTextColor {
+    color: #f1f1f1 !important
+}
+
+.sidebarTextColor {
+    color: #1D3557 !important
+}

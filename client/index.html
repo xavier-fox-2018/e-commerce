@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>E-Commerce</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
+    <script src="script.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div id="app">
+
+        <!-- NAVBAR -->
+        <div class="mainNavbar mb-5">
+            <nav id="navbarBGColor" class="navbar navbar-expand-lg navbar-light bg-light">
+                <a class="navbar-brand navbarTextColor" v-on:click='currentDisplay("frontPage")'>E-commerce</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item active">
+                            <a class="nav-link navbarTextColor" v-on:click='currentDisplay("frontPage")'>Home <span class="sr-only">(current)</span></a>
+                        </li>
+                    </ul>
+ 
+                        <button class="btn btn-outline-success my-2 my-sm-0 navbarTextColor" v-on:click='currentDisplay("productList")'>See all Products</button>
+                </div>
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link navbarTextColor" v-on:click='currentDisplay("shoppingCart")' v-if="loggedInUser">Shopping Cart</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link navbarTextColor" v-on:click='currentDisplay("login")' v-if="!loggedInUser" >Login</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link navbarTextColor" v-on:click="logout" v-if="loggedInUser" >Logout </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link navbarTextColor" v-on:click='currentDisplay("register")' v-if="!loggedInUser">Register</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+
+        <!-- Page content -->
+        <div class="mainBody">
+
+            <!-- front Page -->
+            <div class="frontPage" v-if='currentPage == "frontPage"'>
+                <carousel></carousel>
+                <h1 class="mt-5">Welcome to E-commerce!</h1>
+
+            </div>
+
+
+            <!-- LOGIN -->
+            <div class="login container" v-if='currentPage == "login"'>
+                <div class="row">
+                    <div class="col-6">
+                        <h3>Login</h3>
+                        <form>
+                            <div class="form-group">
+                                <label for="inputEmail">Email address</label>
+                                <input type="email" class="form-control" placeholder="Enter email" v-model="login.email"> 
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword">Password</label>
+                                <input type="password" class="form-control" placeholder="Password" v-model="login.password"> 
+                            </div> 
+                            <p> <button type="submit" class="btn btn-primary mr-4" v-on:click="postLogin"> Login </button> </p>
+                        </form>
+                        <div class="alert alert-success mt-3" role="alert" v-if="SuccessAlert">
+                            {{ message }}
+                        </div>
+                    </div>
+                    <div class="col-6">
+                    </div>
+                </div>   
+            </div>
+
+
+            <!-- Register -->
+            <div class="register container" v-if='currentPage == "register"'>
+                <div class="row">
+                    <div class="col-6">
+
+                    </div>
+                    <div class="col-6">
+                        <h3>Register</h3>
+                        <form>
+                            <div class="form-group">
+                                <label for="inputEmail">Email address</label>
+                                <input type="email" class="form-control" placeholder="Enter email" v-model="register.email" >
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword">Password</label>
+                                <input type="password" class="form-control" placeholder="Password" v-model="register.password" >
+                            </div>
+                            <button type="submit" class="btn btn-primary" v-on:click="postRegister">Register</button>
+                        </form>
+
+                        <div class="alert alert-success mt-3" role="alert" v-if="SuccessAlert">
+                            {{ message }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- bodySearchResult + sidebar -->
+            <div class="bodySearchResult" v-if='currentPage == "productList"'>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="list-group">
+                                <button type="button" class="list-group-item list-group-item-action" v-for="category in categories" v-on:click="clickCategoryDetails(category._id)"> {{ category.name }}  </button>
+
+                            </div>
+                        </div>
+
+                        <div class="col-9">
+                            <div>
+                                <form class="form-inline mb-3">
+                                    <input class="form-control mr-sm-2" type="search" placeholder="Search" v-model="search"> {{ search }} {{ getFilteredItems }}
+                                    
+                                </form>
+                            </div>
+
+                            <div class="card-columns">
+                                <div class="card h-100" v-for="item in items">
+                                    <img class="card-img-top" v-bind:src='item.imageUrl' alt="Card image cap">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ item.name }}</h5>
+                                        <p class="card-text">{{ item.description }}</p>
+                                        <p class="card-text">{{ item.price }}</p>
+                                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                                        <!-- <button class="btn btn-primary">Add to cart</button> -->
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addToCart" v-on:click='addToCart(item)'>Add to cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- MODAL - Add to Cart -->
+            <div class="modal fade" id="addToCart" tabindex="-1" role="dialog" >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        Item has successfully been added to your shopping cart
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+            </div>
+            
+
+            <!-- shopping cart  -->
+            <div class="shoppingCart" v-if='currentPage == "shoppingCart"'>
+                <div class="container">
+                    <div class="row border">
+                        <h1 class="mb-3">Shopping Cart</h1>
+                    </div>
+                    
+                    <div class="row border" id="product1" v-for="item in cart">
+                        <div class="col-3 border">
+                            <img v-bind:src='item.imageUrl'  alt="image not found" class="img-thumbnail">
+                        </div>
+                        <div class="col-6 border">
+                            <p>Product Name: {{ item.itemID.name }} </p>
+                            <p>Quantity: {{ item.quantity }} </p>
+                            <button class="btn btn-primary"  >Remove</button> <!-- v-on:click="removeFromCart" -->
+                        </div>
+                        <div class="col-3 border">
+                            <p>Subtotal: {{ item.subTotal }}</p>
+                        </div>
+                    </div>
+
+
+                    <div class="clickCheckout my-3">
+                        <h3>Total Price: {{ getGrandTotal }} </h3>
+                        <button class="btn btn-primary my-2" v-on:click='checkout'>Checkout</button>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+
+
+        </div>
+
+
+         
+    </div>
+
+
+
+    <script>
+
+    </script>
+
+    <script src="vue.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
+
+
